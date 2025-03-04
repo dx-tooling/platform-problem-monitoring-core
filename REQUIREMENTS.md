@@ -260,20 +260,20 @@ Here is a blow-by-blow description for all process steps that lead to a new repo
 
 The aforementioned run.sh shell script is able to read a configuration file with the following structure:
 
-REMOTE_STATE_S3_BUCKET_NAME=""
-REMOTE_STATE_S3_FOLDER_NAME=""
-
-ELASTICSEARCH_SERVER_BASE_URL=""
-ELASTICSEARCH_LUCENE_QUERY_FILE_PATH=""
-
-KIBANA_BASE_URL=""
-
-SMTP_SERVER_HOSTNAME=""
-SMTP_SERVER_PORT=""
-SMTP_SERVER_USERNAME=""
-SMTP_SERVER_PASSWORD=""
-SMTP_SENDER_ADDRESS=""
-SMTP_RECEIVER_ADDRESS=""
+    REMOTE_STATE_S3_BUCKET_NAME=""
+    REMOTE_STATE_S3_FOLDER_NAME=""
+    
+    ELASTICSEARCH_SERVER_BASE_URL=""
+    ELASTICSEARCH_LUCENE_QUERY_FILE_PATH=""
+    
+    KIBANA_BASE_URL=""
+    
+    SMTP_SERVER_HOSTNAME=""
+    SMTP_SERVER_PORT=""
+    SMTP_SERVER_USERNAME=""
+    SMTP_SERVER_PASSWORD=""
+    SMTP_SENDER_ADDRESS=""
+    SMTP_RECEIVER_ADDRESS=""
 
 If this configuration is stored in a file called platform_problem_monitoring_core.conf, then the run.sh script can be called
 as `run.sh ./platform_problem_monitoring_core.conf` and will make use of these parameters when executing the different step
