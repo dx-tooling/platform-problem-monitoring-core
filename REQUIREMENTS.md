@@ -105,10 +105,10 @@ These are the steps that as a whole form the complete process end-to-end:
         - the name of the S3 subfolder where state is stored
         - the local file path to use for storing a copy of the "date and time of Elasticsearch download from latest run"
           state file
-        - the local file path to use for storing a copy of the "messages summary from latest run" state file
+        - the local file path to use for storing a copy of the "normalization results from latest run" state file
     - Main operations & side effects:
         - stored state is downloaded into the local temporary work folder
-    - Outputs: none (besides exit code)
+    - Outputs: none (besides exit code and progress, success, and error messages)
 3. Download logstash documents
     - Inputs:
         - the date and time from which to start downloading messages
@@ -121,7 +121,7 @@ These are the steps that as a whole form the complete process end-to-end:
         - the inputs are used to download, into the target file, all relevant logstash messages from the Elasticsearch
           server
         - the date and time of this download is stored into a new file at the provided date and time file path
-    - Outputs: none (besides exit code)
+    - Outputs: none (besides exit code and progress, success, and error messages)
 4. Extract relevant fields from the logstash documents
     - Inputs:
         - the path to a logstash message documents JSON file
@@ -129,7 +129,7 @@ These are the steps that as a whole form the complete process end-to-end:
     - Main operations & side effects:
         - from each logstash document in the provided file, the Elasticsearch index name, the Elasticsearch document id,
           and the logstash message field is extracted and written into a single like of the target file
-    - Outputs: none (besides exit code)
+    - Outputs: none (besides exit code and progress, success, and error messages)
 5. Normalize messages
     - Inputs:
         - the path to a extracted logstash fields file
@@ -139,8 +139,8 @@ These are the steps that as a whole form the complete process end-to-end:
           summarized into one line item in the results file that carries a) the normalized message, b) the number of
           messages that match this normalized message, and c) up to 5 Elasticsearch index names and document ids that
           represent examples of messages matching this normalized message
-    - Outputs: none (besides exit code)
-6. Generate summary comparison
+    - Outputs: none (besides exit code and progress, success, and error messages)
+6. Generate normalization results comparison
     - Inputs:
         - the path to a normalization results file (with the "new" normalization results)
         - the path to a normalization results file (with the "previous" normalization results)
@@ -158,7 +158,7 @@ These are the steps that as a whole form the complete process end-to-end:
             - all comparisons must be sorted descending by either the number of messages matching a normalization
               result (for new and disappeared normalized message) or descending by the amount of percentual change (for
               increased and decreased normalization results)
-    - Outputs: none (besides exit code)
+    - Outputs: none (besides exit code and progress, success, and error messages)
 7. Generate report email HTML body
     - Inputs:
         - the path to a normalized messages comparison results file
@@ -172,9 +172,65 @@ These are the steps that as a whole form the complete process end-to-end:
         - If a Kibana base URL is provided, each normalized message presented in the report is accompanied by up to 5
           deep links to message samples matching the normalized message (using the Elasticsearch index name and
           Elasticsearch document id from the normalization results file)
-
-- Outputs: none (besides exit code)
+    - Outputs: none (besides exit code and progress, success, and error messages)
+8. Send email report
+    - Inputs:
+        - the path to an HTML version of the email message body
+        - the path to a plaintext version of the resulting email message body
+        - an email subject line
+        - an SMTP hostname
+        - an SMTP port
+        - an SMTP username
+        - an SMTP password
+        - an SMTP sender email address
+        - an SMTP receiver email address
+    - Main operations & side effects:
+        - sends off the email based on the inputs
+    - Outputs: none (besides exit code and progress, success, and error messages)
+9. Store new run state
+    - Inputs:
+        - the name of the S3 bucket used for state persistence
+        - the name of the S3 subfolder where state is stored
+        - the path to a file containing the "date and time of Elasticsearch download" state
+        - the path to a file containing the "normalization results" state file
+    - Main operations & side effects:
+        - local state is uploaded to the remote S3 location
+    - Outputs: none (besides exit code and progress, success, and error messages)
+10. Clean up work environment
+    - Inputs:
+        - the path to a local folder
+    - Main operations & side effects:
+        - remove the local folder
+    - Outputs: none (besides exit code and progress, success, and error messages)
 
 Each of these steps is a Python 3 script that can execute its operation in isolation when given correct inputs.
-The different step scripts do not include or call each other. However, any functionality that is worth sharing between
-these scripts, can be implemented in a shared library which the different step scripts use as needed.
+
+The different step scripts do not include or call each other.
+
+However, any functionality that is worth sharing between these scripts, will be implemented in a shared library which
+the different step scripts will use as needed.
+
+The aforementioned run.sh shell script is able to read a configuration file with the following structure:
+
+REMOTE_STATE_S3_BUCKET_NAME=""
+REMOTE_STATE_S3_FOLDER_NAME=""
+
+ELASTICSEARCH_SERVER_BASE_URL=""
+ELASTICSEARCH_LUCENE_QUERY_FILE_PATH=""
+
+SMTP_SERVER_HOSTNAME=""
+SMTP_SERVER_PORT=""
+SMTP_SERVER_USERNAME=""
+SMTP_SERVER_PASSWORD=""
+SMTP_SENDER_ADDRESS=""
+SMTP_RECEIVER_ADDRESS=""
+
+If this configuration is stored in a file called platform_problem_monitoring.conf, then the run.sh script can be called
+as `run.sh ./platform_problem_monitoring.conf` and will make use of these parameters when executing the different step
+scripts.
+
+Other parameters that are relevant between step script executions, like for example the name of the JSON file where
+downloaded logstash documents are stored, are hardcoded within the run.sh shell script (but paths of intermediate result
+files are of course located within the temporary work folder created in step 1).
+
+
