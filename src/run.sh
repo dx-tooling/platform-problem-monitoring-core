@@ -29,6 +29,8 @@ EXTRACTED_FIELDS_FILE=""
 NORM_RESULTS_PREV_FILE=""
 NORM_RESULTS_FILE=""
 COMPARISON_RESULTS_FILE=""
+HTML_EMAIL_BODY_FILE=""
+TEXT_EMAIL_BODY_FILE=""
 
 echo "Starting Platform Problem Monitoring process..."
 
@@ -54,6 +56,8 @@ EXTRACTED_FIELDS_FILE="$WORK_DIR/extracted_fields.jsonl"
 NORM_RESULTS_PREV_FILE="$WORK_DIR/norm_results_prev.json"
 NORM_RESULTS_FILE="$WORK_DIR/norm_results.json"
 COMPARISON_RESULTS_FILE="$WORK_DIR/comparison_results.json"
+HTML_EMAIL_BODY_FILE="$WORK_DIR/email_body.html"
+TEXT_EMAIL_BODY_FILE="$WORK_DIR/email_body.txt"
 
 # Step 2: Download previous state
 echo "Step 2: Downloading previous state..."
@@ -116,6 +120,20 @@ if [ $? -ne 0 ]; then
 fi
 echo "Normalization results compared successfully"
 
+# Step 7: Generate email bodies
+echo "Step 7: Generating email bodies..."
+python -m platform_problem_monitoring_core.step7_generate_email_bodies \
+    --comparison-file "$COMPARISON_RESULTS_FILE" \
+    --norm-results-file "$NORM_RESULTS_FILE" \
+    --html-output "$HTML_EMAIL_BODY_FILE" \
+    --text-output "$TEXT_EMAIL_BODY_FILE" \
+    ${KIBANA_BASE_URL:+--kibana-url "$KIBANA_BASE_URL"}
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to generate email bodies"
+    exit 1
+fi
+echo "Email bodies generated successfully"
+
 # Step 9: Store new state
 echo "Step 9: Storing new state..."
 python -m platform_problem_monitoring_core.step9_store_new_state \
@@ -129,13 +147,14 @@ if [ $? -ne 0 ]; then
 fi
 echo "New state stored successfully"
 
-echo "Steps 1-6 and 9 completed successfully"
+echo "Steps 1-7 and 9 completed successfully"
 echo "Work directory: $WORK_DIR"
 echo "Downloaded documents: $LOGSTASH_DOCUMENTS_FILE"
 echo "Extracted fields: $EXTRACTED_FIELDS_FILE"
 echo "Normalization results: $NORM_RESULTS_FILE"
 echo "Comparison results: $COMPARISON_RESULTS_FILE"
+echo "Email bodies: $HTML_EMAIL_BODY_FILE, $TEXT_EMAIL_BODY_FILE"
 
-# The script would continue with steps 7-8 and 10 in a complete implementation
+# The script would continue with steps 8 and 10 in a complete implementation
 
 exit 0
