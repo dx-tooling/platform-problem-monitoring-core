@@ -218,13 +218,16 @@ Here is a blow-by-blow description for all process steps that lead to a new repo
         - the path to a normalization results file
         - the file path to use for storing the HTML version of the resulting email message body
         - the file path to use for storing the plaintext version of the resulting email message body
-        - Optionally: a Kibana base URL
+        - Optionally: a Kibana base URL (KIBANA_DISCOVER_BASE_URL) for the "View in Kibana" button
+        - Optionally: a Kibana document deeplink URL structure (KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE) with {{index}} and {{id}} placeholders for individual document links
     - Main operations & side effects:
         - creation of a well-designed email report that presents the normalized messages comparison results, followed by
           the top 25 normalization results, in an easy-to-scan and easy-to-comprehend form
-        - If a Kibana base URL is provided, each normalized message presented in the report is accompanied by up to 5
+        - If a Kibana base URL is provided, a "View in Kibana" button is added to the report
+        - If a Kibana document deeplink URL structure is provided, each normalized message presented in the report is accompanied by up to 5
           deep links to message samples matching the normalized message (using the Elasticsearch index name and
           Elasticsearch document id from the normalization results file)
+        - If only the Kibana base URL is provided (without the deeplink structure), a legacy format will be used to generate document links
         - The email design should be compatible with a wide range of email clients
         - Both HTML and plaintext versions of the email must be created
     - Outputs: none (besides exit code and progress, success, and error messages)
@@ -266,7 +269,8 @@ The aforementioned run.sh shell script is able to read a configuration file with
     ELASTICSEARCH_SERVER_BASE_URL=""
     ELASTICSEARCH_LUCENE_QUERY_FILE_PATH=""
     
-    KIBANA_BASE_URL=""
+    KIBANA_DISCOVER_BASE_URL=""
+    KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE=""
     
     SMTP_SERVER_HOSTNAME=""
     SMTP_SERVER_PORT=""

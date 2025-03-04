@@ -127,12 +127,32 @@ python -m platform_problem_monitoring_core.step7_generate_email_bodies \
     --norm-results-file "$NORM_RESULTS_FILE" \
     --html-output "$HTML_EMAIL_BODY_FILE" \
     --text-output "$TEXT_EMAIL_BODY_FILE" \
-    ${KIBANA_BASE_URL:+--kibana-url "$KIBANA_BASE_URL"}
+    ${KIBANA_DISCOVER_BASE_URL:+--kibana-url "$KIBANA_DISCOVER_BASE_URL"} \
+    ${KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE:+--kibana-deeplink-structure "$KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE"}
 if [ $? -ne 0 ]; then
     echo "Error: Failed to generate email bodies"
     exit 1
 fi
 echo "Email bodies generated successfully"
+
+# Step 8: Send email report
+echo "Step 8: Sending email report..."
+EMAIL_SUBJECT="Platform Problem Monitoring Report $(date +"%Y-%m-%d")"
+python -m platform_problem_monitoring_core.step8_send_email_report \
+    --html-file "$HTML_EMAIL_BODY_FILE" \
+    --text-file "$TEXT_EMAIL_BODY_FILE" \
+    --subject "$EMAIL_SUBJECT" \
+    --smtp-host "$SMTP_SERVER_HOSTNAME" \
+    --smtp-port "$SMTP_SERVER_PORT" \
+    --smtp-user "$SMTP_SERVER_USERNAME" \
+    --smtp-pass "$SMTP_SERVER_PASSWORD" \
+    --sender "$SMTP_SENDER_ADDRESS" \
+    --receiver "$SMTP_RECEIVER_ADDRESS"
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to send email report"
+    exit 1
+fi
+echo "Email report sent successfully"
 
 # Step 9: Store new state
 echo "Step 9: Storing new state..."
@@ -147,14 +167,15 @@ if [ $? -ne 0 ]; then
 fi
 echo "New state stored successfully"
 
-echo "Steps 1-7 and 9 completed successfully"
+echo "Steps 1-9 completed successfully"
 echo "Work directory: $WORK_DIR"
 echo "Downloaded documents: $LOGSTASH_DOCUMENTS_FILE"
 echo "Extracted fields: $EXTRACTED_FIELDS_FILE"
 echo "Normalization results: $NORM_RESULTS_FILE"
 echo "Comparison results: $COMPARISON_RESULTS_FILE"
 echo "Email bodies: $HTML_EMAIL_BODY_FILE, $TEXT_EMAIL_BODY_FILE"
+echo "Email report sent to: $SMTP_RECEIVER_ADDRESS"
 
-# The script would continue with steps 8 and 10 in a complete implementation
+# The script would continue with step 10 in a complete implementation
 
 exit 0

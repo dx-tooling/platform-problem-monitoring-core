@@ -45,41 +45,43 @@ def send_email_report(
     logger.info(f"Sender: {sender}")
     logger.info(f"Receiver: {receiver}")
     
-    # Read the email bodies
-    with open(html_file, "r") as f:
-        html_body = f.read()
-    
-    with open(text_file, "r") as f:
-        text_body = f.read()
-    
-    # Create message
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = subject
-    msg["From"] = sender
-    msg["To"] = receiver
-    
-    # Attach parts
-    msg.attach(MIMEText(text_body, "plain"))
-    msg.attach(MIMEText(html_body, "html"))
-    
-    # Placeholder implementation
-    # In a real implementation, we would send the email
-    # For now, we'll just log that we would send it
-    logger.info("Would send email with the following content:")
-    logger.info(f"Subject: {subject}")
-    logger.info(f"From: {sender}")
-    logger.info(f"To: {receiver}")
-    logger.info(f"Text body length: {len(text_body)} characters")
-    logger.info(f"HTML body length: {len(html_body)} characters")
-    
-    # Uncomment to actually send the email
-    # server = smtplib.SMTP(smtp_host, smtp_port)
-    # server.starttls()
-    # server.login(smtp_user, smtp_pass)
-    # server.sendmail(sender, receiver, msg.as_string())
-    # server.quit()
-    
-    logger.info("Email report sent successfully")
+    try:
+        # Read the email bodies
+        with open(html_file, "r") as f:
+            html_body = f.read()
+        
+        with open(text_file, "r") as f:
+            text_body = f.read()
+        
+        # Create message
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = subject
+        msg["From"] = sender
+        msg["To"] = receiver
+        
+        # Attach parts
+        msg.attach(MIMEText(text_body, "plain"))
+        msg.attach(MIMEText(html_body, "html"))
+        
+        logger.info(f"Connecting to SMTP server {smtp_host}:{smtp_port}")
+        
+        # Send the email
+        server = smtplib.SMTP(smtp_host, smtp_port)
+        server.starttls()
+        server.login(smtp_user, smtp_pass)
+        server.sendmail(sender, receiver, msg.as_string())
+        server.quit()
+        
+        logger.info("Email report sent successfully")
+    except FileNotFoundError as e:
+        logger.error(f"Email body file not found: {str(e)}")
+        raise
+    except smtplib.SMTPException as e:
+        logger.error(f"SMTP error: {str(e)}")
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error sending email: {str(e)}")
+        raise
 
 
 def main() -> None:

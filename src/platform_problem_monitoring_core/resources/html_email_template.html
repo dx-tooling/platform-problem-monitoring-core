@@ -1,0 +1,441 @@
+<!-- 
+HTML Email Template for Platform Problem Monitoring
+===================================================
+
+This template contains various sections and components that are used to build
+the final HTML email. The Python code will replace placeholders with actual content.
+
+Placeholders are in the format: {{PLACEHOLDER_NAME}}
+
+Main sections:
+- CSS Styles: All styles for the email
+- Header: The top section with title and timestamp
+- Stats Grid: The statistics summary cards
+- Pattern Lists: Templates for different pattern lists
+- Footer: The bottom section with additional information
+
+-->
+
+<!-- CSS Styles -->
+<style>
+    /* Base styles */
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.5;
+        color: #1a202c;
+        background-color: #f7fafc;
+        margin: 0;
+        padding: 20px;
+    }
+    
+    /* Dark mode support for email clients that support it */
+    @media (prefers-color-scheme: dark) {
+        body {
+            background-color: #1a202c;
+            color: #f7fafc;
+        }
+        
+        .card {
+            background-color: #2d3748 !important;
+            border-color: #4a5568 !important;
+        }
+        
+        .section-title {
+            color: #90cdf4 !important;
+            border-bottom-color: #4a5568 !important;
+        }
+        
+        .text-gray-500 {
+            color: #a0aec0 !important;
+        }
+        
+        pre {
+            background-color: #2d3748 !important;
+            border-color: #4a5568 !important;
+        }
+        
+        .badge {
+            border: 1px solid #4a5568 !important;
+        }
+    }
+    
+    /* Layout */
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .card {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        padding: 24px;
+        margin-bottom: 24px;
+        border: 1px solid #e2e8f0;
+    }
+    
+    /* Typography */
+    h1 {
+        font-size: 24px;
+        font-weight: 700;
+        margin-top: 0;
+        margin-bottom: 16px;
+        color: #2c3e50;
+    }
+    
+    h2 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-top: 0;
+        margin-bottom: 16px;
+        color: #3498db;
+    }
+    
+    .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-top: 24px;
+        margin-bottom: 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e2e8f0;
+        color: #4a5568;
+    }
+    
+    p {
+        margin-top: 0;
+        margin-bottom: 16px;
+    }
+    
+    .text-sm {
+        font-size: 14px;
+    }
+    
+    .text-gray-500 {
+        color: #718096;
+    }
+    
+    /* Components */
+    .stats-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    
+    .stat-card {
+        flex: 1;
+        min-width: 120px;
+        padding: 16px;
+        background-color: #f8fafc;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+    
+    .stat-label {
+        font-size: 14px;
+        color: #718096;
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-right: 8px;
+    }
+    
+    .badge-success {
+        background-color: #c6f6d5;
+        color: #22543d;
+    }
+    
+    .badge-warning {
+        background-color: #feebc8;
+        color: #744210;
+    }
+    
+    .badge-error {
+        background-color: #fed7d7;
+        color: #822727;
+    }
+    
+    .badge-info {
+        background-color: #bee3f8;
+        color: #2a4365;
+    }
+    
+    /* Pattern display */
+    .pattern-item {
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .pattern-item:last-child {
+        border-bottom: none;
+    }
+    
+    .pattern-number {
+        font-weight: 600;
+        min-width: 30px;
+        margin-right: 8px;
+    }
+    
+    .pattern-count {
+        font-weight: 700;
+        min-width: 60px;
+        margin-right: 16px;
+        text-align: right;
+    }
+    
+    .increased {
+        color: #e53e3e;
+    }
+    
+    .decreased {
+        color: #38a169;
+    }
+    
+    .change-indicator {
+        font-size: 12px;
+        font-weight: 400;
+        display: block;
+    }
+    
+    .pattern-text {
+        flex: 1;
+    }
+    
+    pre {
+        margin: 0;
+        padding: 8px;
+        background-color: #f7fafc;
+        border-radius: 4px;
+        border: 1px solid #e2e8f0;
+        overflow-x: auto;
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 13px;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+    
+    .sample-links {
+        margin-top: 8px;
+        margin-left: 38px;
+        font-size: 13px;
+    }
+    
+    .sample-links a {
+        color: #3182ce;
+        text-decoration: none;
+    }
+    
+    .sample-links a:hover {
+        text-decoration: underline;
+    }
+    
+    /* Button */
+    .button {
+        display: inline-block;
+        background-color: #3182ce;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 600;
+        margin-top: 8px;
+    }
+    
+    .button:hover {
+        background-color: #2c5282;
+    }
+    
+    /* Utilities */
+    .flex {
+        display: flex;
+    }
+    
+    .items-start {
+        align-items: flex-start;
+    }
+    
+    .space-y-6 > * + * {
+        margin-top: 24px;
+    }
+</style>
+
+<!-- Main Document Template -->
+<template id="document-template">
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform Problem Monitoring Report</title>
+    {{CSS_STYLES}}
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Platform Problem Monitoring Report</h1>
+            <p class="text-sm">Report generated at: {{TIMESTAMP}}</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">{{CURRENT_PATTERNS_COUNT}}</div>
+                    <div class="stat-label">Current Patterns</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{PREVIOUS_PATTERNS_COUNT}}</div>
+                    <div class="stat-label">Previous Patterns</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{NEW_PATTERNS_COUNT}}</div>
+                    <div class="stat-label">New Patterns</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{DISAPPEARED_PATTERNS_COUNT}}</div>
+                    <div class="stat-label">Disappeared</div>
+                </div>
+            </div>
+            
+            {{KIBANA_BUTTON}}
+        </div>
+        
+        <div class="card">
+            <h2>SUMMARY OF CHANGES IN PROBLEM PATTERNS</h2>
+            <p class="text-sm text-gray-500">Generated on {{TIMESTAMP}}</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">{{CURRENT_PATTERNS_COUNT}}</div>
+                    <div class="stat-label">Current Patterns</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{PREVIOUS_PATTERNS_COUNT}}</div>
+                    <div class="stat-label">Previous Patterns</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{NEW_PATTERNS_COUNT}}</div>
+                    <div class="stat-label">New Patterns</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{DISAPPEARED_PATTERNS_COUNT}}</div>
+                    <div class="stat-label">Disappeared</div>
+                </div>
+            </div>
+            
+            <h3 class="section-title">TOP 10 NEW PROBLEM PATTERNS</h3>
+            <p class="text-sm text-gray-500">These patterns appeared in the new summary but were not present in the previous one.</p>
+            {{NEW_PATTERNS_LIST}}
+            
+            <h3 class="section-title">TOP 10 DISAPPEARED PROBLEM PATTERNS</h3>
+            <p class="text-sm text-gray-500">These patterns were present in the previous summary but are not in the current one.</p>
+            {{DISAPPEARED_PATTERNS_LIST}}
+            
+            <h3 class="section-title">TOP 10 INCREASED PROBLEM PATTERNS</h3>
+            <p class="text-sm text-gray-500">These patterns have increased in occurrence count since the last report.</p>
+            {{INCREASED_PATTERNS_LIST}}
+            
+            <h3 class="section-title">TOP 10 DECREASED PROBLEM PATTERNS</h3>
+            <p class="text-sm text-gray-500">These patterns have decreased in occurrence count since the last report.</p>
+            {{DECREASED_PATTERNS_LIST}}
+        </div>
+        
+        <div class="card">
+            <h2>TOP 25 CURRENT PROBLEM PATTERNS</h2>
+            <p class="text-sm text-gray-500">The most frequent problem patterns in the current report.</p>
+            {{TOP_PATTERNS_LIST}}
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px; color: #718096; font-size: 12px;">
+            <p>This is an automated report from the Platform Problem Monitoring system.</p>
+        </div>
+    </div>
+</body>
+</html>
+</template>
+
+<!-- Kibana Button Template -->
+<template id="kibana-button-template">
+<div style="text-align: center; margin: 20px 0;">
+    <a href="{{KIBANA_URL}}" class="button">View in Kibana</a>
+</div>
+</template>
+
+<!-- Pattern Item Template -->
+<template id="pattern-item-template">
+<div class="pattern-item">
+    <div class="flex items-start">
+        <div class="pattern-number">{{INDEX}}.</div>
+        <div class="pattern-count">{{COUNT}}</div>
+        <div class="pattern-text">
+            <pre id="{{PATTERN_ID}}">{{PATTERN_TEXT}}</pre>
+        </div>
+    </div>
+    {{SAMPLE_LINKS}}
+</div>
+</template>
+
+<!-- Increased Pattern Item Template -->
+<template id="increased-pattern-item-template">
+<div class="pattern-item">
+    <div class="flex items-start">
+        <div class="pattern-number">{{INDEX}}.</div>
+        <div class="pattern-count increased">
+            {{CURRENT_COUNT}}
+            <span class="change-indicator">
+                (+{{ABSOLUTE_CHANGE}}, +{{PERCENT_CHANGE}}%)
+            </span>
+        </div>
+        <div class="pattern-text">
+            <pre id="{{PATTERN_ID}}">{{PATTERN_TEXT}}</pre>
+        </div>
+    </div>
+    {{SAMPLE_LINKS}}
+</div>
+</template>
+
+<!-- Decreased Pattern Item Template -->
+<template id="decreased-pattern-item-template">
+<div class="pattern-item">
+    <div class="flex items-start">
+        <div class="pattern-number">{{INDEX}}.</div>
+        <div class="pattern-count decreased">
+            {{CURRENT_COUNT}}
+            <span class="change-indicator">
+                (-{{ABSOLUTE_CHANGE}}, -{{PERCENT_CHANGE}}%)
+            </span>
+        </div>
+        <div class="pattern-text">
+            <pre id="{{PATTERN_ID}}">{{PATTERN_TEXT}}</pre>
+        </div>
+    </div>
+    {{SAMPLE_LINKS}}
+</div>
+</template>
+
+<!-- Sample Links Template -->
+<template id="sample-links-template">
+<div class="sample-links">
+    Sample documents: {{SAMPLE_LINKS_LIST}}
+</div>
+</template>
+
+<!-- Sample Link Item Template -->
+<template id="sample-link-item-template">
+<a href="{{KIBANA_LINK}}" class="jwui-link-default">Sample {{INDEX}}</a>{{COMMA}}
+</template>
+
+<!-- Empty Pattern List Template -->
+<template id="empty-pattern-list-template">
+<p class="text-gray-500 dark:text-dark-200">{{MESSAGE}}</p>
+</template>

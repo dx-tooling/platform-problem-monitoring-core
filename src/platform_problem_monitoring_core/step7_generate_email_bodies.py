@@ -3,252 +3,303 @@
 
 import argparse
 import sys
+import os
+import re
 from datetime import datetime, UTC
 from typing import Optional, List, Dict, Any, Tuple
+from pathlib import Path
 
 from platform_problem_monitoring_core.utils import logger, load_json
 
+# Define possible paths to the HTML template file
+def find_template_file() -> str:
+    """
+    Find the HTML template file by checking multiple possible locations.
 
-def generate_pattern_list_html(patterns: List[Dict[str, Any]], kibana_url: Optional[str] = None) -> str:
+    Returns:
+        Path to the HTML template file
+    """
+    # List of possible relative paths to try
+    possible_paths = [
+        # Path if installed as a package (highest priority)
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "resources", "html_email_template.html")
+    ]
+
+    # Try each path
+    for path in possible_paths:
+        if os.path.exists(path):
+            logger.info(f"Found HTML template at: {path}")
+            return path
+
+    # If we get here, we couldn't find the template
+    error_msg = f"Could not find HTML template file. Tried the following paths: {possible_paths}"
+    logger.error(error_msg)
+    raise FileNotFoundError(error_msg)
+
+# Get the template file path
+TEMPLATE_FILE_PATH = find_template_file()
+
+
+def load_html_template() -> Dict[str, str]:
+    """
+    Load the HTML template file and extract the different template sections.
+
+    Returns:
+        Dictionary containing the different template sections
+    """
+    logger.info(f"Loading HTML template from: {TEMPLATE_FILE_PATH}")
+
+    try:
+        with open(TEMPLATE_FILE_PATH, "r") as f:
+            template_content = f.read()
+
+        # Extract templates using regex
+        templates = {}
+
+        # Extract CSS styles
+        css_match = re.search(r'<style>(.*?)</style>', template_content, re.DOTALL)
+        if css_match:
+            templates['css'] = css_match.group(1)
+        else:
+            logger.warning("No CSS styles found in the HTML template")
+            templates['css'] = ""
+
+        # Extract all template sections
+        template_matches = re.finditer(r'<template id="([^"]+)">(.*?)</template>', template_content, re.DOTALL)
+        template_count = 0
+        for match in template_matches:
+            template_id = match.group(1)
+            template_content = match.group(2)
+            templates[template_id] = template_content
+            template_count += 1
+
+        if template_count == 0:
+            logger.warning("No template sections found in the HTML template")
+        else:
+            logger.info(f"Loaded {template_count} template sections")
+
+        # Check for required templates
+        required_templates = ['document-template', 'pattern-item-template',
+                             'increased-pattern-item-template', 'decreased-pattern-item-template']
+        missing_templates = [t for t in required_templates if t not in templates]
+
+        if missing_templates:
+            logger.warning(f"Missing required templates: {', '.join(missing_templates)}")
+
+        return templates
+
+    except FileNotFoundError:
+        logger.error(f"HTML template file not found: {TEMPLATE_FILE_PATH}")
+        raise
+    except Exception as e:
+        logger.error(f"Error loading HTML template: {str(e)}")
+        raise
+
+
+def generate_sample_links_html(pattern: Dict[str, Any], kibana_url: Optional[str] = None, kibana_deeplink_structure: Optional[str] = None) -> str:
+    """
+    Generate HTML for sample document links.
+
+    Args:
+        pattern: Pattern data containing sample document references
+        kibana_url: Optional Kibana base URL for deep links (used for backward compatibility)
+        kibana_deeplink_structure: Optional URL structure for Kibana document deeplinks with {{index}} and {{id}} placeholders
+
+    Returns:
+        HTML string for the sample links
+    """
+    # Skip if no deeplink structure or no sample documents
+    if (not kibana_url and not kibana_deeplink_structure) or "sample_doc_references" not in pattern or not pattern["sample_doc_references"]:
+        return ""
+
+    templates = load_html_template()
+    sample_links_template = templates.get('sample-links-template', '')
+    sample_link_item_template = templates.get('sample-link-item-template', '')
+
+    sample_links_list = ""
+
+    for j, doc_ref in enumerate(pattern["sample_doc_references"][:5], 1):
+        # Handle doc_ref as a string in format "index:id"
+        if isinstance(doc_ref, str) and ":" in doc_ref:
+            parts = doc_ref.split(":", 1)
+            index = parts[0]
+            doc_id = parts[1]
+        else:
+            # Handle as dictionary if it's not a string
+            index = doc_ref.get("index", "") if isinstance(doc_ref, dict) else ""
+            doc_id = doc_ref.get("id", "") if isinstance(doc_ref, dict) else ""
+
+        if index and doc_id:
+            # Create a deep link to Kibana
+            if kibana_deeplink_structure:
+                # Use the new configurable deeplink structure
+                kibana_link = kibana_deeplink_structure.replace("{{index}}", index).replace("{{id}}", doc_id)
+            elif kibana_url:
+                # Fallback to the old method for backward compatibility
+                kibana_link = f"{kibana_url}/app/discover#/doc/logstash-*/{index}?id={doc_id}"
+            else:
+                continue
+
+            # Add comma if not the last item
+            comma = ", " if j < len(pattern["sample_doc_references"][:5]) else ""
+
+            link_html = sample_link_item_template.replace("{{KIBANA_LINK}}", kibana_link)
+            link_html = link_html.replace("{{INDEX}}", str(j))
+            link_html = link_html.replace("{{COMMA}}", comma)
+
+            sample_links_list += link_html
+
+    if sample_links_list:
+        return sample_links_template.replace("{{SAMPLE_LINKS_LIST}}", sample_links_list)
+
+    return ""
+
+
+def generate_pattern_list_html(patterns: List[Dict[str, Any]], kibana_url: Optional[str] = None, kibana_deeplink_structure: Optional[str] = None) -> str:
     """
     Generate HTML for a list of patterns.
-    
+
     Args:
         patterns: List of patterns to display
-        kibana_url: Optional Kibana base URL for deep links
-        
+        kibana_url: Optional Kibana base URL for deep links (used for backward compatibility)
+        kibana_deeplink_structure: Optional URL structure for Kibana document deeplinks
+
     Returns:
         HTML string for the pattern list
     """
     if not patterns:
-        return "<p class='text-gray-500 dark:text-dark-200'>No patterns found.</p>"
-    
+        templates = load_html_template()
+        empty_template = templates.get('empty-pattern-list-template', '')
+        return empty_template.replace("{{MESSAGE}}", "No patterns found.")
+
+    templates = load_html_template()
+    pattern_item_template = templates.get('pattern-item-template', '')
+
     html = "<div class='space-y-6'>"
-    
+
     for i, pattern in enumerate(patterns, 1):
         count = pattern.get("count", 0)
         pattern_text = pattern.get("pattern", "")
-        
+
         # Create a unique ID for each pattern
         pattern_id = f"pattern-{i}"
-        
-        html += f"""
-        <div class='pattern-item'>
-            <div class='flex items-start'>
-                <div class='pattern-number'>{i}.</div>
-                <div class='pattern-count'>{count}</div>
-                <div class='pattern-text'>
-                    <pre id='{pattern_id}'>{pattern_text}</pre>
-                </div>
-            </div>
-        """
-        
-        # Add sample document links if available and kibana_url is provided
-        if kibana_url and "sample_doc_references" in pattern and pattern["sample_doc_references"]:
-            html += "<div class='sample-links'>"
-            html += "Sample documents: "
-            
-            for j, doc_ref in enumerate(pattern["sample_doc_references"][:5], 1):
-                # Handle doc_ref as a string in format "index:id"
-                if isinstance(doc_ref, str) and ":" in doc_ref:
-                    parts = doc_ref.split(":", 1)
-                    index = parts[0]
-                    doc_id = parts[1]
-                    
-                    if index and doc_id and kibana_url:
-                        # Create a deep link to Kibana
-                        kibana_link = f"{kibana_url}/app/discover#/doc/{index}/{doc_id}"
-                        html += f"<a href='{kibana_link}' class='jwui-link-default'>Sample {j}</a>"
-                        
-                        # Add comma if not the last item
-                        if j < len(pattern["sample_doc_references"][:5]):
-                            html += ", "
-                else:
-                    # Handle as dictionary if it's not a string
-                    index = doc_ref.get("index", "") if isinstance(doc_ref, dict) else ""
-                    doc_id = doc_ref.get("id", "") if isinstance(doc_ref, dict) else ""
-                    
-                    if index and doc_id and kibana_url:
-                        # Create a deep link to Kibana
-                        kibana_link = f"{kibana_url}/app/discover#/doc/{index}/{doc_id}"
-                        html += f"<a href='{kibana_link}' class='jwui-link-default'>Sample {j}</a>"
-                        
-                        # Add comma if not the last item
-                        if j < len(pattern["sample_doc_references"][:5]):
-                            html += ", "
-            
-            html += "</div>"
-        
-        html += "</div>"
-    
+
+        # Generate sample links
+        sample_links = generate_sample_links_html(pattern, kibana_url, kibana_deeplink_structure)
+
+        # Replace placeholders in the template
+        pattern_html = pattern_item_template.replace("{{INDEX}}", str(i))
+        pattern_html = pattern_html.replace("{{COUNT}}", str(count))
+        pattern_html = pattern_html.replace("{{PATTERN_ID}}", pattern_id)
+        pattern_html = pattern_html.replace("{{PATTERN_TEXT}}", pattern_text)
+        pattern_html = pattern_html.replace("{{SAMPLE_LINKS}}", sample_links)
+
+        html += pattern_html
+
     html += "</div>"
     return html
 
 
-def generate_increased_pattern_list_html(patterns: List[Dict[str, Any]], kibana_url: Optional[str] = None) -> str:
+def generate_increased_pattern_list_html(patterns: List[Dict[str, Any]], kibana_url: Optional[str] = None, kibana_deeplink_structure: Optional[str] = None) -> str:
     """
-    Generate HTML for a list of increased patterns.
-    
+    Generate HTML for a list of patterns with increased counts.
+
     Args:
-        patterns: List of increased patterns to display
-        kibana_url: Optional Kibana base URL for deep links
-        
+        patterns: List of patterns to display
+        kibana_url: Optional Kibana base URL for deep links (used for backward compatibility)
+        kibana_deeplink_structure: Optional URL structure for Kibana document deeplinks
+
     Returns:
-        HTML string for the increased pattern list
+        HTML string for the pattern list
     """
     if not patterns:
-        return "<p class='text-gray-500 dark:text-dark-200'>No increased patterns found.</p>"
-    
+        templates = load_html_template()
+        empty_template = templates.get('empty-pattern-list-template', '')
+        return empty_template.replace("{{MESSAGE}}", "No patterns with increased counts found.")
+
+    templates = load_html_template()
+    pattern_item_template = templates.get('increased-pattern-item-template', '')
+
     html = "<div class='space-y-6'>"
-    
+
     for i, pattern in enumerate(patterns, 1):
         current_count = pattern.get("current_count", 0)
         previous_count = pattern.get("previous_count", 0)
-        absolute_change = pattern.get("absolute_change", 0)
-        percent_change = pattern.get("percent_change", 0)
         pattern_text = pattern.get("pattern", "")
-        
+
+        # Calculate change
+        absolute_change = current_count - previous_count
+        percent_change = int((absolute_change / previous_count) * 100) if previous_count > 0 else 100
+
         # Create a unique ID for each pattern
         pattern_id = f"increased-pattern-{i}"
-        
-        html += f"""
-        <div class='pattern-item'>
-            <div class='flex items-start'>
-                <div class='pattern-number'>{i}.</div>
-                <div class='pattern-count increased'>
-                    {current_count}
-                    <span class='change-indicator'>
-                        (+{absolute_change}, +{percent_change:.1f}%)
-                    </span>
-                </div>
-                <div class='pattern-text'>
-                    <pre id='{pattern_id}'>{pattern_text}</pre>
-                </div>
-            </div>
-        """
-        
-        # Add sample document links if available and kibana_url is provided
-        if kibana_url and "sample_doc_references" in pattern and pattern["sample_doc_references"]:
-            html += "<div class='sample-links'>"
-            html += "Sample documents: "
-            
-            for j, doc_ref in enumerate(pattern["sample_doc_references"][:5], 1):
-                # Handle doc_ref as a string in format "index:id"
-                if isinstance(doc_ref, str) and ":" in doc_ref:
-                    parts = doc_ref.split(":", 1)
-                    index = parts[0]
-                    doc_id = parts[1]
-                    
-                    if index and doc_id and kibana_url:
-                        # Create a deep link to Kibana
-                        kibana_link = f"{kibana_url}/app/discover#/doc/{index}/{doc_id}"
-                        html += f"<a href='{kibana_link}' class='jwui-link-default'>Sample {j}</a>"
-                        
-                        # Add comma if not the last item
-                        if j < len(pattern["sample_doc_references"][:5]):
-                            html += ", "
-                else:
-                    # Handle as dictionary if it's not a string
-                    index = doc_ref.get("index", "") if isinstance(doc_ref, dict) else ""
-                    doc_id = doc_ref.get("id", "") if isinstance(doc_ref, dict) else ""
-                    
-                    if index and doc_id and kibana_url:
-                        # Create a deep link to Kibana
-                        kibana_link = f"{kibana_url}/app/discover#/doc/{index}/{doc_id}"
-                        html += f"<a href='{kibana_link}' class='jwui-link-default'>Sample {j}</a>"
-                        
-                        # Add comma if not the last item
-                        if j < len(pattern["sample_doc_references"][:5]):
-                            html += ", "
-            
-            html += "</div>"
-        
-        html += "</div>"
-    
+
+        # Generate sample links
+        sample_links = generate_sample_links_html(pattern, kibana_url, kibana_deeplink_structure)
+
+        # Replace placeholders in the template
+        pattern_html = pattern_item_template.replace("{{INDEX}}", str(i))
+        pattern_html = pattern_html.replace("{{CURRENT_COUNT}}", str(current_count))
+        pattern_html = pattern_html.replace("{{ABSOLUTE_CHANGE}}", str(absolute_change))
+        pattern_html = pattern_html.replace("{{PERCENT_CHANGE}}", str(percent_change))
+        pattern_html = pattern_html.replace("{{PATTERN_ID}}", pattern_id)
+        pattern_html = pattern_html.replace("{{PATTERN_TEXT}}", pattern_text)
+        pattern_html = pattern_html.replace("{{SAMPLE_LINKS}}", sample_links)
+
+        html += pattern_html
+
     html += "</div>"
     return html
 
 
-def generate_decreased_pattern_list_html(patterns: List[Dict[str, Any]], kibana_url: Optional[str] = None) -> str:
+def generate_decreased_pattern_list_html(patterns: List[Dict[str, Any]], kibana_url: Optional[str] = None, kibana_deeplink_structure: Optional[str] = None) -> str:
     """
-    Generate HTML for a list of decreased patterns.
-    
+    Generate HTML for a list of patterns with decreased counts.
+
     Args:
-        patterns: List of decreased patterns to display
-        kibana_url: Optional Kibana base URL for deep links
-        
+        patterns: List of patterns to display
+        kibana_url: Optional Kibana base URL for deep links (used for backward compatibility)
+        kibana_deeplink_structure: Optional URL structure for Kibana document deeplinks
+
     Returns:
-        HTML string for the decreased pattern list
+        HTML string for the pattern list
     """
     if not patterns:
-        return "<p class='text-gray-500 dark:text-dark-200'>No decreased patterns found.</p>"
-    
+        templates = load_html_template()
+        empty_template = templates.get('empty-pattern-list-template', '')
+        return empty_template.replace("{{MESSAGE}}", "No patterns with decreased counts found.")
+
+    templates = load_html_template()
+    pattern_item_template = templates.get('decreased-pattern-item-template', '')
+
     html = "<div class='space-y-6'>"
-    
+
     for i, pattern in enumerate(patterns, 1):
         current_count = pattern.get("current_count", 0)
         previous_count = pattern.get("previous_count", 0)
-        absolute_change = pattern.get("absolute_change", 0)
-        percent_change = pattern.get("percent_change", 0)
         pattern_text = pattern.get("pattern", "")
-        
+
+        # Calculate change
+        absolute_change = previous_count - current_count
+        percent_change = int((absolute_change / previous_count) * 100) if previous_count > 0 else 0
+
         # Create a unique ID for each pattern
         pattern_id = f"decreased-pattern-{i}"
-        
-        html += f"""
-        <div class='pattern-item'>
-            <div class='flex items-start'>
-                <div class='pattern-number'>{i}.</div>
-                <div class='pattern-count decreased'>
-                    {current_count}
-                    <span class='change-indicator'>
-                        (-{absolute_change}, -{percent_change:.1f}%)
-                    </span>
-                </div>
-                <div class='pattern-text'>
-                    <pre id='{pattern_id}'>{pattern_text}</pre>
-                </div>
-            </div>
-        """
-        
-        # Add sample document links if available and kibana_url is provided
-        if kibana_url and "sample_doc_references" in pattern and pattern["sample_doc_references"]:
-            html += "<div class='sample-links'>"
-            html += "Sample documents: "
-            
-            for j, doc_ref in enumerate(pattern["sample_doc_references"][:5], 1):
-                # Handle doc_ref as a string in format "index:id"
-                if isinstance(doc_ref, str) and ":" in doc_ref:
-                    parts = doc_ref.split(":", 1)
-                    index = parts[0]
-                    doc_id = parts[1]
-                    
-                    if index and doc_id and kibana_url:
-                        # Create a deep link to Kibana
-                        kibana_link = f"{kibana_url}/app/discover#/doc/{index}/{doc_id}"
-                        html += f"<a href='{kibana_link}' class='jwui-link-default'>Sample {j}</a>"
-                        
-                        # Add comma if not the last item
-                        if j < len(pattern["sample_doc_references"][:5]):
-                            html += ", "
-                else:
-                    # Handle as dictionary if it's not a string
-                    index = doc_ref.get("index", "") if isinstance(doc_ref, dict) else ""
-                    doc_id = doc_ref.get("id", "") if isinstance(doc_ref, dict) else ""
-                    
-                    if index and doc_id and kibana_url:
-                        # Create a deep link to Kibana
-                        kibana_link = f"{kibana_url}/app/discover#/doc/{index}/{doc_id}"
-                        html += f"<a href='{kibana_link}' class='jwui-link-default'>Sample {j}</a>"
-                        
-                        # Add comma if not the last item
-                        if j < len(pattern["sample_doc_references"][:5]):
-                            html += ", "
-            
-            html += "</div>"
-        
-        html += "</div>"
-    
+
+        # Generate sample links
+        sample_links = generate_sample_links_html(pattern, kibana_url, kibana_deeplink_structure)
+
+        # Replace placeholders in the template
+        pattern_html = pattern_item_template.replace("{{INDEX}}", str(i))
+        pattern_html = pattern_html.replace("{{CURRENT_COUNT}}", str(current_count))
+        pattern_html = pattern_html.replace("{{ABSOLUTE_CHANGE}}", str(absolute_change))
+        pattern_html = pattern_html.replace("{{PERCENT_CHANGE}}", str(percent_change))
+        pattern_html = pattern_html.replace("{{PATTERN_ID}}", pattern_id)
+        pattern_html = pattern_html.replace("{{PATTERN_TEXT}}", pattern_text)
+        pattern_html = pattern_html.replace("{{SAMPLE_LINKS}}", sample_links)
+
+        html += pattern_html
+
     html += "</div>"
     return html
 
@@ -256,156 +307,156 @@ def generate_decreased_pattern_list_html(patterns: List[Dict[str, Any]], kibana_
 def generate_pattern_list_text(patterns: List[Dict[str, Any]]) -> str:
     """
     Generate plaintext for a list of patterns.
-    
+
     Args:
         patterns: List of patterns to display
-        
+
     Returns:
         Plaintext string for the pattern list
     """
     if not patterns:
         return "No patterns found.\n"
-    
+
     text = ""
-    
+
     for i, pattern in enumerate(patterns, 1):
         count = pattern.get("count", 0)
         pattern_text = pattern.get("pattern", "")
-        
+
         text += f"{i}. [{count}] {pattern_text}\n"
-        
+
         # Add sample document references if available
         if "sample_doc_references" in pattern and pattern["sample_doc_references"]:
             text += "   Sample documents: "
             sample_refs = []
-            
+
             for j, doc_ref in enumerate(pattern["sample_doc_references"][:5], 1):
                 # Handle doc_ref as a string in format "index:id"
                 if isinstance(doc_ref, str) and ":" in doc_ref:
                     parts = doc_ref.split(":", 1)
                     index = parts[0]
                     doc_id = parts[1]
-                    
+
                     if index and doc_id:
                         sample_refs.append(f"Sample {j} ({index}/{doc_id})")
                 else:
                     # Handle as dictionary if it's not a string
                     index = doc_ref.get("index", "") if isinstance(doc_ref, dict) else ""
                     doc_id = doc_ref.get("id", "") if isinstance(doc_ref, dict) else ""
-                    
+
                     if index and doc_id:
                         sample_refs.append(f"Sample {j} ({index}/{doc_id})")
-            
+
             text += ", ".join(sample_refs) + "\n"
-        
+
         text += "\n"
-    
+
     return text
 
 
 def generate_increased_pattern_list_text(patterns: List[Dict[str, Any]]) -> str:
     """
     Generate plaintext for a list of increased patterns.
-    
+
     Args:
         patterns: List of increased patterns to display
-        
+
     Returns:
         Plaintext string for the increased pattern list
     """
     if not patterns:
         return "No increased patterns found.\n"
-    
+
     text = ""
-    
+
     for i, pattern in enumerate(patterns, 1):
         current_count = pattern.get("current_count", 0)
         previous_count = pattern.get("previous_count", 0)
         absolute_change = pattern.get("absolute_change", 0)
         percent_change = pattern.get("percent_change", 0)
         pattern_text = pattern.get("pattern", "")
-        
+
         text += f"{i}. [{current_count}] (+{absolute_change}, +{percent_change:.1f}%) {pattern_text}\n"
-        
+
         # Add sample document references if available
         if "sample_doc_references" in pattern and pattern["sample_doc_references"]:
             text += "   Sample documents: "
             sample_refs = []
-            
+
             for j, doc_ref in enumerate(pattern["sample_doc_references"][:5], 1):
                 # Handle doc_ref as a string in format "index:id"
                 if isinstance(doc_ref, str) and ":" in doc_ref:
                     parts = doc_ref.split(":", 1)
                     index = parts[0]
                     doc_id = parts[1]
-                    
+
                     if index and doc_id:
                         sample_refs.append(f"Sample {j} ({index}/{doc_id})")
                 else:
                     # Handle as dictionary if it's not a string
                     index = doc_ref.get("index", "") if isinstance(doc_ref, dict) else ""
                     doc_id = doc_ref.get("id", "") if isinstance(doc_ref, dict) else ""
-                    
+
                     if index and doc_id:
                         sample_refs.append(f"Sample {j} ({index}/{doc_id})")
-            
+
             text += ", ".join(sample_refs) + "\n"
-        
+
         text += "\n"
-    
+
     return text
 
 
 def generate_decreased_pattern_list_text(patterns: List[Dict[str, Any]]) -> str:
     """
     Generate plaintext for a list of decreased patterns.
-    
+
     Args:
         patterns: List of decreased patterns to display
-        
+
     Returns:
         Plaintext string for the decreased pattern list
     """
     if not patterns:
         return "No decreased patterns found.\n"
-    
+
     text = ""
-    
+
     for i, pattern in enumerate(patterns, 1):
         current_count = pattern.get("current_count", 0)
         previous_count = pattern.get("previous_count", 0)
         absolute_change = pattern.get("absolute_change", 0)
         percent_change = pattern.get("percent_change", 0)
         pattern_text = pattern.get("pattern", "")
-        
+
         text += f"{i}. [{current_count}] (-{absolute_change}, -{percent_change:.1f}%) {pattern_text}\n"
-        
+
         # Add sample document references if available
         if "sample_doc_references" in pattern and pattern["sample_doc_references"]:
             text += "   Sample documents: "
             sample_refs = []
-            
+
             for j, doc_ref in enumerate(pattern["sample_doc_references"][:5], 1):
                 # Handle doc_ref as a string in format "index:id"
                 if isinstance(doc_ref, str) and ":" in doc_ref:
                     parts = doc_ref.split(":", 1)
                     index = parts[0]
                     doc_id = parts[1]
-                    
+
                     if index and doc_id:
                         sample_refs.append(f"Sample {j} ({index}/{doc_id})")
                 else:
                     # Handle as dictionary if it's not a string
                     index = doc_ref.get("index", "") if isinstance(doc_ref, dict) else ""
                     doc_id = doc_ref.get("id", "") if isinstance(doc_ref, dict) else ""
-                    
+
                     if index and doc_id:
                         sample_refs.append(f"Sample {j} ({index}/{doc_id})")
-            
+
             text += ", ".join(sample_refs) + "\n"
-        
+
         text += "\n"
-    
+
     return text
 
 
@@ -415,16 +466,18 @@ def generate_email_bodies(
     html_output: str,
     text_output: str,
     kibana_url: Optional[str] = None,
+    kibana_deeplink_structure: Optional[str] = None,
 ) -> None:
     """
     Generate HTML and plaintext email bodies.
-    
+
     Args:
         comparison_file: Path to the comparison results file
         norm_results_file: Path to the normalization results file
         html_output: Path to store the HTML email body
         text_output: Path to store the plaintext email body
-        kibana_url: Kibana base URL (optional)
+        kibana_url: Kibana base URL for the "View in Kibana" button (optional)
+        kibana_deeplink_structure: URL structure for individual Kibana document deeplinks (optional)
     """
     logger.info("Generating email bodies")
     logger.info(f"Comparison file: {comparison_file}")
@@ -433,16 +486,18 @@ def generate_email_bodies(
     logger.info(f"Text output: {text_output}")
     if kibana_url:
         logger.info(f"Kibana URL: {kibana_url}")
-    
+    if kibana_deeplink_structure:
+        logger.info(f"Kibana deeplink structure: {kibana_deeplink_structure}")
+
     # Load the comparison results
     comparison = load_json(comparison_file)
-    
+
     # Load the normalization results
     norm_results = load_json(norm_results_file)
-    
+
     # Get the top 25 patterns from the normalization results
     top_patterns = sorted(norm_results.get("patterns", []), key=lambda x: x.get("count", 0), reverse=True)[:25]
-    
+
     # Extract data from comparison results
     current_patterns_count = comparison.get("current_patterns_count", 0)
     previous_patterns_count = comparison.get("previous_patterns_count", 0)
@@ -450,359 +505,43 @@ def generate_email_bodies(
     disappeared_patterns = comparison.get("disappeared_patterns", [])
     increased_patterns = comparison.get("increased_patterns", [])
     decreased_patterns = comparison.get("decreased_patterns", [])
-    
+
     # Generate timestamp
     timestamp = datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
-    
-    # Generate HTML email body
-    html = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Platform Problem Monitoring Report</title>
-        <style>
-            /* Base styles */
-            body {{
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-                line-height: 1.5;
-                color: #1a202c;
-                background-color: #f7fafc;
-                margin: 0;
-                padding: 20px;
-            }}
-            
-            /* Dark mode support for email clients that support it */
-            @media (prefers-color-scheme: dark) {{
-                body {{
-                    background-color: #1a202c;
-                    color: #f7fafc;
-                }}
-                
-                .card {{
-                    background-color: #2d3748 !important;
-                    border-color: #4a5568 !important;
-                }}
-                
-                .section-title {{
-                    color: #90cdf4 !important;
-                    border-bottom-color: #4a5568 !important;
-                }}
-                
-                .text-gray-500 {{
-                    color: #a0aec0 !important;
-                }}
-                
-                pre {{
-                    background-color: #2d3748 !important;
-                    border-color: #4a5568 !important;
-                }}
-                
-                .badge {{
-                    border: 1px solid #4a5568 !important;
-                }}
-            }}
-            
-            /* Layout */
-            .container {{
-                max-width: 800px;
-                margin: 0 auto;
-            }}
-            
-            .card {{
-                background-color: #ffffff;
-                border-radius: 8px;
-                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-                padding: 24px;
-                margin-bottom: 24px;
-                border: 1px solid #e2e8f0;
-            }}
-            
-            /* Typography */
-            h1 {{
-                font-size: 24px;
-                font-weight: 700;
-                margin-top: 0;
-                margin-bottom: 16px;
-                color: #2c3e50;
-            }}
-            
-            h2 {{
-                font-size: 20px;
-                font-weight: 600;
-                margin-top: 0;
-                margin-bottom: 16px;
-                color: #3498db;
-            }}
-            
-            .section-title {{
-                font-size: 18px;
-                font-weight: 600;
-                margin-top: 24px;
-                margin-bottom: 16px;
-                padding-bottom: 8px;
-                border-bottom: 1px solid #e2e8f0;
-                color: #4a5568;
-            }}
-            
-            p {{
-                margin-top: 0;
-                margin-bottom: 16px;
-            }}
-            
-            .text-sm {{
-                font-size: 14px;
-            }}
-            
-            .text-gray-500 {{
-                color: #718096;
-            }}
-            
-            /* Components */
-            .stats-grid {{
-                display: flex;
-                flex-wrap: wrap;
-                gap: 16px;
-                margin-bottom: 24px;
-            }}
-            
-            .stat-card {{
-                flex: 1;
-                min-width: 120px;
-                padding: 16px;
-                background-color: #f8fafc;
-                border-radius: 6px;
-                border: 1px solid #e2e8f0;
-                text-align: center;
-            }}
-            
-            .stat-value {{
-                font-size: 24px;
-                font-weight: 700;
-                margin-bottom: 4px;
-            }}
-            
-            .stat-label {{
-                font-size: 14px;
-                color: #718096;
-            }}
-            
-            .badge {{
-                display: inline-block;
-                padding: 4px 8px;
-                border-radius: 4px;
-                font-size: 12px;
-                font-weight: 600;
-                margin-right: 8px;
-            }}
-            
-            .badge-success {{
-                background-color: #c6f6d5;
-                color: #22543d;
-            }}
-            
-            .badge-warning {{
-                background-color: #feebc8;
-                color: #744210;
-            }}
-            
-            .badge-error {{
-                background-color: #fed7d7;
-                color: #822727;
-            }}
-            
-            .badge-info {{
-                background-color: #bee3f8;
-                color: #2a4365;
-            }}
-            
-            /* Pattern display */
-            .pattern-item {{
-                margin-bottom: 16px;
-                padding-bottom: 16px;
-                border-bottom: 1px solid #e2e8f0;
-            }}
-            
-            .pattern-item:last-child {{
-                border-bottom: none;
-            }}
-            
-            .pattern-number {{
-                font-weight: 600;
-                min-width: 30px;
-                margin-right: 8px;
-            }}
-            
-            .pattern-count {{
-                font-weight: 700;
-                min-width: 60px;
-                margin-right: 16px;
-                text-align: right;
-            }}
-            
-            .increased {{
-                color: #e53e3e;
-            }}
-            
-            .decreased {{
-                color: #38a169;
-            }}
-            
-            .change-indicator {{
-                font-size: 12px;
-                font-weight: 400;
-                display: block;
-            }}
-            
-            .pattern-text {{
-                flex: 1;
-            }}
-            
-            pre {{
-                margin: 0;
-                padding: 8px;
-                background-color: #f7fafc;
-                border-radius: 4px;
-                border: 1px solid #e2e8f0;
-                overflow-x: auto;
-                font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-                font-size: 13px;
-                white-space: pre-wrap;
-                word-break: break-word;
-            }}
-            
-            .sample-links {{
-                margin-top: 8px;
-                margin-left: 38px;
-                font-size: 13px;
-            }}
-            
-            .sample-links a {{
-                color: #3182ce;
-                text-decoration: none;
-            }}
-            
-            .sample-links a:hover {{
-                text-decoration: underline;
-            }}
-            
-            /* Button */
-            .button {{
-                display: inline-block;
-                background-color: #3182ce;
-                color: white;
-                padding: 8px 16px;
-                border-radius: 4px;
-                text-decoration: none;
-                font-weight: 600;
-                margin-top: 8px;
-            }}
-            
-            .button:hover {{
-                background-color: #2c5282;
-            }}
-            
-            /* Utilities */
-            .flex {{
-                display: flex;
-            }}
-            
-            .items-start {{
-                align-items: flex-start;
-            }}
-            
-            .space-y-6 > * + * {{
-                margin-top: 24px;
-            }}
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="card">
-                <h1>Platform Problem Monitoring Report</h1>
-                <p class="text-sm">Report generated at: {timestamp}</p>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value">{current_patterns_count}</div>
-                        <div class="stat-label">Current Patterns</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">{previous_patterns_count}</div>
-                        <div class="stat-label">Previous Patterns</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">{len(new_patterns)}</div>
-                        <div class="stat-label">New Patterns</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">{len(disappeared_patterns)}</div>
-                        <div class="stat-label">Disappeared</div>
-                    </div>
-                </div>
-                
-                {f'''
-                <div style="text-align: center; margin: 20px 0;">
-                    <a href="{kibana_url}" class="button">View in Kibana</a>
-                </div>
-                ''' if kibana_url else ''}
-            </div>
-            
-            <div class="card">
-                <h2>SUMMARY OF CHANGES IN PROBLEM PATTERNS</h2>
-                <p class="text-sm text-gray-500">Generated on {timestamp}</p>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value">{current_patterns_count}</div>
-                        <div class="stat-label">Current Patterns</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">{previous_patterns_count}</div>
-                        <div class="stat-label">Previous Patterns</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">{len(new_patterns)}</div>
-                        <div class="stat-label">New Patterns</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">{len(disappeared_patterns)}</div>
-                        <div class="stat-label">Disappeared</div>
-                    </div>
-                </div>
-                
-                <h3 class="section-title">TOP 10 NEW PROBLEM PATTERNS</h3>
-                <p class="text-sm text-gray-500">These patterns appeared in the new summary but were not present in the previous one.</p>
-                {generate_pattern_list_html(new_patterns[:10], kibana_url)}
-                
-                <h3 class="section-title">TOP 10 DISAPPEARED PROBLEM PATTERNS</h3>
-                <p class="text-sm text-gray-500">These patterns were present in the previous summary but are not in the current one.</p>
-                {generate_pattern_list_html(disappeared_patterns[:10], kibana_url)}
-                
-                <h3 class="section-title">TOP 10 INCREASED PROBLEM PATTERNS</h3>
-                <p class="text-sm text-gray-500">These patterns have increased in occurrence count since the last report.</p>
-                {generate_increased_pattern_list_html(increased_patterns[:10], kibana_url)}
-                
-                <h3 class="section-title">TOP 10 DECREASED PROBLEM PATTERNS</h3>
-                <p class="text-sm text-gray-500">These patterns have decreased in occurrence count since the last report.</p>
-                {generate_decreased_pattern_list_html(decreased_patterns[:10], kibana_url)}
-            </div>
-            
-            <div class="card">
-                <h2>TOP 25 CURRENT PROBLEM PATTERNS</h2>
-                <p class="text-sm text-gray-500">The most frequent problem patterns in the current report.</p>
-                {generate_pattern_list_html(top_patterns, kibana_url)}
-            </div>
-            
-            <div style="text-align: center; margin-top: 20px; color: #718096; font-size: 12px;">
-                <p>This is an automated report from the Platform Problem Monitoring system.</p>
-            </div>
-        </div>
-    </body>
-    </html>
-    """
-    
+
+    # Load HTML templates
+    templates = load_html_template()
+    document_template = templates.get('document-template', '')
+    kibana_button_template = templates.get('kibana-button-template', '')
+    css_styles = templates.get('css', '')
+
+    # Generate Kibana button if URL is provided
+    kibana_button = ""
+    if kibana_url:
+        kibana_button = kibana_button_template.replace("{{KIBANA_URL}}", kibana_url)
+
+    # Generate HTML for pattern lists
+    new_patterns_html = generate_pattern_list_html(new_patterns[:10], kibana_url, kibana_deeplink_structure)
+    disappeared_patterns_html = generate_pattern_list_html(disappeared_patterns[:10], kibana_url, kibana_deeplink_structure)
+    increased_patterns_html = generate_increased_pattern_list_html(increased_patterns[:10], kibana_url, kibana_deeplink_structure)
+    decreased_patterns_html = generate_decreased_pattern_list_html(decreased_patterns[:10], kibana_url, kibana_deeplink_structure)
+    top_patterns_html = generate_pattern_list_html(top_patterns[:25], kibana_url, kibana_deeplink_structure)
+
+    # Replace placeholders in the main template
+    html = document_template
+    html = html.replace("{{CSS_STYLES}}", f"<style>{css_styles}</style>")
+    html = html.replace("{{TIMESTAMP}}", timestamp)
+    html = html.replace("{{CURRENT_PATTERNS_COUNT}}", str(current_patterns_count))
+    html = html.replace("{{PREVIOUS_PATTERNS_COUNT}}", str(previous_patterns_count))
+    html = html.replace("{{NEW_PATTERNS_COUNT}}", str(len(new_patterns)))
+    html = html.replace("{{DISAPPEARED_PATTERNS_COUNT}}", str(len(disappeared_patterns)))
+    html = html.replace("{{KIBANA_BUTTON}}", kibana_button)
+    html = html.replace("{{NEW_PATTERNS_LIST}}", new_patterns_html)
+    html = html.replace("{{DISAPPEARED_PATTERNS_LIST}}", disappeared_patterns_html)
+    html = html.replace("{{INCREASED_PATTERNS_LIST}}", increased_patterns_html)
+    html = html.replace("{{DECREASED_PATTERNS_LIST}}", decreased_patterns_html)
+    html = html.replace("{{TOP_PATTERNS_LIST}}", top_patterns_html)
+
     # Generate plaintext email body
     text = f"""
 Platform Problem Monitoring Report
@@ -853,14 +592,14 @@ The most frequent problem patterns in the current report.
 
 This is an automated report from the Platform Problem Monitoring system.
 """
-    
+
     # Write the email bodies to the output files
     with open(html_output, "w") as f:
         f.write(html)
-    
+
     with open(text_output, "w") as f:
         f.write(text)
-    
+
     logger.info("Email bodies generated successfully")
 
 
@@ -871,10 +610,11 @@ def main() -> None:
     parser.add_argument("--norm-results-file", required=True, help="Path to the normalization results file")
     parser.add_argument("--html-output", required=True, help="Path to store the HTML email body")
     parser.add_argument("--text-output", required=True, help="Path to store the plaintext email body")
-    parser.add_argument("--kibana-url", help="Kibana base URL")
-    
+    parser.add_argument("--kibana-url", help="Kibana base URL for the 'View in Kibana' button")
+    parser.add_argument("--kibana-deeplink-structure", help="URL structure for individual Kibana document deeplinks with {{index}} and {{id}} placeholders")
+
     args = parser.parse_args()
-    
+
     try:
         generate_email_bodies(
             args.comparison_file,
@@ -882,6 +622,7 @@ def main() -> None:
             args.html_output,
             args.text_output,
             args.kibana_url,
+            args.kibana_deeplink_structure,
         )
         sys.exit(0)
     except Exception as e:

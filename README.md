@@ -127,7 +127,7 @@ REMOTE_STATE_S3_FOLDER_NAME="platform-monitoring"
 ELASTICSEARCH_SERVER_BASE_URL="https://your-elasticsearch-server:9200"
 ELASTICSEARCH_LUCENE_QUERY_FILE_PATH="path/to/lucene_query.json"
 
-KIBANA_BASE_URL="https://your-kibana-server:5601"
+KIBANA_DISCOVER_BASE_URL="https://your-kibana-server:5601"
 
 SMTP_SERVER_HOSTNAME="smtp.example.com"
 SMTP_SERVER_PORT="587"
