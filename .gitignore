@@ -1,7 +1,7 @@
 .idea/
 venv/
-src/platform_problem_monitoring_core.conf
-src/lucene_query.json
+platform_problem_monitoring_core.conf
+lucene_query.json
 
 # Python package build artifacts
 *.egg-info/

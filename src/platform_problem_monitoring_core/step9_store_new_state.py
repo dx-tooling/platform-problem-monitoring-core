@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""Store new run state."""
+"""Store new state to S3."""
 
 import argparse
 import sys
+import os
+import boto3
+from botocore.exceptions import ClientError
 
 from platform_problem_monitoring_core.utils import logger
 
@@ -11,7 +14,7 @@ def store_new_state(
     s3_bucket: str, s3_folder: str, date_time_file: str, norm_results_file: str
 ) -> None:
     """
-    Store new run state to S3.
+    Store new state to S3.
     
     Args:
         s3_bucket: S3 bucket name
@@ -19,46 +22,57 @@ def store_new_state(
         date_time_file: Path to the date and time file to upload
         norm_results_file: Path to the normalization results file to upload
     """
-    logger.info("Storing new run state")
+    logger.info("Storing new state")
     logger.info(f"S3 bucket: {s3_bucket}")
     logger.info(f"S3 folder: {s3_folder}")
-    logger.info(f"Date and time file: {date_time_file}")
+    logger.info(f"Date time file: {date_time_file}")
     logger.info(f"Normalization results file: {norm_results_file}")
     
-    # Read the files to be uploaded
+    # Check if files exist
+    if not os.path.exists(date_time_file):
+        raise FileNotFoundError(f"Date time file not found: {date_time_file}")
+    
+    if not os.path.exists(norm_results_file):
+        raise FileNotFoundError(f"Normalization results file not found: {norm_results_file}")
+    
+    # Create S3 client
+    s3_client = boto3.client('s3')
+    
+    # Upload date time file
+    date_time_key = f"{s3_folder}/current_date_time.txt"
     try:
-        with open(date_time_file, "r") as f:
-            date_time_content = f.read()
-            logger.info(f"Date and time content: {date_time_content}")
-        
-        with open(norm_results_file, "r") as f:
-            # Just log the size of the normalization results file, not its content
-            norm_results_size = len(f.read())
-            logger.info(f"Normalization results file size: {norm_results_size} bytes")
-    except FileNotFoundError as e:
-        logger.error(f"File not found: {str(e)}")
-        raise
-    except Exception as e:
-        logger.error(f"Error reading files: {str(e)}")
+        logger.info(f"Uploading date time file to s3://{s3_bucket}/{date_time_key}")
+        s3_client.upload_file(date_time_file, s3_bucket, date_time_key)
+        logger.info("Date time file uploaded successfully")
+    except ClientError as e:
+        logger.error(f"Failed to upload date time file: {e}")
         raise
     
-    # Placeholder implementation
-    # In a real implementation, we would upload the files to S3 using boto3
-    # For example:
-    # import boto3
-    # s3_client = boto3.client('s3')
-    # s3_client.upload_file(date_time_file, s3_bucket, f"{s3_folder}/date_time.txt")
-    # s3_client.upload_file(norm_results_file, s3_bucket, f"{s3_folder}/norm_results.json")
+    # Upload normalization results file
+    norm_results_key = f"{s3_folder}/norm_results.json"
+    try:
+        logger.info(f"Uploading normalization results to s3://{s3_bucket}/{norm_results_key}")
+        s3_client.upload_file(norm_results_file, s3_bucket, norm_results_key)
+        logger.info("Normalization results uploaded successfully")
+    except ClientError as e:
+        logger.error(f"Failed to upload normalization results: {e}")
+        raise
     
-    logger.info("New run state stored successfully")
+    logger.info("New state stored successfully")
 
 
 def main() -> None:
-    """Execute the script when run directly."""
-    parser = argparse.ArgumentParser(description="Store new run state")
-    parser.add_argument("--s3-bucket", required=True, help="S3 bucket name")
-    parser.add_argument("--s3-folder", required=True, help="S3 folder name")
-    parser.add_argument("--date-time-file", required=True, help="Path to the date and time file to upload")
+    """Parse command line arguments and store new state."""
+    parser = argparse.ArgumentParser(description="Store new state to S3")
+    parser.add_argument(
+        "--s3-bucket", required=True, help="S3 bucket name"
+    )
+    parser.add_argument(
+        "--s3-folder", required=True, help="S3 folder name"
+    )
+    parser.add_argument(
+        "--date-time-file", required=True, help="Path to the date and time file to upload"
+    )
     parser.add_argument(
         "--norm-results-file", required=True, help="Path to the normalization results file to upload"
     )
@@ -67,11 +81,13 @@ def main() -> None:
     
     try:
         store_new_state(
-            args.s3_bucket, args.s3_folder, args.date_time_file, args.norm_results_file
+            args.s3_bucket,
+            args.s3_folder,
+            args.date_time_file,
+            args.norm_results_file
         )
-        sys.exit(0)
     except Exception as e:
-        logger.error(f"Error storing new state: {str(e)}")
+        logger.error(f"Error storing new state: {e}")
         sys.exit(1)
 
 
