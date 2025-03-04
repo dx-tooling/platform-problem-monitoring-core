@@ -1,4 +1,4 @@
-<!-- 
+<!--
 HTML Email Template for Platform Problem Monitoring
 ===================================================
 
@@ -27,44 +27,152 @@ Main sections:
         margin: 0;
         padding: 20px;
     }
-    
+
     /* Dark mode support for email clients that support it */
     @media (prefers-color-scheme: dark) {
-        body {
-            background-color: #1a202c;
-            color: #f7fafc;
+        body, html {
+            background-color: #111827 !important;
+            color: #f7fafc !important;
         }
-        
+
+        .container {
+            background-color: #111827 !important;
+        }
+
         .card {
-            background-color: #2d3748 !important;
-            border-color: #4a5568 !important;
+            background-color: #1f2937 !important;
+            border-color: #374151 !important;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3) !important;
         }
-        
+
+        h1 {
+            color: #90cdf4 !important;
+        }
+
+        h2 {
+            color: #63b3ed !important;
+        }
+
         .section-title {
             color: #90cdf4 !important;
             border-bottom-color: #4a5568 !important;
         }
-        
+
         .text-gray-500 {
             color: #a0aec0 !important;
         }
-        
+
         pre {
             background-color: #2d3748 !important;
             border-color: #4a5568 !important;
+            color: #e2e8f0 !important;
         }
-        
+
         .badge {
             border: 1px solid #4a5568 !important;
         }
+
+        .badge-success {
+            background-color: #285e46 !important;
+            color: #c6f6d5 !important;
+        }
+
+        .badge-warning {
+            background-color: #744210 !important;
+            color: #feebc8 !important;
+        }
+
+        .badge-error {
+            background-color: #822727 !important;
+            color: #fed7d7 !important;
+        }
+
+        .badge-info {
+            background-color: #2a4365 !important;
+            color: #bee3f8 !important;
+        }
+
+        .stat-card {
+            background-color: #2d3748 !important;
+            border-color: #4a5568 !important;
+        }
+
+        .stat-card.new-problems {
+            background-color: #822727 !important;
+            border-color: #991b1b !important;
+        }
+
+        .stat-card.increased-problems {
+            background-color: #744210 !important;
+            border-color: #8B5C14 !important;
+        }
+
+        .stat-card.decreased-problems {
+            background-color: #285e46 !important;
+            border-color: #2F6B4F !important;
+        }
+
+        .stat-card.disappeared-problems {
+            background-color: #2a4365 !important;
+            border-color: #2C4B73 !important;
+        }
+
+        .stat-value {
+            color: #f7fafc !important;
+        }
+
+        .stat-label {
+            color: #e2e8f0 !important;
+        }
+
+        .increased {
+            color: #fc8181 !important;
+        }
+
+        .decreased {
+            color: #68d391 !important;
+        }
+
+        .sample-links a {
+            color: #63b3ed !important;
+        }
+
+        .pattern-item {
+            border-bottom-color: #4a5568 !important;
+        }
+
+        .button {
+            background-color: #4299e1 !important;
+            color: white !important;
+        }
+
+        .button:hover {
+            background-color: #3182ce !important;
+        }
+
+        .pattern-item.new-pattern {
+            background-color: rgba(130, 39, 39, 0.1) !important;
+        }
+
+        .pattern-item.increased-pattern {
+            background-color: rgba(116, 66, 16, 0.1) !important;
+        }
+
+        .pattern-item.decreased-pattern {
+            background-color: rgba(40, 94, 70, 0.1) !important;
+        }
+
+        .pattern-item.disappeared-pattern {
+            background-color: rgba(42, 67, 101, 0.1) !important;
+        }
     }
-    
+
     /* Layout */
     .container {
         max-width: 800px;
         margin: 0 auto;
     }
-    
+
     .card {
         background-color: #ffffff;
         border-radius: 8px;
@@ -73,7 +181,7 @@ Main sections:
         margin-bottom: 24px;
         border: 1px solid #e2e8f0;
     }
-    
+
     /* Typography */
     h1 {
         font-size: 24px;
@@ -82,7 +190,7 @@ Main sections:
         margin-bottom: 16px;
         color: #2c3e50;
     }
-    
+
     h2 {
         font-size: 20px;
         font-weight: 600;
@@ -90,7 +198,7 @@ Main sections:
         margin-bottom: 16px;
         color: #3498db;
     }
-    
+
     .section-title {
         font-size: 18px;
         font-weight: 600;
@@ -100,20 +208,40 @@ Main sections:
         border-bottom: 1px solid #e2e8f0;
         color: #4a5568;
     }
-    
+
+    .section-title.new-problems {
+        color: #822727;
+        border-bottom-color: #fed7d7;
+    }
+
+    .section-title.increased-problems {
+        color: #744210;
+        border-bottom-color: #feebc8;
+    }
+
+    .section-title.decreased-problems {
+        color: #285e46;
+        border-bottom-color: #c6f6d5;
+    }
+
+    .section-title.disappeared-problems {
+        color: #2a4365;
+        border-bottom-color: #bee3f8;
+    }
+
     p {
         margin-top: 0;
         margin-bottom: 16px;
     }
-    
+
     .text-sm {
         font-size: 14px;
     }
-    
+
     .text-gray-500 {
         color: #718096;
     }
-    
+
     /* Components */
     .stats-grid {
         display: flex;
@@ -121,7 +249,7 @@ Main sections:
         gap: 16px;
         margin-bottom: 24px;
     }
-    
+
     .stat-card {
         flex: 1;
         min-width: 120px;
@@ -130,19 +258,57 @@ Main sections:
         border-radius: 6px;
         border: 1px solid #e2e8f0;
         text-align: center;
+        transition: transform 0.2s ease;
     }
-    
+
+    /* Stat card colors based on type */
+    .stat-card.new-problems {
+        background-color: #fde8e8;
+        border-color: #f98080;
+    }
+
+    .stat-card.increased-problems {
+        background-color: #fef3c7;
+        border-color: #fbbf24;
+    }
+
+    .stat-card.decreased-problems {
+        background-color: #def7ec;
+        border-color: #34d399;
+    }
+
+    .stat-card.disappeared-problems {
+        background-color: #e1effe;
+        border-color: #60a5fa;
+    }
+
     .stat-value {
         font-size: 24px;
         font-weight: 700;
         margin-bottom: 4px;
     }
-    
+
+    .stat-value.new-problems {
+        color: #dc2626;
+    }
+
+    .stat-value.increased-problems {
+        color: #d97706;
+    }
+
+    .stat-value.decreased-problems {
+        color: #059669;
+    }
+
+    .stat-value.disappeared-problems {
+        color: #2563eb;
+    }
+
     .stat-label {
         font-size: 14px;
         color: #718096;
     }
-    
+
     .badge {
         display: inline-block;
         padding: 4px 8px;
@@ -151,69 +317,85 @@ Main sections:
         font-weight: 600;
         margin-right: 8px;
     }
-    
+
     .badge-success {
         background-color: #c6f6d5;
         color: #22543d;
     }
-    
+
     .badge-warning {
         background-color: #feebc8;
         color: #744210;
     }
-    
+
     .badge-error {
         background-color: #fed7d7;
         color: #822727;
     }
-    
+
     .badge-info {
         background-color: #bee3f8;
         color: #2a4365;
     }
-    
+
     /* Pattern display */
     .pattern-item {
         margin-bottom: 16px;
-        padding-bottom: 16px;
-        border-bottom: 1px solid #e2e8f0;
+        padding: 16px;
+        border-radius: 6px;
     }
-    
-    .pattern-item:last-child {
-        border-bottom: none;
+
+    .pattern-item.new-pattern {
+        background-color: rgba(220, 38, 38, 0.1);
+        border-left: 4px solid #dc2626;
     }
-    
+
+    .pattern-item.increased-pattern {
+        background-color: rgba(217, 119, 6, 0.1);
+        border-left: 4px solid #d97706;
+    }
+
+    .pattern-item.decreased-pattern {
+        background-color: rgba(5, 150, 105, 0.1);
+        border-left: 4px solid #059669;
+    }
+
+    .pattern-item.disappeared-pattern {
+        background-color: rgba(37, 99, 235, 0.1);
+        border-left: 4px solid #2563eb;
+    }
+
     .pattern-number {
         font-weight: 600;
         min-width: 30px;
         margin-right: 8px;
     }
-    
+
     .pattern-count {
         font-weight: 700;
         min-width: 60px;
         margin-right: 16px;
         text-align: right;
     }
-    
+
     .increased {
         color: #e53e3e;
     }
-    
+
     .decreased {
         color: #38a169;
     }
-    
+
     .change-indicator {
         font-size: 12px;
         font-weight: 400;
         display: block;
     }
-    
+
     .pattern-text {
         flex: 1;
     }
-    
+
     pre {
         margin: 0;
         padding: 8px;
@@ -226,22 +408,22 @@ Main sections:
         white-space: pre-wrap;
         word-break: break-word;
     }
-    
+
     .sample-links {
         margin-top: 8px;
         margin-left: 38px;
         font-size: 13px;
     }
-    
+
     .sample-links a {
         color: #3182ce;
         text-decoration: none;
     }
-    
+
     .sample-links a:hover {
         text-decoration: underline;
     }
-    
+
     /* Button */
     .button {
         display: inline-block;
@@ -253,20 +435,20 @@ Main sections:
         font-weight: 600;
         margin-top: 8px;
     }
-    
+
     .button:hover {
         background-color: #2c5282;
     }
-    
+
     /* Utilities */
     .flex {
         display: flex;
     }
-    
+
     .items-start {
         align-items: flex-start;
     }
-    
+
     .space-y-6 > * + * {
         margin-top: 24px;
     }
@@ -279,85 +461,154 @@ Main sections:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
     <title>Platform Problem Monitoring Report</title>
     {{CSS_STYLES}}
+    <style>
+        /* Force dark mode for testing */
+        @media (prefers-color-scheme: dark) {
+            .dark-mode {
+                display: block !important;
+            }
+            .light-mode {
+                display: none !important;
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .dark-mode {
+                display: none !important;
+            }
+            .light-mode {
+                display: block !important;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <h1>Platform Problem Monitoring Report</h1>
-            <p class="text-sm">Report generated at: {{TIMESTAMP}}</p>
-            
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value">{{CURRENT_PATTERNS_COUNT}}</div>
-                    <div class="stat-label">Current Patterns</div>
+    <!-- Light Mode Version -->
+    <div class="light-mode">
+        <div class="container">
+            <div class="card">
+                <h1>Platform Problem Monitoring Report</h1>
+                <p class="text-sm">Report generated at: {{TIMESTAMP}}</p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">{{CURRENT_PATTERNS_COUNT}}</div>
+                        <div class="stat-label">Current Patterns</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">{{PREVIOUS_PATTERNS_COUNT}}</div>
+                        <div class="stat-label">Previous Patterns</div>
+                    </div>
+                    <div class="stat-card new-problems">
+                        <div class="stat-value new-problems">{{NEW_PATTERNS_COUNT}}</div>
+                        <div class="stat-label">New Patterns</div>
+                    </div>
+                    <div class="stat-card disappeared-problems">
+                        <div class="stat-value disappeared-problems">{{DISAPPEARED_PATTERNS_COUNT}}</div>
+                        <div class="stat-label">Disappeared</div>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value">{{PREVIOUS_PATTERNS_COUNT}}</div>
-                    <div class="stat-label">Previous Patterns</div>
+
+                {{KIBANA_BUTTON}}
+            </div>
+
+            <div class="card">
+                <h2>SUMMARY OF CHANGES IN PROBLEM PATTERNS</h2>
+                <p class="text-sm text-gray-500">Generated on {{TIMESTAMP}}</p>
+
+                <h3 class="section-title new-problems">TOP 10 NEW PROBLEM PATTERNS</h3>
+                <p class="text-sm text-gray-500">These patterns appeared in the new summary but were not present in the previous one.</p>
+                {{NEW_PATTERNS_LIST}}
+
+                <h3 class="section-title increased-problems">TOP 10 INCREASED PROBLEM PATTERNS</h3>
+                <p class="text-sm text-gray-500">These patterns have increased in occurrence count since the last report.</p>
+                {{INCREASED_PATTERNS_LIST}}
+
+                <h3 class="section-title decreased-problems">TOP 10 DECREASED PROBLEM PATTERNS</h3>
+                <p class="text-sm text-gray-500">These patterns have decreased in occurrence count since the last report.</p>
+                {{DECREASED_PATTERNS_LIST}}
+
+                <h3 class="section-title disappeared-problems">TOP 10 DISAPPEARED PROBLEM PATTERNS</h3>
+                <p class="text-sm text-gray-500">These patterns were present in the previous summary but are not in the current one.</p>
+                {{DISAPPEARED_PATTERNS_LIST}}
+            </div>
+
+            <div class="card">
+                <h2>TOP 25 CURRENT PROBLEM PATTERNS</h2>
+                <p class="text-sm text-gray-500">The most frequent problem patterns in the current report.</p>
+                {{TOP_PATTERNS_LIST}}
+            </div>
+
+            <div style="text-align: center; margin-top: 20px; color: #718096; font-size: 12px;">
+                <p>This is an automated report from the Platform Problem Monitoring system.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dark Mode Version -->
+    <div class="dark-mode" style="display: none; background-color: #111827; color: #f7fafc;">
+        <div class="container" style="background-color: #111827; max-width: 800px; margin: 0 auto;">
+            <div class="card" style="background-color: #1f2937; border-radius: 8px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3); padding: 24px; margin-bottom: 24px; border: 1px solid #374151;">
+                <h1 style="font-size: 24px; font-weight: 700; margin-top: 0; margin-bottom: 16px; color: #90cdf4;">Platform Problem Monitoring Report</h1>
+                <p class="text-sm" style="font-size: 14px; color: #e2e8f0;">Report generated at: {{TIMESTAMP}}</p>
+
+                <div class="stats-grid" style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+                    <div class="stat-card" style="flex: 1; min-width: 120px; padding: 16px; background-color: #2d3748; border-radius: 6px; border: 1px solid #4a5568; text-align: center;">
+                        <div class="stat-value" style="font-size: 24px; font-weight: 700; margin-bottom: 4px; color: #f7fafc;">{{CURRENT_PATTERNS_COUNT}}</div>
+                        <div class="stat-label" style="font-size: 14px; color: #a0aec0;">Current Patterns</div>
+                    </div>
+                    <div class="stat-card" style="flex: 1; min-width: 120px; padding: 16px; background-color: #2d3748; border-radius: 6px; border: 1px solid #4a5568; text-align: center;">
+                        <div class="stat-value" style="font-size: 24px; font-weight: 700; margin-bottom: 4px; color: #f7fafc;">{{PREVIOUS_PATTERNS_COUNT}}</div>
+                        <div class="stat-label" style="font-size: 14px; color: #a0aec0;">Previous Patterns</div>
+                    </div>
+                    <div class="stat-card" style="flex: 1; min-width: 120px; padding: 16px; background-color: #2d3748; border-radius: 6px; border: 1px solid #4a5568; text-align: center;">
+                        <div class="stat-value" style="font-size: 24px; font-weight: 700; margin-bottom: 4px; color: #f7fafc;">{{NEW_PATTERNS_COUNT}}</div>
+                        <div class="stat-label" style="font-size: 14px; color: #a0aec0;">New Patterns</div>
+                    </div>
+                    <div class="stat-card" style="flex: 1; min-width: 120px; padding: 16px; background-color: #2d3748; border-radius: 6px; border: 1px solid #4a5568; text-align: center;">
+                        <div class="stat-value" style="font-size: 24px; font-weight: 700; margin-bottom: 4px; color: #f7fafc;">{{DISAPPEARED_PATTERNS_COUNT}}</div>
+                        <div class="stat-label" style="font-size: 14px; color: #a0aec0;">Disappeared</div>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value">{{NEW_PATTERNS_COUNT}}</div>
-                    <div class="stat-label">New Patterns</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">{{DISAPPEARED_PATTERNS_COUNT}}</div>
-                    <div class="stat-label">Disappeared</div>
+
+                <div style="text-align: center; margin: 20px 0;">
+                    <a href="{{KIBANA_URL}}" class="button" style="display: inline-block; background-color: #4299e1; color: white; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-weight: 600; margin-top: 8px;">View in Kibana</a>
                 </div>
             </div>
-            
-            {{KIBANA_BUTTON}}
-        </div>
-        
-        <div class="card">
-            <h2>SUMMARY OF CHANGES IN PROBLEM PATTERNS</h2>
-            <p class="text-sm text-gray-500">Generated on {{TIMESTAMP}}</p>
-            
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value">{{CURRENT_PATTERNS_COUNT}}</div>
-                    <div class="stat-label">Current Patterns</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">{{PREVIOUS_PATTERNS_COUNT}}</div>
-                    <div class="stat-label">Previous Patterns</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">{{NEW_PATTERNS_COUNT}}</div>
-                    <div class="stat-label">New Patterns</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">{{DISAPPEARED_PATTERNS_COUNT}}</div>
-                    <div class="stat-label">Disappeared</div>
-                </div>
+
+            <div class="card" style="background-color: #1f2937; border-radius: 8px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3); padding: 24px; margin-bottom: 24px; border: 1px solid #374151;">
+                <h2 style="font-size: 20px; font-weight: 600; margin-top: 0; margin-bottom: 16px; color: #63b3ed;">SUMMARY OF CHANGES IN PROBLEM PATTERNS</h2>
+                <p class="text-sm text-gray-500" style="font-size: 14px; color: #a0aec0;">Generated on {{TIMESTAMP}}</p>
+
+                <h3 class="section-title" style="font-size: 18px; font-weight: 600; margin-top: 24px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #4a5568; color: #90cdf4;">TOP 10 NEW PROBLEM PATTERNS</h3>
+                <p class="text-sm text-gray-500" style="font-size: 14px; color: #a0aec0;">These patterns appeared in the new summary but were not present in the previous one.</p>
+                {{NEW_PATTERNS_LIST_DARK}}
+
+                <h3 class="section-title" style="font-size: 18px; font-weight: 600; margin-top: 24px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #4a5568; color: #90cdf4;">TOP 10 INCREASED PROBLEM PATTERNS</h3>
+                <p class="text-sm text-gray-500" style="font-size: 14px; color: #a0aec0;">These patterns have increased in occurrence count since the last report.</p>
+                {{INCREASED_PATTERNS_LIST_DARK}}
+
+                <h3 class="section-title" style="font-size: 18px; font-weight: 600; margin-top: 24px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #4a5568; color: #90cdf4;">TOP 10 DECREASED PROBLEM PATTERNS</h3>
+                <p class="text-sm text-gray-500" style="font-size: 14px; color: #a0aec0;">These patterns have decreased in occurrence count since the last report.</p>
+                {{DECREASED_PATTERNS_LIST_DARK}}
+
+                <h3 class="section-title" style="font-size: 18px; font-weight: 600; margin-top: 24px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #4a5568; color: #90cdf4;">TOP 10 DISAPPEARED PROBLEM PATTERNS</h3>
+                <p class="text-sm text-gray-500" style="font-size: 14px; color: #a0aec0;">These patterns were present in the previous summary but are not in the current one.</p>
+                {{DISAPPEARED_PATTERNS_LIST_DARK}}
             </div>
-            
-            <h3 class="section-title">TOP 10 NEW PROBLEM PATTERNS</h3>
-            <p class="text-sm text-gray-500">These patterns appeared in the new summary but were not present in the previous one.</p>
-            {{NEW_PATTERNS_LIST}}
-            
-            <h3 class="section-title">TOP 10 DISAPPEARED PROBLEM PATTERNS</h3>
-            <p class="text-sm text-gray-500">These patterns were present in the previous summary but are not in the current one.</p>
-            {{DISAPPEARED_PATTERNS_LIST}}
-            
-            <h3 class="section-title">TOP 10 INCREASED PROBLEM PATTERNS</h3>
-            <p class="text-sm text-gray-500">These patterns have increased in occurrence count since the last report.</p>
-            {{INCREASED_PATTERNS_LIST}}
-            
-            <h3 class="section-title">TOP 10 DECREASED PROBLEM PATTERNS</h3>
-            <p class="text-sm text-gray-500">These patterns have decreased in occurrence count since the last report.</p>
-            {{DECREASED_PATTERNS_LIST}}
-        </div>
-        
-        <div class="card">
-            <h2>TOP 25 CURRENT PROBLEM PATTERNS</h2>
-            <p class="text-sm text-gray-500">The most frequent problem patterns in the current report.</p>
-            {{TOP_PATTERNS_LIST}}
-        </div>
-        
-        <div style="text-align: center; margin-top: 20px; color: #718096; font-size: 12px;">
-            <p>This is an automated report from the Platform Problem Monitoring system.</p>
+
+            <div class="card" style="background-color: #1f2937; border-radius: 8px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3); padding: 24px; margin-bottom: 24px; border: 1px solid #374151;">
+                <h2 style="font-size: 20px; font-weight: 600; margin-top: 0; margin-bottom: 16px; color: #63b3ed;">TOP 25 CURRENT PROBLEM PATTERNS</h2>
+                <p class="text-sm text-gray-500" style="font-size: 14px; color: #a0aec0;">The most frequent problem patterns in the current report.</p>
+                {{TOP_PATTERNS_LIST_DARK}}
+            </div>
+
+            <div style="text-align: center; margin-top: 20px; color: #a0aec0; font-size: 12px;">
+                <p>This is an automated report from the Platform Problem Monitoring system.</p>
+            </div>
         </div>
     </div>
 </body>
@@ -385,9 +636,37 @@ Main sections:
 </div>
 </template>
 
+<!-- Pattern Item Template for New Patterns -->
+<template id="new-pattern-item-template">
+<div class="pattern-item new-pattern">
+    <div class="flex items-start">
+        <div class="pattern-number">{{INDEX}}.</div>
+        <div class="pattern-count">{{COUNT}}</div>
+        <div class="pattern-text">
+            <pre id="{{PATTERN_ID}}">{{PATTERN_TEXT}}</pre>
+        </div>
+    </div>
+    {{SAMPLE_LINKS}}
+</div>
+</template>
+
+<!-- Pattern Item Template for Disappeared Patterns -->
+<template id="disappeared-pattern-item-template">
+<div class="pattern-item disappeared-pattern">
+    <div class="flex items-start">
+        <div class="pattern-number">{{INDEX}}.</div>
+        <div class="pattern-count">{{COUNT}}</div>
+        <div class="pattern-text">
+            <pre id="{{PATTERN_ID}}">{{PATTERN_TEXT}}</pre>
+        </div>
+    </div>
+    {{SAMPLE_LINKS}}
+</div>
+</template>
+
 <!-- Increased Pattern Item Template -->
 <template id="increased-pattern-item-template">
-<div class="pattern-item">
+<div class="pattern-item increased-pattern">
     <div class="flex items-start">
         <div class="pattern-number">{{INDEX}}.</div>
         <div class="pattern-count increased">
@@ -406,7 +685,7 @@ Main sections:
 
 <!-- Decreased Pattern Item Template -->
 <template id="decreased-pattern-item-template">
-<div class="pattern-item">
+<div class="pattern-item decreased-pattern">
     <div class="flex items-start">
         <div class="pattern-number">{{INDEX}}.</div>
         <div class="pattern-count decreased">
@@ -423,19 +702,17 @@ Main sections:
 </div>
 </template>
 
-<!-- Sample Links Template -->
-<template id="sample-links-template">
-<div class="sample-links">
-    Sample documents: {{SAMPLE_LINKS_LIST}}
-</div>
-</template>
-
-<!-- Sample Link Item Template -->
-<template id="sample-link-item-template">
-<a href="{{KIBANA_LINK}}" class="jwui-link-default">Sample {{INDEX}}</a>{{COMMA}}
+<!-- Dark Mode Sample Link Item Template -->
+<template id="dark-sample-link-item-template">
+<a href="{{KIBANA_LINK}}" style="color: #63b3ed; text-decoration: none;">Sample {{INDEX}}</a>{{COMMA}}
 </template>
 
 <!-- Empty Pattern List Template -->
 <template id="empty-pattern-list-template">
 <p class="text-gray-500 dark:text-dark-200">{{MESSAGE}}</p>
+</template>
+
+<!-- Dark Mode Empty Pattern List Template -->
+<template id="dark-empty-pattern-list-template">
+<p style="color: #a0aec0;">{{MESSAGE}}</p>
 </template>
