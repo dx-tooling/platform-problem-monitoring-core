@@ -75,6 +75,12 @@ Some further assumptions:
 - The application cannot assume that any state from previous runs is available locally when it is started; instead, all
   state that is relevant not only during a single run, but over multiple runs, must be stored centrally in AWS S3
 - The application is not a persitent process or daemon; it is launched, does its job, and afterwards exits
+- S3 is assumed to be reliably available; no local fallback mechanism is required for state storage
+- Storing credentials as plain text in configuration files is acceptable; no encryption is needed
+- If any step of the process fails, the entire process should fail immediately, and an email with detailed information 
+  about the encountered issue should be sent to the configured report receivers using the SMTP parameters provided in the 
+  configuration file. This error reporting functionality should be implemented in a dedicated send_error_email.py script,
+  separate from the regular email reporting in step8_send_email_report.py, to maintain clean separation of responsibilities.
 
 The tech stack for this application is defined as follows:
 
@@ -110,6 +116,28 @@ The different step scripts do not include or call each other.
 However, any functionality that is worth sharing between these scripts, will be implemented in a shared library which
 the different step scripts will use as needed.
 
+## Performance considerations
+
+The application must be capable of handling large volumes of log data, potentially up to multiple millions of Elasticsearch 
+logstash documents between runs. To handle this efficiently:
+
+- Streaming and pagination techniques must be used when interacting with Elasticsearch to prevent memory or resource exhaustion
+- It is acceptable if a full process run takes several minutes to complete
+- All operations should be optimized for memory efficiency, especially when processing large datasets
+- The application should provide appropriate progress feedback during long-running operations
+
+## Normalization logic and email design
+
+The message normalization logic should follow the approach demonstrated in the proof-of-concept implementation, using the 
+drain3 library to replace dynamic parts of messages (like timestamps, UUIDs, numbers) with placeholders, allowing for pattern 
+recognition across similar message types.
+
+For the HTML email report design:
+- The report should be well-designed and visually appealing
+- It must work well in as many email clients as possible
+- The design should prioritize readability and allow quick scanning of information
+- The report should clearly highlight new problems, increased occurrences, and other significant changes
+- Visual elements should follow the style patterns demonstrated in the Janus design system reference materials
 
 ## Low-level: the process in detail
 
@@ -144,6 +172,7 @@ Here is a blow-by-blow description for all process steps that lead to a new repo
         - the inputs are used to download, into the target file, all relevant logstash messages from the Elasticsearch
           server
         - the date and time of this download is stored into a new file at the provided date and time file path
+        - pagination and streaming techniques must be used to handle potentially millions of documents
     - Outputs: none (besides exit code and progress, success, and error messages)
 4. Extract relevant fields from the logstash documents - file step4_extract_fields.py
     - Inputs:
@@ -162,6 +191,7 @@ Here is a blow-by-blow description for all process steps that lead to a new repo
           summarized into one line item in the results file that carries a) the normalized message, b) the number of
           messages that match this normalized message, and c) up to 5 Elasticsearch index names and document ids that
           represent examples of messages matching this normalized message
+        - The normalization approach should follow the patterns established in the proof-of-concept implementation
     - Outputs: none (besides exit code and progress, success, and error messages)
 6. Generate normalization results comparison - file step6_compare_normalizations.py
     - Inputs:
@@ -195,6 +225,8 @@ Here is a blow-by-blow description for all process steps that lead to a new repo
         - If a Kibana base URL is provided, each normalized message presented in the report is accompanied by up to 5
           deep links to message samples matching the normalized message (using the Elasticsearch index name and
           Elasticsearch document id from the normalization results file)
+        - The email design should be compatible with a wide range of email clients
+        - Both HTML and plaintext versions of the email must be created
     - Outputs: none (besides exit code and progress, success, and error messages)
 8. Send email report - step8_send_email_report.py
     - Inputs:

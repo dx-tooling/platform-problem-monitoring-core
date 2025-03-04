@@ -1,0 +1,21 @@
+{
+    "query": {
+        "bool": {
+            "should": [
+                { "match": { "message": "error" } },
+                { "match": { "message": "failure" } },
+                { "match": { "message": "critical" } },
+                { "match": { "message": "alert" } },
+                { "match": { "message": "exception" } }
+            ],
+            "must_not": [
+                { "match": { "message": "User Deprecated" } },
+                { "match": { "message": "logstash" } },
+                { "term": { "syslog_program": "dd.collector" } },
+                { "term": { "syslog_program": "dd.forwarder" } },
+                { "term": { "syslog_program": "dd.dogstatsd" } }
+            ],
+            "minimum_should_match": 1
+        }
+    }
+}

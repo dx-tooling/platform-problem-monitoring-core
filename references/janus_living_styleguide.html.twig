@@ -1,0 +1,345 @@
+{% extends '@JanusWebui/base.html.twig' %}
+
+{% block body %}
+    <div class="fixed top-20 right-4 sm:right-6 lg:right-8 z-50 p-1.5 text-xs font-mono bg-gray-800 text-white rounded shadow-lg">
+        <div class="sm:hidden">xs (&lt;640px)</div>
+        <div class="hidden sm:block md:hidden">sm (640px)</div>
+        <div class="hidden md:block lg:hidden">md (768px)</div>
+        <div class="hidden lg:block xl:hidden">lg (1024px)</div>
+        <div class="hidden xl:block 2xl:hidden">xl (1280px)</div>
+        <div class="hidden 2xl:block">2xl (1536px)</div>
+    </div>
+
+    <h1 class="jwui-pagetitle">Living Styleguide</h1>
+
+    <div class="space-y-12">
+        <!-- Typography -->
+        <section>
+            <h2 class="jwui-section-title">Typografie</h2>
+            <div class="mt-4 space-y-4">
+                <h1 class="jwui-h1">Überschrift 1</h1>
+                <h2 class="jwui-h2">Überschrift 2</h2>
+                <h3 class="jwui-h3">Überschrift 3</h3>
+                <h4 class="jwui-h4">Überschrift 4</h4>
+                <p class="jwui-text">Dies ist ein regulärer Absatz mit Text. Lorem ipsum dolor sit amet, consectetur
+                    adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <p class="jwui-text-small">Dies ist kleinerer Text, oft verwendet für Hilfetext oder Beschriftungen.</p>
+            </div>
+        </section>
+
+        <!-- Links -->
+        <section>
+            <h2 class="jwui-section-title">Links</h2>
+            <div class="mt-4 space-y-4">
+                <div class="space-y-2">
+                    <h3 class="jwui-h4">Reguläre Links</h3>
+                    <div><a href="#" class="jwui-link-default">Standard-Link</a></div>
+                    <div><a href="#" class="jwui-link-danger">Gefahren-Link</a></div>
+                    <div><a href="#" class="jwui-link-subtle">Dezenter Link</a></div>
+                    <div><span class="jwui-link-default-disabled">Deaktivierter Link</span></div>
+                </div>
+
+                <div class="space-y-2">
+                    <h3 class="jwui-h4">Links als Schaltflächen</h3>
+                    <div class="space-x-4">
+                        <a href="#" class="jwui-link-as-button-default">Primärer Aktions-Link</a>
+                        <span class="jwui-link-as-button-default-disabled">Deaktivierter Aktions-Link</span>
+                        <a href="#" class="jwui-link-as-button-danger">Gefahren-Aktions-Link</a>
+                    </div>
+                    <p class="jwui-text-small mt-2">Verwenden Sie diese, wenn der Link zu einer wichtigen Aktion oder
+                        einem wichtigen Ziel führt.
+                        Beispiel: "Neues Projekt erstellen", "Dashboard anzeigen"</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Buttons -->
+        <section>
+            <h2 class="jwui-section-title">Schaltflächen</h2>
+            <div class="mt-4 space-y-4">
+                <div class="space-y-2">
+                    <h3 class="jwui-h4">Reguläre Schaltflächen</h3>
+                    <div class="space-x-4">
+                        <button class="jwui-button-default">Standard-Schaltfläche</button>
+                        <button class="jwui-button-default-disabled">Deaktivierte Schaltfläche</button>
+                        <button class="jwui-button-danger">Gefahren-Schaltfläche</button>
+                    </div>
+                    <p class="jwui-text-small mt-2">Verwenden Sie diese für primäre Aktionen, die den Systemzustand
+                        beeinflussen. Beispiel:
+                        "Änderungen speichern", "Element löschen"</p>
+                </div>
+
+                <div class="space-y-2">
+                    <h3 class="jwui-h4">Schaltflächen als Links</h3>
+                    <div class="space-x-4">
+                        <button type="button" class="jwui-button-as-link-default">Standard-Link-Schaltfläche</button>
+                        <button type="button" class="jwui-button-as-link-default-disabled">Deaktivierte
+                            Link-Schaltfläche
+                        </button>
+                        <button type="button" class="jwui-button-as-link-danger">Gefahren-Link-Schaltfläche</button>
+                        <button type="button" class="jwui-button-as-link-subtle">Dezente Link-Schaltfläche</button>
+                    </div>
+                    <p class="jwui-text-small mt-2">Verwenden Sie diese für sekundäre Aktionen, die weniger prominent
+                        sein sollen.
+                        Beispiel: "Mehr anzeigen", "Abbrechen"</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Form Elements -->
+        <section>
+            <h2 class="jwui-section-title">Formularelemente</h2>
+            <div class="mt-4 space-y-6">
+                <!-- Text Input -->
+                <div>
+                    <label class="jwui-form-label">Texteingabe</label>
+                    <input type="text" class="jwui-form-input" placeholder="Text eingeben">
+                </div>
+
+                <!-- Textarea -->
+                <div>
+                    <label class="jwui-form-label">Textbereich</label>
+                    <textarea class="jwui-form-textarea" rows="3" placeholder="Mehrzeiligen Text eingeben"></textarea>
+                </div>
+
+                <!-- Select -->
+                <div>
+                    <label class="jwui-form-label">Auswahlfeld</label>
+                    <select class="jwui-form-select">
+                        <option>Option 1</option>
+                        <option>Option 2</option>
+                        <option>Option 3</option>
+                    </select>
+                </div>
+
+                <!-- Checkbox -->
+                <div>
+                    <label class="jwui-form-checkbox-wrapper">
+                        <input type="checkbox" class="jwui-form-checkbox">
+                        <span class="jwui-form-checkbox-label">Kontrollkästchen-Option</span>
+                    </label>
+                </div>
+
+                <!-- Radio -->
+                <div class="space-y-2">
+                    <label class="jwui-form-radio-wrapper">
+                        <input type="radio" name="radio-group" class="jwui-form-radio">
+                        <span class="jwui-form-radio-label">Optionsfeld 1</span>
+                    </label>
+                    <label class="jwui-form-radio-wrapper">
+                        <input type="radio" name="radio-group" class="jwui-form-radio">
+                        <span class="jwui-form-radio-label">Optionsfeld 2</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Form Examples -->
+        <section>
+            <h2 class="jwui-section-title">Formular-Beispiele</h2>
+            <div class="mt-4 space-y-12">
+                <!-- Simple Form -->
+                <div class="space-y-4">
+                    <h3 class="jwui-h4">Einfaches Kontaktformular</h3>
+                    <form class="max-w-xl space-y-6">
+                        <div>
+                            <label class="jwui-form-label">Ihre Nachricht</label>
+                            <textarea class="jwui-form-textarea" rows="4"
+                                      placeholder="Was möchten Sie uns mitteilen?"></textarea>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button type="submit" class="jwui-button-default">Nachricht senden</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Complex Form -->
+                <div class="space-y-4">
+                    <h3 class="jwui-h4">Projekt-Erstellungsformular</h3>
+                    <form class="max-w-2xl space-y-8">
+                        <!-- Basic Information -->
+                        <div class="space-y-6">
+                            <h4 class="jwui-text font-semibold text-gray-700 dark:text-dark-200">Grundinformationen</h4>
+
+                            <div class="grid gap-6 sm:grid-cols-2">
+                                <div>
+                                    <label class="jwui-form-label">Projektname</label>
+                                    <input type="text" class="jwui-form-input" placeholder="Projektname eingeben">
+                                </div>
+
+                                <div>
+                                    <label class="jwui-form-label">Projekttyp</label>
+                                    <select class="jwui-form-select">
+                                        <option>Webanwendung</option>
+                                        <option>Mobile App</option>
+                                        <option>Desktop-Software</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="jwui-form-label">Projektbeschreibung</label>
+                                <textarea class="jwui-form-textarea" rows="3"
+                                          placeholder="Beschreiben Sie Ihr Projekt"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Team Members -->
+                        <div class="space-y-6">
+                            <h4 class="jwui-text font-semibold text-gray-700 dark:text-dark-200">Teammitglieder</h4>
+
+                            <div class="grid gap-6">
+                                <div class="sm:grid sm:grid-cols-[240px_1fr] sm:gap-4">
+                                    <label class="jwui-form-label sm:pt-2">Projektleiter</label>
+                                    <input type="text" class="jwui-form-input"
+                                           placeholder="Vollständiger Name des Projektleiters">
+                                </div>
+
+                                <div class="sm:grid sm:grid-cols-[240px_1fr] sm:gap-4">
+                                    <label class="jwui-form-label sm:pt-2">Technischer Ansprechpartner</label>
+                                    <input type="text" class="jwui-form-input"
+                                           placeholder="Vollständiger Name des technischen Ansprechpartners">
+                                </div>
+
+                                <div class="sm:grid sm:grid-cols-[240px_1fr] sm:gap-4">
+                                    <label class="jwui-form-label sm:pt-2">UI/UX Designer</label>
+                                    <input type="text" class="jwui-form-input"
+                                           placeholder="Vollständiger Name des Designers">
+                                </div>
+
+                                <div class="sm:grid sm:grid-cols-[240px_1fr] sm:gap-4">
+                                    <label class="jwui-form-label sm:pt-2">Qualitätssicherung</label>
+                                    <input type="text" class="jwui-form-input"
+                                           placeholder="Vollständiger Name des QA-Leiters">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Settings -->
+                        <div class="space-y-4">
+                            <h4 class="jwui-text font-semibold text-gray-700 dark:text-dark-200">
+                                Projekteinstellungen</h4>
+
+                            <div class="space-y-3">
+                                <label class="jwui-form-checkbox-wrapper">
+                                    <input type="checkbox" class="jwui-form-checkbox">
+                                    <span class="jwui-form-checkbox-label">Projekt öffentlich machen</span>
+                                </label>
+
+                                <label class="jwui-form-checkbox-wrapper">
+                                    <input type="checkbox" class="jwui-form-checkbox">
+                                    <span class="jwui-form-checkbox-label">Kollaborationsfunktionen aktivieren</span>
+                                </label>
+                            </div>
+
+                            <div class="space-y-2 mt-4">
+                                <div class="jwui-text-small mb-2">Benachrichtigungseinstellungen</div>
+                                <label class="jwui-form-radio-wrapper">
+                                    <input type="radio" name="notifications" class="jwui-form-radio">
+                                    <span class="jwui-form-radio-label">Alle Benachrichtigungen</span>
+                                </label>
+                                <label class="jwui-form-radio-wrapper">
+                                    <input type="radio" name="notifications" class="jwui-form-radio">
+                                    <span class="jwui-form-radio-label">Nur wichtige Benachrichtigungen</span>
+                                </label>
+                                <label class="jwui-form-radio-wrapper">
+                                    <input type="radio" name="notifications" class="jwui-form-radio">
+                                    <span class="jwui-form-radio-label">Keine Benachrichtigungen</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="flex items-center justify-end space-x-4 pt-4">
+                            <button type="button" class="jwui-button-as-link-default">Abbrechen</button>
+                            <button type="submit" class="jwui-button-default">Projekt erstellen</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Table -->
+        <section>
+            <h2 class="jwui-section-title">Tabelle</h2>
+            <div class="mt-4">
+                <table class="jwui-table">
+                    <thead>
+                    <tr>
+                        <th class="jwui-table-header">Spalte 1</th>
+                        <th class="jwui-table-header jwui-table-header-right">Spalte 2</th>
+                        <th class="jwui-table-header jwui-table-header-right">Spalte 3</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="jwui-content-table-row">
+                        <td class="jwui-table-cell">Zelle 1</td>
+                        <td class="jwui-table-cell jwui-table-cell-right">Zelle 2</td>
+                        <td class="jwui-table-cell jwui-table-cell-right">Zelle 3</td>
+                    </tr>
+                    <tr class="jwui-content-table-row">
+                        <td class="jwui-table-cell">Zelle 4</td>
+                        <td class="jwui-table-cell jwui-table-cell-right">Zelle 5</td>
+                        <td class="jwui-table-cell jwui-table-cell-right">Zelle 6</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Status Badges -->
+        <section>
+            <h2 class="jwui-section-title">Status-Kennzeichen</h2>
+            <div class="mt-4 space-y-4">
+                <div class="space-y-2">
+                    <h3 class="jwui-h4">Einfache Status-Kennzeichen</h3>
+                    <div class="space-x-4">
+                        <span class="jwui-badge jwui-badge-success">Erfolgreich</span>
+                        <span class="jwui-badge jwui-badge-warning">Warnung</span>
+                        <span class="jwui-badge jwui-badge-error">Fehler</span>
+                        <span class="jwui-badge jwui-badge-info">Info</span>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <h3 class="jwui-h4">Status-Kennzeichen Beispiele</h3>
+                    <div class="space-y-2">
+                        <div>
+                            <span class="jwui-badge jwui-badge-success">Abgeschlossen</span>
+                            <span class="jwui-text-small ml-2">Für erfolgreiche oder abgeschlossene Zustände</span>
+                        </div>
+                        <div>
+                            <span class="jwui-badge jwui-badge-warning">In Bearbeitung</span>
+                            <span class="jwui-text-small ml-2">Für laufende oder ausstehende Zustände</span>
+                        </div>
+                        <div>
+                            <span class="jwui-badge jwui-badge-error">Fehlgeschlagen</span>
+                            <span class="jwui-text-small ml-2">Für Fehler- oder Fehlzustände</span>
+                        </div>
+                        <div>
+                            <span class="jwui-badge jwui-badge-info">Wird verarbeitet</span>
+                            <span class="jwui-text-small ml-2">Für neutrale oder informative Zustände</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cards -->
+        <section>
+            <h2 class="jwui-section-title">Karten</h2>
+            <div class="mt-4 grid gap-6 sm:grid-cols-2">
+                <div class="jwui-card">
+                    <h3 class="jwui-card-title">Kartentitel</h3>
+                    <p class="jwui-card-text">Dies ist ein Karteninhalt, der ein grundlegendes Kartenlayout
+                        demonstriert.</p>
+                </div>
+                <div class="jwui-card-interactive">
+                    <h3 class="jwui-card-title">Interaktive Karte</h3>
+                    <p class="jwui-card-text">Diese Karte hat Hover- und Aktiv-Zustände.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
