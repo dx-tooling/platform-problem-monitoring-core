@@ -93,32 +93,48 @@ Main sections:
         }
 
         .stat-card {
-            background-color: #2d3748 !important;
-            border-color: #4a5568 !important;
+            background-color: #1f2937 !important;
+            border-color: #374151 !important;
         }
 
         .stat-card.new-problems {
-            background-color: #822727 !important;
-            border-color: #991b1b !important;
+            background-color: rgba(220, 38, 38, 0.2) !important;
+            border-color: #dc2626 !important;
         }
 
         .stat-card.increased-problems {
-            background-color: #744210 !important;
-            border-color: #8B5C14 !important;
+            background-color: rgba(217, 119, 6, 0.2) !important;
+            border-color: #d97706 !important;
         }
 
         .stat-card.decreased-problems {
-            background-color: #285e46 !important;
-            border-color: #2F6B4F !important;
+            background-color: rgba(5, 150, 105, 0.2) !important;
+            border-color: #059669 !important;
         }
 
         .stat-card.disappeared-problems {
-            background-color: #2a4365 !important;
-            border-color: #2C4B73 !important;
+            background-color: rgba(37, 99, 235, 0.2) !important;
+            border-color: #2563eb !important;
         }
 
         .stat-value {
             color: #f7fafc !important;
+        }
+
+        .stat-value.new-problems {
+            color: #ef4444 !important;
+        }
+
+        .stat-value.increased-problems {
+            color: #f59e0b !important;
+        }
+
+        .stat-value.decreased-problems {
+            color: #10b981 !important;
+        }
+
+        .stat-value.disappeared-problems {
+            color: #3b82f6 !important;
         }
 
         .stat-label {
@@ -126,44 +142,48 @@ Main sections:
         }
 
         .increased {
-            color: #fc8181 !important;
+            color: #f87171 !important;
         }
 
         .decreased {
-            color: #68d391 !important;
+            color: #34d399 !important;
         }
 
         .sample-links a {
-            color: #63b3ed !important;
+            color: #60a5fa !important;
         }
 
         .pattern-item {
             border-bottom-color: #4a5568 !important;
         }
 
+        .pattern-item.new-pattern {
+            background-color: rgba(239, 68, 68, 0.15) !important;
+            border-left: 4px solid #ef4444 !important;
+        }
+
+        .pattern-item.increased-pattern {
+            background-color: rgba(245, 158, 11, 0.15) !important;
+            border-left: 4px solid #f59e0b !important;
+        }
+
+        .pattern-item.decreased-pattern {
+            background-color: rgba(16, 185, 129, 0.15) !important;
+            border-left: 4px solid #10b981 !important;
+        }
+
+        .pattern-item.disappeared-pattern {
+            background-color: rgba(59, 130, 246, 0.15) !important;
+            border-left: 4px solid #3b82f6 !important;
+        }
+
         .button {
-            background-color: #4299e1 !important;
+            background-color: #3b82f6 !important;
             color: white !important;
         }
 
         .button:hover {
-            background-color: #3182ce !important;
-        }
-
-        .pattern-item.new-pattern {
-            background-color: rgba(130, 39, 39, 0.1) !important;
-        }
-
-        .pattern-item.increased-pattern {
-            background-color: rgba(116, 66, 16, 0.1) !important;
-        }
-
-        .pattern-item.decreased-pattern {
-            background-color: rgba(40, 94, 70, 0.1) !important;
-        }
-
-        .pattern-item.disappeared-pattern {
-            background-color: rgba(42, 67, 101, 0.1) !important;
+            background-color: #2563eb !important;
         }
     }
 
@@ -555,27 +575,27 @@ Main sections:
                 <h1 style="font-size: 24px; font-weight: 700; margin-top: 0; margin-bottom: 16px; color: #90cdf4;">Platform Problem Monitoring Report</h1>
                 <p class="text-sm" style="font-size: 14px; color: #e2e8f0;">Report generated at: {{TIMESTAMP}}</p>
 
-                <div class="stats-grid" style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
-                    <div class="stat-card" style="flex: 1; min-width: 120px; padding: 16px; background-color: #2d3748; border-radius: 6px; border: 1px solid #4a5568; text-align: center;">
-                        <div class="stat-value" style="font-size: 24px; font-weight: 700; margin-bottom: 4px; color: #f7fafc;">{{CURRENT_PATTERNS_COUNT}}</div>
-                        <div class="stat-label" style="font-size: 14px; color: #a0aec0;">Current Patterns</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">{{CURRENT_PATTERNS_COUNT}}</div>
+                        <div class="stat-label">Current Patterns</div>
                     </div>
-                    <div class="stat-card" style="flex: 1; min-width: 120px; padding: 16px; background-color: #2d3748; border-radius: 6px; border: 1px solid #4a5568; text-align: center;">
-                        <div class="stat-value" style="font-size: 24px; font-weight: 700; margin-bottom: 4px; color: #f7fafc;">{{PREVIOUS_PATTERNS_COUNT}}</div>
-                        <div class="stat-label" style="font-size: 14px; color: #a0aec0;">Previous Patterns</div>
+                    <div class="stat-card">
+                        <div class="stat-value">{{PREVIOUS_PATTERNS_COUNT}}</div>
+                        <div class="stat-label">Previous Patterns</div>
                     </div>
-                    <div class="stat-card" style="flex: 1; min-width: 120px; padding: 16px; background-color: #2d3748; border-radius: 6px; border: 1px solid #4a5568; text-align: center;">
-                        <div class="stat-value" style="font-size: 24px; font-weight: 700; margin-bottom: 4px; color: #f7fafc;">{{NEW_PATTERNS_COUNT}}</div>
-                        <div class="stat-label" style="font-size: 14px; color: #a0aec0;">New Patterns</div>
+                    <div class="stat-card new-problems">
+                        <div class="stat-value new-problems">{{NEW_PATTERNS_COUNT}}</div>
+                        <div class="stat-label">New Patterns</div>
                     </div>
-                    <div class="stat-card" style="flex: 1; min-width: 120px; padding: 16px; background-color: #2d3748; border-radius: 6px; border: 1px solid #4a5568; text-align: center;">
-                        <div class="stat-value" style="font-size: 24px; font-weight: 700; margin-bottom: 4px; color: #f7fafc;">{{DISAPPEARED_PATTERNS_COUNT}}</div>
-                        <div class="stat-label" style="font-size: 14px; color: #a0aec0;">Disappeared</div>
+                    <div class="stat-card disappeared-problems">
+                        <div class="stat-value disappeared-problems">{{DISAPPEARED_PATTERNS_COUNT}}</div>
+                        <div class="stat-label">Disappeared</div>
                     </div>
                 </div>
 
                 <div style="text-align: center; margin: 20px 0;">
-                    <a href="{{KIBANA_URL}}" class="button" style="display: inline-block; background-color: #4299e1; color: white; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-weight: 600; margin-top: 8px;">View in Kibana</a>
+                    <a href="{{KIBANA_URL}}" class="button">View in Kibana</a>
                 </div>
             </div>
 
