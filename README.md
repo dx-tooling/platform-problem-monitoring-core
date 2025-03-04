@@ -1,167 +1,163 @@
-# platform-problem-monitoring-core
+# Platform Problem Monitoring — Core Application
 
-A tool for monitoring platform problems using Elasticsearch logs. This application processes log messages, normalizes them, identifies patterns, and sends email reports about potential issues.
+A proactive monitoring solution that automatically analyzes your Elasticsearch logs, detects patterns, and delivers concise email reports about your platform's health.
 
-## Overview
+## What This Tool Does
 
-The platform-problem-monitoring-core application is a command-line tool that:
+Platform Problem Monitoring Core helps platform engineers and system administrators by:
 
-1. Downloads log data from Elasticsearch
-2. Extracts relevant fields from log messages
-3. Normalizes messages to identify patterns
-4. Compares current patterns with previous runs
-5. Generates and sends email reports about identified issues
+- **Detecting problems automatically** — Identifies errors, exceptions, and warnings in your logs without manual searching
+- **Recognizing patterns** — Normalizes similar log messages to reveal systemic issues
+- **Tracking changes over time** — Compares current issues with previous runs to show what's new, increasing, or decreasing
+- **Delivering digestible reports** — Sends clear, well-formatted email reports with Kibana links to examples
 
-The application is designed to be modular, with each step implemented as a separate script that can be run independently or as part of a pipeline.
+![Example of email report - illustration only](docs/images/report-example.png)
 
-## Installation
+## Is This Tool Right For You?
 
-### Prerequisites
+This tool is ideal if:
 
-- Python 3.8 or higher
-- Access to an Elasticsearch server
-- SMTP server for sending emails
-- AWS S3 access (for storing state between runs)
+- You already have an ELK (Elasticsearch, Logstash, Kibana) stack collecting logs
+- You want automated, periodic health assessments of your platform
+- You prefer receiving digestible summaries rather than real-time alerts
+- You need to understand patterns and trends in your platform's problems
 
-### Setting Up a Virtual Environment
+## Prerequisites
 
-It's strongly recommended to use a virtual environment for this application to isolate its dependencies from other Python projects and your system Python installation.
+- **Python 3.8+** installed on the host system
+- **Network access** to:
+  - Your Elasticsearch server
+  - An AWS S3 bucket (for state storage between runs)
+  - An SMTP server (for sending reports)
+- **Credentials** for all these services
 
-1. First, make sure you have the `venv` module installed:
-   ```bash
-   # On Debian/Ubuntu
-   sudo apt-get install python3-venv
-   
-   # On macOS (using Homebrew)
-   brew install python3
-   ```
+## Quick Start
 
-2. Create a virtual environment in the project directory:
-   ```bash
-   # Navigate to the project directory
-   cd platform-problem-monitoring-core
-   
-   # Create a virtual environment named 'venv'
-   python3 -m venv venv
-   ```
-
-3. Activate the virtual environment:
-   ```bash
-   # On macOS/Linux
-   source venv/bin/activate
-   
-   # On Windows
-   venv\Scripts\activate
-   ```
-   
-   When the virtual environment is activated, your command prompt will be prefixed with `(venv)`.
-
-4. To deactivate the virtual environment when you're done working with the application:
-   ```bash
-   deactivate
-   ```
-
-### Install from Source
-
-1. Clone the repository:
+1. **Clone the repository:**
    ```bash
    git clone <repository-url>
    cd platform-problem-monitoring-core
    ```
 
-2. Create and activate a virtual environment as described above.
+2. **Set up a virtual environment:**
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
-3. Install the package:
+3. **Install the package:**
    ```bash
    pip3 install -e .
    ```
 
-4. For development, install development dependencies:
+4. **Create a configuration file:**
    ```bash
-   pip3 install -e ".[dev]"
+   cp src/platform_problem_monitoring_core.conf.dist platform_problem_monitoring_core.conf
    ```
 
-### Dependency Management
+5. **Edit the configuration:**
+   ```
+   REMOTE_STATE_S3_BUCKET_NAME="your-s3-bucket"
+   REMOTE_STATE_S3_FOLDER_NAME="platform-monitoring"
+   
+   ELASTICSEARCH_SERVER_BASE_URL="https://your-elasticsearch-server:9200"
+   ELASTICSEARCH_LUCENE_QUERY_FILE_PATH="path/to/lucene_query.json"
+   
+   KIBANA_DISCOVER_BASE_URL="https://your-kibana-server:5601"
+   KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE="https://your-kibana-server:5601/app/discover#/doc/logstash-*/{{index}}?id={{id}}"
+   
+   SMTP_SERVER_HOSTNAME="smtp.example.com"
+   SMTP_SERVER_PORT="587"
+   SMTP_SERVER_USERNAME="your-smtp-username"
+   SMTP_SERVER_PASSWORD="your-smtp-password"
+   SMTP_SENDER_ADDRESS="monitoring@example.com"
+   SMTP_RECEIVER_ADDRESS="alerts@example.com"
+   ```
 
-Dependencies are managed through the `pyproject.toml` file at the root of the project. The application uses modern Python packaging with PEP 621 standards. Key dependencies include:
+6. **Set up the Elasticsearch query:**
+   ```bash
+   cp src/lucene_query.json.dist lucene_query.json
+   ```
+   
+   This default query looks for error messages while filtering out noise:
+   ```json
+   {
+       "query": {
+           "bool": {
+               "should": [
+                   { "match": { "message": "error" } },
+                   { "match": { "message": "failure" } },
+                   { "match": { "message": "critical" } },
+                   { "match": { "message": "alert" } },
+                   { "match": { "message": "exception" } }
+               ],
+               "must_not": [
+                   { "match": { "message": "User Deprecated" } },
+                   { "match": { "message": "logstash" } },
+                   { "term": { "syslog_program": "dd.collector" } }
+               ],
+               "minimum_should_match": 1
+           }
+       }
+   }
+   ```
 
-- **elasticsearch**: For connecting to and querying Elasticsearch servers
-- **boto3**: For AWS S3 interactions to store state between runs
-- **drain3**: For log message normalization and pattern detection
-- **jinja2**: For templating (used in email generation)
-- **argparse**: For command-line argument parsing
+7. **Run the tool:**
+   ```bash
+   ./src/run.sh ./platform_problem_monitoring_core.conf
+   ```
 
-Development dependencies include testing tools (pytest), code formatting (black), linting (flake8), and type checking (mypy).
+## How It Works
 
-If you need to add a new dependency:
+When executed, the tool:
 
-1. Add it to the `dependencies` list in `pyproject.toml`
-2. Reinstall the package with `pip3 install -e .`
+1. **Prepares the environment** by creating a temporary work directory
+2. **Downloads previous state** from S3 (for comparison)
+3. **Queries Elasticsearch** for new problem-related log messages since the last run
+4. **Extracts relevant fields** from the returned documents
+5. **Normalizes messages** by replacing dynamic parts like UUIDs, timestamps, and specific values with placeholders
+6. **Compares current patterns** with the previous run to identify new, increased, and decreased issues
+7. **Generates an email report** with detailed information about all identified issues
+8. **Sends the report** via your configured SMTP server
+9. **Stores the current state** in S3 for the next run
+10. **Cleans up** temporary files
 
-Example of adding a new dependency:
-```toml
-dependencies = [
-    "elasticsearch>=8.0.0",
-    "boto3>=1.28.0",
-    "drain3>=0.9.6",
-    "jinja2>=3.0.0",
-    "argparse>=1.4.0",
-    "new-package>=1.0.0",  # New dependency
-]
-```
+## Common Configuration Scenarios
 
-## Configuration
+### Example: Monitoring a Kubernetes Cluster
 
-The application uses a configuration file with environment variable-style settings. Copy the template and modify it:
-
-```bash
-cp src/platform_problem_monitoring_core.conf.dist platform_problem_monitoring_core.conf
-```
-
-Edit the configuration file to include your specific settings:
-
-```
-REMOTE_STATE_S3_BUCKET_NAME="your-s3-bucket"
-REMOTE_STATE_S3_FOLDER_NAME="platform-monitoring"
-
-ELASTICSEARCH_SERVER_BASE_URL="https://your-elasticsearch-server:9200"
-ELASTICSEARCH_LUCENE_QUERY_FILE_PATH="path/to/lucene_query.json"
-
-KIBANA_DISCOVER_BASE_URL="https://your-kibana-server:5601"
-
-SMTP_SERVER_HOSTNAME="smtp.example.com"
-SMTP_SERVER_PORT="587"
-SMTP_SERVER_USERNAME="your-smtp-username"
-SMTP_SERVER_PASSWORD="your-smtp-password"
-SMTP_SENDER_ADDRESS="monitoring@example.com"
-SMTP_RECEIVER_ADDRESS="alerts@example.com"
-```
-
-You'll also need to configure the Elasticsearch query. A template is provided:
-
-```bash
-cp src/lucene_query.json.dist lucene_query.json
-```
-
-The default query looks for error messages and exceptions while excluding certain noise:
+For a Kubernetes deployment, you might want to focus on pod-related errors:
 
 ```json
 {
     "query": {
         "bool": {
             "should": [
-                { "match": { "message": "error" } },
-                { "match": { "message": "failure" } },
-                { "match": { "message": "critical" } },
-                { "match": { "message": "alert" } },
-                { "match": { "message": "exception" } }
+                { "match": { "kubernetes.pod.name": "*" } },
+                { "match_phrase": { "message": "error" } },
+                { "match_phrase": { "message": "exception" } }
             ],
             "must_not": [
-                { "match": { "message": "User Deprecated" } },
-                { "match": { "message": "logstash" } },
-                { "term": { "syslog_program": "dd.collector" } },
-                { "term": { "syslog_program": "dd.forwarder" } },
-                { "term": { "syslog_program": "dd.dogstatsd" } }
+                { "match": { "message": "liveness probe failed" } }
+            ],
+            "minimum_should_match": 2
+        }
+    }
+}
+```
+
+### Example: Monitoring Web Services
+
+For web services, you might focus on HTTP errors and performance issues:
+
+```json
+{
+    "query": {
+        "bool": {
+            "should": [
+                { "range": { "http.response.status_code": { "gte": 500 } } },
+                { "range": { "response_time_ms": { "gte": 1000 } } },
+                { "match_phrase": { "message": "timed out" } }
             ],
             "minimum_should_match": 1
         }
@@ -169,102 +165,70 @@ The default query looks for error messages and exceptions while excluding certai
 }
 ```
 
-## Usage
+## Scheduled Monitoring
 
-The application consists of 10 modular steps that can be run individually or as part of a complete pipeline.
-
-### Running the Complete Pipeline
-
-The simplest way to run the application is using the provided shell script:
+To run the tool periodically, set up a cron job:
 
 ```bash
-./src/run.sh ./platform_problem_monitoring_core.conf
+# Run every 6 hours
+0 */6 * * * cd /path/to/platform-problem-monitoring-core && ./src/run.sh ./platform_problem_monitoring_core.conf >> /var/log/platform-monitoring.log 2>&1
 ```
 
-This will execute all steps in sequence, using the configuration file you provided.
+## Advanced Configuration
 
-### Running Individual Steps
+### Customizing Email Reports
 
-Each step can be run independently with specific command-line arguments, from folder `src/`:
-
-1. **Prepare Environment**:
-   ```bash
-   python3 -m platform_problem_monitoring_core.step1_prepare
-   ```
-
-2. **Download Previous State**:
-   ```bash
-   python3 -m platform_problem_monitoring_core.step2_download_previous_state --s3-bucket your-bucket --s3-folder your-folder --date-time-file data/previous_date_time.txt --norm-results-file data/previous_norm_results.json
-   ```
-
-3. **Download Logstash Documents**:
-   ```bash
-   python3 -m platform_problem_monitoring_core.step3_download_logstash_documents --elasticsearch-url https://your-elasticsearch-server:9200 --query-file queries/default_query.json --start-date-time-file data/previous_date_time.txt --output-file data/logstash_documents.json --current-date-time-file data/current_date_time.txt
-   ```
-
-4. **Extract Fields**:
-   ```bash
-   python3 -m platform_problem_monitoring_core.step4_extract_fields --logstash-file data/logstash_documents.json --output-file data/extracted_fields.json
-   ```
-
-5. **Normalize Messages**:
-   ```bash
-   python3 -m platform_problem_monitoring_core.step5_normalize_messages --fields-file data/extracted_fields.json --output-file data/norm_results.json
-   ```
-6. **Compare Normalizations**:
-   ```bash
-   python3 -m platform_problem_monitoring_core.step6_compare_normalizations --current-file data/norm_results.json --previous-file data/previous_norm_results.json --output-file data/comparison_results.json
-   ```
-
-7. **Generate Email Bodies**:
-   ```bash
-   python3 -m platform_problem_monitoring_core.step7_generate_email_bodies --comparison-file data/comparison_results.json --norm-results-file data/norm_results.json --html-output data/email_body.html --text-output data/email_body.txt --kibana-url https://your-kibana-server:5601
-   ```
-
-8. **Send Email Report**:
-   ```bash
-   python3 -m platform_problem_monitoring_core.step8_send_email_report --html-file data/email_body.html --text-file data/email_body.txt --subject "Platform Monitoring Report" --smtp-host smtp.example.com --smtp-port 587 --smtp-user your-username --smtp-pass your-password --sender monitoring@example.com --receiver alerts@example.com
-   ```
-
-9. **Store New State**:
-   ```bash
-   python3 -m platform_problem_monitoring_core.step9_store_new_state --s3-bucket your-bucket --s3-folder your-folder --date-time-file data/current_date_time.txt --norm-results-file data/norm_results.json
-   ```
-
-10. **Clean Up**:
-    ```bash
-    python3 -m platform_problem_monitoring_core.step10_cleanup --work-dir /path/to/temp/work/dir
-    ```
-
-## Error Handling
-
-The application includes robust error handling that will send immediate email notifications when errors occur. This ensures that you're aware of any issues with the monitoring process itself. The error reporting functionality is implemented in a dedicated `send_error_email.py` script, separate from the regular email reporting.
-
-## Performance Considerations
-
-The application is designed to handle large volumes of log data, potentially up to multiple millions of Elasticsearch logstash documents between runs. It uses streaming and pagination techniques when interacting with Elasticsearch to prevent memory or resource exhaustion.
-
-## Development
-
-### Running Tests
+You can customize the appearance of email reports by modifying the HTML template:
 
 ```bash
-pytest
+cp src/platform_problem_monitoring_core/templates/email_template.html.dist my_custom_template.html
 ```
 
-### Code Formatting
+Then update your configuration to use the custom template:
 
-```bash
-black src tests
+```
+EMAIL_HTML_TEMPLATE_PATH="/path/to/my_custom_template.html"
 ```
 
-### Type Checking
+### Configuring AWS Credentials
 
-```bash
-mypy src
-```
+The tool uses boto3's default credential resolution. You can:
+
+1. Set environment variables: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
+2. Use a shared credentials file (`~/.aws/credentials`)
+3. Use IAM roles if running on EC2 instances
+
+## Troubleshooting
+
+### No Reports Being Sent
+
+1. Check Elasticsearch connectivity: `curl -X GET https://your-elasticsearch-server:9200/_cat/indices`
+2. Verify S3 bucket permissions
+3. Test SMTP settings: `python -m smtplib -d smtp.example.com:587`
+4. Check your query matches actual log patterns
+
+### Reports Missing Expected Issues
+
+1. Test your Elasticsearch query directly in Kibana
+2. Check the date range - are you missing events due to time zone issues?
+3. Adjust the Lucene query to be more inclusive
+
+### Performance Issues
+
+For large log volumes:
+
+1. Increase the time between runs to process more logs at once
+2. Optimize your Elasticsearch query with more specific filters
+3. Ensure the host running the tool has sufficient memory
+
+## Getting Help
+
+If you encounter problems or have questions, please:
+
+1. Check the detailed logs in your temporary work directory
+2. Open an issue in our repository with your configuration (with sensitive data removed)
+3. Include error messages and steps to reproduce the issue
 
 ## License
 
 Proprietary - All rights reserved.
-
