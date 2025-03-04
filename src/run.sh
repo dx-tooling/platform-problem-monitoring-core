@@ -25,8 +25,10 @@ WORK_DIR=""
 START_DATE_TIME_FILE=""
 CURRENT_DATE_TIME_FILE=""
 LOGSTASH_DOCUMENTS_FILE=""
+EXTRACTED_FIELDS_FILE=""
 NORM_RESULTS_PREV_FILE=""
 NORM_RESULTS_FILE=""
+COMPARISON_RESULTS_FILE=""
 
 echo "Starting Platform Problem Monitoring process..."
 
@@ -48,8 +50,10 @@ echo "Work directory created: $WORK_DIR"
 START_DATE_TIME_FILE="$WORK_DIR/start_date_time.txt"
 CURRENT_DATE_TIME_FILE="$WORK_DIR/current_date_time.txt"
 LOGSTASH_DOCUMENTS_FILE="$WORK_DIR/logstash_documents.json"
+EXTRACTED_FIELDS_FILE="$WORK_DIR/extracted_fields.jsonl"
 NORM_RESULTS_PREV_FILE="$WORK_DIR/norm_results_prev.json"
 NORM_RESULTS_FILE="$WORK_DIR/norm_results.json"
+COMPARISON_RESULTS_FILE="$WORK_DIR/comparison_results.json"
 
 # Step 2: Download previous state
 echo "Step 2: Downloading previous state..."
@@ -78,10 +82,39 @@ if [ $? -ne 0 ]; then
 fi
 echo "Logstash documents downloaded successfully"
 
-# Create an empty normalization results file (temporary until steps 4-5 are implemented)
-echo "Creating temporary empty normalization results file..."
-echo "" > "$NORM_RESULTS_FILE"
-echo "Empty normalization results file created at $NORM_RESULTS_FILE"
+# Step 4: Extract fields from logstash documents
+echo "Step 4: Extracting fields from logstash documents..."
+python -m platform_problem_monitoring_core.step4_extract_fields \
+    --logstash-file "$LOGSTASH_DOCUMENTS_FILE" \
+    --output-file "$EXTRACTED_FIELDS_FILE"
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to extract fields"
+    exit 1
+fi
+echo "Fields extracted successfully"
+
+# Step 5: Normalize messages
+echo "Step 5: Normalizing messages..."
+python -m platform_problem_monitoring_core.step5_normalize_messages \
+    --fields-file "$EXTRACTED_FIELDS_FILE" \
+    --output-file "$NORM_RESULTS_FILE"
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to normalize messages"
+    exit 1
+fi
+echo "Messages normalized successfully"
+
+# Step 6: Compare normalizations
+echo "Step 6: Comparing normalization results..."
+python -m platform_problem_monitoring_core.step6_compare_normalizations \
+    --current-file "$NORM_RESULTS_FILE" \
+    --previous-file "$NORM_RESULTS_PREV_FILE" \
+    --output-file "$COMPARISON_RESULTS_FILE"
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to compare normalization results"
+    exit 1
+fi
+echo "Normalization results compared successfully"
 
 # Step 9: Store new state
 echo "Step 9: Storing new state..."
@@ -96,10 +129,13 @@ if [ $? -ne 0 ]; then
 fi
 echo "New state stored successfully"
 
-echo "Steps 1-3 and 9 completed successfully"
+echo "Steps 1-6 and 9 completed successfully"
 echo "Work directory: $WORK_DIR"
 echo "Downloaded documents: $LOGSTASH_DOCUMENTS_FILE"
+echo "Extracted fields: $EXTRACTED_FIELDS_FILE"
+echo "Normalization results: $NORM_RESULTS_FILE"
+echo "Comparison results: $COMPARISON_RESULTS_FILE"
 
-# The script would continue with steps 4-8 and 10 in a complete implementation
+# The script would continue with steps 7-8 and 10 in a complete implementation
 
 exit 0
