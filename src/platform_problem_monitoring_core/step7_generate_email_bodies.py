@@ -109,20 +109,19 @@ def generate_sample_links_html(pattern: Dict[str, Any], kibana_url: Optional[str
     Returns:
         HTML string for the sample links
     """
-    # Skip if no deeplink structure or no sample documents
-    if (not kibana_url and not kibana_deeplink_structure) or "sample_doc_references" not in pattern or not pattern["sample_doc_references"]:
+    # Skip if no sample documents
+    if "sample_doc_references" not in pattern or not pattern["sample_doc_references"]:
+        return ""
+
+    # Skip if no way to generate links
+    if not kibana_url and not kibana_deeplink_structure:
         return ""
 
     templates = load_html_template()
     sample_links_template = templates.get('sample-links-template', '')
-    
-    if dark_mode:
-        sample_link_item_template = templates.get('dark-sample-link-item-template', '')
-    else:
-        sample_link_item_template = templates.get('sample-link-item-template', '')
+    sample_link_item_template = templates.get('dark-sample-link-item-template' if dark_mode else 'sample-link-item-template', '')
 
     sample_links_list = ""
-    sample_links_list_dark = ""
 
     for j, doc_ref in enumerate(pattern["sample_doc_references"][:5], 1):
         # Handle doc_ref as a string in format "index:id"
@@ -154,11 +153,9 @@ def generate_sample_links_html(pattern: Dict[str, Any], kibana_url: Optional[str
             link_html = link_html.replace("{{COMMA}}", comma)
 
             sample_links_list += link_html
-            sample_links_list_dark += link_html
 
     if sample_links_list:
         result = sample_links_template.replace("{{SAMPLE_LINKS_LIST}}", sample_links_list)
-        result = result.replace("{{SAMPLE_LINKS_LIST_DARK}}", sample_links_list_dark)
         return result
 
     return ""

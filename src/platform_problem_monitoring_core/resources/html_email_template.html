@@ -431,8 +431,9 @@ Main sections:
 
     .sample-links {
         margin-top: 8px;
-        margin-left: 38px;
+        margin-right: 8px;
         font-size: 13px;
+        text-align: right;
     }
 
     .sample-links a {
@@ -720,6 +721,23 @@ Main sections:
     </div>
     {{SAMPLE_LINKS}}
 </div>
+</template>
+
+<!-- Dark Mode Sample Link Item Template -->
+<template id="dark-sample-link-item-template">
+<a href="{{KIBANA_LINK}}" style="color: #63b3ed; text-decoration: none;">Sample {{INDEX}}</a>{{COMMA}}
+</template>
+
+<!-- Sample Links Container Template -->
+<template id="sample-links-template">
+<div class="sample-links">
+    {{SAMPLE_LINKS_LIST}}
+</div>
+</template>
+
+<!-- Sample Link Item Template -->
+<template id="sample-link-item-template">
+<a href="{{KIBANA_LINK}}" style="color: #3182ce; text-decoration: none;">Sample {{INDEX}}</a>{{COMMA}}
 </template>
 
 <!-- Dark Mode Sample Link Item Template -->
