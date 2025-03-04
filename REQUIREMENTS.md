@@ -71,24 +71,58 @@ These are the steps that as a whole form the complete process end-to-end:
 
 1. Prepare environment for a process run
    - Inputs: none
-   - Operation: Verification that all requirements for a run a fulfilled, creation of a temporary work folder on the local file system
+   - Main operations & side effects:
+     - verification that all requirements for a run are fulfilled
+     - creation of a temporary work folder on the local file system
    - Outputs:
-     - The path to the temporary work folder
+     - the path to the temporary work folder
 2. Download previous run state
    - Inputs:
-     - The path to the temporary work folder from step 1
-     - The name of the S3 bucket used for state persistence
-     - The name of the S3 subfolder where state is stored
-   - Operation:
-     - Stored state is downloaded into the local temporary work folder
-   - Outputs: the path
+     - the name of the S3 bucket used for state persistence
+     - the name of the S3 subfolder where state is stored
+     - the local file path to use for storing a copy of the "date and time of Elasticsearch download from latest run" state file
+     - the local file path to use for storing a copy of the "messages summary from latest run" state file
+   - Main operations & side effects:
+     - stored state is downloaded into the local temporary work folder
+   - Outputs: none (besides exit code)
 3. Download logstash documents
    - Inputs:
+     - the date and time from which to start downloading messages
      - the HTTP base URL of an Elasticsearch server
-     - the date and time of the previous run's Elasticsearch download
      - the path to a local JSON file that holds the Lucene query definition that defines how to find "problem-related" logstash messages
-   - Operation:
-     - All inputs are used to download all relevant logstash messages from the Elasticsearch server that were added since the previous run
+     - the local file path to use for storing the downloaded logstash messages in JSON format
+     - the local file path to use for storing the "date and time of Elasticsearch download" information
+   - Main operations & side effects:
+      - the inputs are used to download, into the target file, all relevant logstash messages from the Elasticsearch server
+      - the date and time of this download is stored into a new file at the provided date and time file path
+   - Outputs: none (besides exit code)
+4. Extract relevant fields from the logstash documents
+   - Inputs:
+     - the path to a local logstash message documents JSON file
+     - the local file path to use for storing the extracted fields
+   - Main operations & side effects:
+     - from each logstash document in the provided file, the Elasticsearch index name, the Elasticsearch document id, and the logstash message field is extracted and written into a single like of the target file
+   - Outputs: none (besides exit code)
+5. Summarize messages
+   - Inputs:
+      - the path to a local extracted logstash fields file
+      - the local file path to use for storing the summary results
+   - Main operations & side effects:
+      - Using the drain3 library, messages in the input file are normalized, and identical normalized messages are summarized into one line item in the results file that carries the normalized message, the number of messages that match this normalized message, and up to 5 Elasticsearch index names and document ids that are examples of messages matching the normalized message
+   - Outputs: none (besides exit code)
+6. Generate summary comparison
+   - Inputs:
+     - the path to a local summary results file ("new summary results")
+     - the path to a local summary results file ("previous summary results")
+     - the path to a summary comparison results file
+   - Main operations & side effects:
+     - both input files are compared, and the results of this comparison are written to the comparison results file
+     - the comparison needs to detect:
+       - what are new normalized messages that are found in the new summary results, but not in the previous summary results?
+       - what are disappeared normalized messages that are found in the previous summary results, but not in the new summary results?
+       - what are normalized messages that increased in numbers since the previous run, and by how much? 
+       - what are normalized messages that decreased in numbers since the previous run, and by how much?
+     - all comparisons must be sorted descending by either the number of matching messages (for new and disappeared normalized message) or descending by amount percentual change (for increased and decreased normalized messages)
 
-
-Each of these 
+Each of these steps is a Python 3 script that can execute its operation in isolation when given correct inputs.
+The different step scripts do not include or call each other. However, any functionality that is worth sharing between these scripts, can be implemented in a shared library which the different step scripts use as needed.
