@@ -1,1 +1,13 @@
 .idea/
+venv/
+src/platform_problem_monitoring_core.conf
+src/lucene_query.json
+
+# Python package build artifacts
+*.egg-info/
+*.egg
+dist/
+build/
+__pycache__/
+*.py[cod]
+*$py.class
