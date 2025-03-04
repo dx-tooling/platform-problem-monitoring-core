@@ -93,13 +93,36 @@ inputs are available.
 These are the steps that as a whole form the complete process end-to-end:
 
 1. Prepare environment for a process run
+2. Download previous run state
+3. Download logstash documents
+4. Extract relevant fields from the logstash documents
+5. Normalize messages
+6. Generate normalization results comparison
+7. Generate report email HTML body
+8. Send email report
+9. Store new run state
+10. Clean up work environment
+
+Each of these steps is a Python 3 script that can execute its operation in isolation when given correct inputs.
+
+The different step scripts do not include or call each other.
+
+However, any functionality that is worth sharing between these scripts, will be implemented in a shared library which
+the different step scripts will use as needed.
+
+
+## Low-level: the process in detail
+
+Here is a blow-by-blow description for all process steps that lead to a new report email, with their respective Inputs, Main operations & side effects, and Outputs:
+
+1. Prepare environment for a process run - file step1_prepare.py
     - Inputs: none
     - Main operations & side effects:
         - verification that all requirements for a run are fulfilled
         - creation of a temporary work folder on the local file system
     - Outputs:
-        - the path to the temporary work folder
-2. Download previous run state
+        - the path to the temporary work folder - step2_download_previous_state.py
+2. Download previous run state - file step1_prepare.py
     - Inputs:
         - the name of the S3 bucket used for state persistence
         - the name of the S3 subfolder where state is stored
@@ -109,7 +132,7 @@ These are the steps that as a whole form the complete process end-to-end:
     - Main operations & side effects:
         - stored state is downloaded into the local temporary work folder
     - Outputs: none (besides exit code and progress, success, and error messages)
-3. Download logstash documents
+3. Download logstash documents - file step3_download_logstash_documents.py
     - Inputs:
         - the date and time from which to start downloading messages
         - the HTTP base URL of an Elasticsearch server
@@ -122,7 +145,7 @@ These are the steps that as a whole form the complete process end-to-end:
           server
         - the date and time of this download is stored into a new file at the provided date and time file path
     - Outputs: none (besides exit code and progress, success, and error messages)
-4. Extract relevant fields from the logstash documents
+4. Extract relevant fields from the logstash documents - file step4_extract_fields.py
     - Inputs:
         - the path to a logstash message documents JSON file
         - the file path to use for storing the extracted fields
@@ -130,7 +153,7 @@ These are the steps that as a whole form the complete process end-to-end:
         - from each logstash document in the provided file, the Elasticsearch index name, the Elasticsearch document id,
           and the logstash message field is extracted and written into a single like of the target file
     - Outputs: none (besides exit code and progress, success, and error messages)
-5. Normalize messages
+5. Normalize messages - file step5_normalize_messages.py
     - Inputs:
         - the path to a extracted logstash fields file
         - the local file path to use for storing the normalization results
@@ -140,7 +163,7 @@ These are the steps that as a whole form the complete process end-to-end:
           messages that match this normalized message, and c) up to 5 Elasticsearch index names and document ids that
           represent examples of messages matching this normalized message
     - Outputs: none (besides exit code and progress, success, and error messages)
-6. Generate normalization results comparison
+6. Generate normalization results comparison - file step6_compare_normalizations.py
     - Inputs:
         - the path to a normalization results file (with the "new" normalization results)
         - the path to a normalization results file (with the "previous" normalization results)
@@ -159,7 +182,7 @@ These are the steps that as a whole form the complete process end-to-end:
               result (for new and disappeared normalized message) or descending by the amount of percentual change (for
               increased and decreased normalization results)
     - Outputs: none (besides exit code and progress, success, and error messages)
-7. Generate report email HTML body
+7. Generate report email HTML body - file step7_generate_email_bodies.py
     - Inputs:
         - the path to a normalized messages comparison results file
         - the path to a normalization results file
@@ -173,7 +196,7 @@ These are the steps that as a whole form the complete process end-to-end:
           deep links to message samples matching the normalized message (using the Elasticsearch index name and
           Elasticsearch document id from the normalization results file)
     - Outputs: none (besides exit code and progress, success, and error messages)
-8. Send email report
+8. Send email report - step8_send_email_report.py
     - Inputs:
         - the path to an HTML version of the email message body
         - the path to a plaintext version of the resulting email message body
@@ -187,7 +210,7 @@ These are the steps that as a whole form the complete process end-to-end:
     - Main operations & side effects:
         - sends off the email based on the inputs
     - Outputs: none (besides exit code and progress, success, and error messages)
-9. Store new run state
+9. Store new run state - step9_store_new_state.py
     - Inputs:
         - the name of the S3 bucket used for state persistence
         - the name of the S3 subfolder where state is stored
@@ -196,19 +219,12 @@ These are the steps that as a whole form the complete process end-to-end:
     - Main operations & side effects:
         - local state is uploaded to the remote S3 location
     - Outputs: none (besides exit code and progress, success, and error messages)
-10. Clean up work environment
+10. Clean up work environment - step10_cleanup.py
     - Inputs:
         - the path to a local folder
     - Main operations & side effects:
         - remove the local folder
     - Outputs: none (besides exit code and progress, success, and error messages)
-
-Each of these steps is a Python 3 script that can execute its operation in isolation when given correct inputs.
-
-The different step scripts do not include or call each other.
-
-However, any functionality that is worth sharing between these scripts, will be implemented in a shared library which
-the different step scripts will use as needed.
 
 The aforementioned run.sh shell script is able to read a configuration file with the following structure:
 
@@ -225,12 +241,14 @@ SMTP_SERVER_PASSWORD=""
 SMTP_SENDER_ADDRESS=""
 SMTP_RECEIVER_ADDRESS=""
 
-If this configuration is stored in a file called platform_problem_monitoring.conf, then the run.sh script can be called
-as `run.sh ./platform_problem_monitoring.conf` and will make use of these parameters when executing the different step
+If this configuration is stored in a file called platform_problem_monitoring_core.conf, then the run.sh script can be called
+as `run.sh ./platform_problem_monitoring_core.conf` and will make use of these parameters when executing the different step
 scripts.
 
 Other parameters that are relevant between step script executions, like for example the name of the JSON file where
 downloaded logstash documents are stored, are hardcoded within the run.sh shell script (but paths of intermediate result
 files are of course located within the temporary work folder created in step 1).
 
+The resulting Python and Bash code must be clean, well documented, with concise and comprehensible naming.
 
+Parameters for scripts that take more than one parameter must always be name-based, not position-based, (that is, `step5_normalize_messages.py --logstash-fields-file=foo.txt --results-file=bar.txt`, not `step5_normalize_messages.py foo.txt bar.txt`)
