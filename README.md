@@ -1,5 +1,8 @@
 # Platform Problem Monitoring — Core Application
 
+[![Tests](https://github.com/dx-tooling/platform-problem-monitoring-core/actions/workflows/tests.yml/badge.svg)](https://github.com/dx-tooling/platform-problem-monitoring-core/actions/workflows/tests.yml)
+[![Code Quality](https://github.com/dx-tooling/platform-problem-monitoring-core/actions/workflows/code-quality.yml/badge.svg)](https://github.com/dx-tooling/platform-problem-monitoring-core/actions/workflows/code-quality.yml)
+
 A proactive monitoring solution that automatically analyzes your Elasticsearch logs, detects patterns, and delivers concise email reports about your platform's health.
 
 tbd: visualization: "your ELK stack ---> now gets an awesome email report"
