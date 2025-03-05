@@ -509,6 +509,20 @@ def generate_decreased_pattern_list_text(patterns: List[Dict[str, Any]]) -> str:
     return text
 
 
+# Define a function to get the count safely with a proper return type
+def get_count(pattern: Dict[str, Any]) -> int:
+    """Safely get the count from a pattern dictionary.
+
+    Args:
+        pattern: The pattern dictionary.
+
+    Returns:
+        The count as an integer (defaults to 0 if missing).
+    """
+    count = pattern.get("count", 0)
+    return 0 if count is None else int(count)
+
+
 def generate_email_bodies(
     comparison_file: str,
     norm_results_file: str,
@@ -545,9 +559,7 @@ def generate_email_bodies(
     norm_results = load_json(norm_results_file)
 
     # Get the top 25 patterns from the normalization results
-    top_patterns = sorted(
-        norm_results.get("patterns", []), key=lambda x: x.get("count", 0), reverse=True
-    )[:25]
+    top_patterns = sorted(norm_results.get("patterns", []), key=get_count, reverse=True)[:25]
 
     # Extract data from comparison results
     current_patterns_count = comparison.get("current_patterns_count", 0)

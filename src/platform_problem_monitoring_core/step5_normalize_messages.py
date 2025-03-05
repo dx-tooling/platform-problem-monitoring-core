@@ -6,7 +6,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, TypedDict
 
 from drain3 import TemplateMiner
 from drain3.masking import MaskingInstruction
@@ -282,6 +282,18 @@ def post_process_template(template: str) -> str:
     return template
 
 
+class PatternResult(TypedDict):
+    """Type for pattern results."""
+
+    cluster_id: str
+    count: int
+    pattern: str
+    first_seen: str
+    last_seen: str
+    sample_log_lines: List[str]
+    sample_doc_references: List[str]
+
+
 def _process_document(
     doc: dict, template_miner: TemplateMiner, pattern_doc_references: dict
 ) -> bool:
@@ -323,36 +335,60 @@ def _process_document(
     return True
 
 
-def _prepare_results(template_miner: TemplateMiner, pattern_doc_references: dict) -> list:
-    """
-    Prepare normalized results from template miner clusters.
+# Define a function to get the count safely with a proper return type
+def get_count(pattern: PatternResult) -> int:
+    """Safely get the count from a pattern dictionary.
 
     Args:
-        template_miner: Template miner with processed data
-        pattern_doc_references: Dictionary with document references for each pattern
+        pattern: The pattern dictionary.
 
     Returns:
-        List of normalized patterns with counts and sample references
+        The count value.
     """
-    results = []
-    for cluster in template_miner.drain.clusters:
-        # Post-process the template to make it more readable
-        template = cluster.get_template()
-        template = post_process_template(template)
+    return pattern["count"]
 
-        # Get the cluster ID
-        cluster_id = cluster.cluster_id
+
+def _prepare_results(
+    template_miner: TemplateMiner, pattern_doc_references: dict
+) -> List[PatternResult]:
+    """
+    Prepare results from template miner.
+
+    Args:
+        template_miner: The template miner instance.
+        pattern_doc_references: Dictionary mapping cluster IDs to document references.
+
+    Returns:
+        List of pattern results.
+    """
+    results: List[PatternResult] = []
+
+    for cluster_id, cluster in template_miner.drain.clusters.items():
+        # Post-process the template to make it more readable
+        template = post_process_template(cluster.get_template())
 
         # Create result entry
-        result = {
-            "pattern": template,
+        result: PatternResult = {
+            "cluster_id": cluster_id,
             "count": cluster.size,
+            "pattern": template,
+            "first_seen": (
+                pattern_doc_references.get(cluster_id, [""])[0]
+                if pattern_doc_references.get(cluster_id, [])
+                else ""
+            ),
+            "last_seen": (
+                pattern_doc_references.get(cluster_id, [""])[-1]
+                if pattern_doc_references.get(cluster_id, [])
+                else ""
+            ),
+            "sample_log_lines": [],  # Fill this in based on your data structure
             "sample_doc_references": pattern_doc_references.get(cluster_id, []),
         }
         results.append(result)
 
     # Sort results by count (descending)
-    results.sort(key=lambda x: x["count"], reverse=True)
+    results.sort(key=get_count, reverse=True)
     return results
 
 

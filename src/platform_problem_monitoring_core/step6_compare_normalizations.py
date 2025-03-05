@@ -4,131 +4,188 @@
 import argparse
 import json
 import sys
+from typing import List, TypedDict
 
 from platform_problem_monitoring_core.utils import load_json, logger, save_json
 
 
-def _find_new_patterns(current_dict: dict, previous_dict: dict) -> list:
+class PatternDict(TypedDict):
+    """Type for pattern dictionaries."""
+
+    cluster_id: str
+    count: int
+    pattern: str
+    first_seen: str
+    last_seen: str
+    sample_log_lines: List[str]
+    sample_doc_references: List[str]
+
+
+# Define a function to get the count safely with a proper return type
+def get_count(pattern: PatternDict) -> int:
+    """Safely get the count from a pattern dictionary.
+
+    Args:
+        pattern: The pattern dictionary.
+
+    Returns:
+        The count as an integer (defaults to 0 if missing).
+    """
+    return pattern["count"]
+
+
+def _find_new_patterns(current_dict: dict, previous_dict: dict) -> List[PatternDict]:
     """
     Find patterns that are in the current data but not in the previous data.
 
     Args:
-        current_dict: Dictionary of current patterns
-        previous_dict: Dictionary of previous patterns
+        current_dict: Dictionary containing the current normalization results.
+        previous_dict: Dictionary containing the previous normalization results.
 
     Returns:
-        List of new patterns
+        List of new patterns that weren't in the previous data.
     """
-    new_patterns = []
-    for pattern, data in current_dict.items():
-        if pattern not in previous_dict:
-            new_patterns.append(
-                {
-                    "pattern": pattern,
-                    "count": data["count"],
-                    "sample_doc_references": data.get("sample_doc_references", []),
-                }
-            )
+    new_patterns: List[PatternDict] = []
+    current_ids = {p["cluster_id"] for p in current_dict.get("patterns", [])}
+    previous_ids = {p["cluster_id"] for p in previous_dict.get("patterns", [])}
+
+    # Find IDs that are in current but not in previous
+    new_ids = current_ids - previous_ids
+
+    # Extract the new patterns
+    for pattern in current_dict.get("patterns", []):
+        if pattern["cluster_id"] in new_ids:
+            # Ensure all required fields are present
+            new_pattern: PatternDict = {
+                "cluster_id": pattern["cluster_id"],
+                "count": pattern["count"],
+                "pattern": pattern["pattern"],
+                "first_seen": pattern.get("first_seen", ""),
+                "last_seen": pattern.get("last_seen", ""),
+                "sample_log_lines": pattern.get("sample_log_lines", []),
+                "sample_doc_references": pattern.get("sample_doc_references", []),
+            }
+            new_patterns.append(new_pattern)
 
     # Sort new patterns by count (descending)
-    new_patterns.sort(key=lambda x: x["count"], reverse=True)
+    new_patterns.sort(key=get_count, reverse=True)
     return new_patterns
 
 
-def _find_disappeared_patterns(current_dict: dict, previous_dict: dict) -> list:
+def _find_disappeared_patterns(current_dict: dict, previous_dict: dict) -> List[PatternDict]:
     """
     Find patterns that are in the previous data but not in the current data.
 
     Args:
-        current_dict: Dictionary of current patterns
-        previous_dict: Dictionary of previous patterns
+        current_dict: Dictionary containing the current normalization results.
+        previous_dict: Dictionary containing the previous normalization results.
 
     Returns:
-        List of disappeared patterns
+        List of patterns that disappeared from previous to current data.
     """
-    disappeared_patterns = []
-    for pattern, data in previous_dict.items():
-        if pattern not in current_dict:
-            disappeared_patterns.append(
-                {
-                    "pattern": pattern,
-                    "count": data["count"],
-                    "sample_doc_references": data.get("sample_doc_references", []),
-                }
-            )
+    disappeared_patterns: List[PatternDict] = []
+    current_ids = {p["cluster_id"] for p in current_dict.get("patterns", [])}
+    previous_patterns = previous_dict.get("patterns", [])
+
+    # Extract the disappeared patterns
+    for pattern in previous_patterns:
+        if pattern["cluster_id"] not in current_ids:
+            # Ensure all required fields are present
+            disappeared_pattern: PatternDict = {
+                "cluster_id": pattern["cluster_id"],
+                "count": pattern["count"],
+                "pattern": pattern["pattern"],
+                "first_seen": pattern.get("first_seen", ""),
+                "last_seen": pattern.get("last_seen", ""),
+                "sample_log_lines": pattern.get("sample_log_lines", []),
+                "sample_doc_references": pattern.get("sample_doc_references", []),
+            }
+            disappeared_patterns.append(disappeared_pattern)
 
     # Sort disappeared patterns by count (descending)
-    disappeared_patterns.sort(key=lambda x: x["count"], reverse=True)
+    disappeared_patterns.sort(key=get_count, reverse=True)
     return disappeared_patterns
 
 
-def _find_increased_patterns(current_dict: dict, previous_dict: dict) -> list:
+def _find_increased_patterns(current_dict: dict, previous_dict: dict) -> List[PatternDict]:
     """
-    Find patterns whose count has increased from previous to current.
+    Find patterns that have increased in count from the previous data to the current data.
 
     Args:
-        current_dict: Dictionary of current patterns
-        previous_dict: Dictionary of previous patterns
+        current_dict: Dictionary containing the current normalization results.
+        previous_dict: Dictionary containing the previous normalization results.
 
     Returns:
-        List of patterns with increased counts
+        List of patterns with increased counts.
     """
-    increased_patterns = []
-    for pattern, current_data in current_dict.items():
-        if pattern in previous_dict:
-            current_count = current_data["count"]
-            previous_count = previous_dict[pattern]["count"]
+    increased_patterns: List[PatternDict] = []
+
+    # Build dictionaries for easier lookup
+    current_patterns = {p["cluster_id"]: p for p in current_dict.get("patterns", [])}
+    previous_patterns = {p["cluster_id"]: p for p in previous_dict.get("patterns", [])}
+
+    # Find patterns with increased counts
+    for cluster_id, current_pattern in current_patterns.items():
+        if cluster_id in previous_patterns:
+            previous_count = previous_patterns[cluster_id]["count"]
+            current_count = current_pattern["count"]
 
             if current_count > previous_count:
-                percent_increase = ((current_count - previous_count) / previous_count) * 100
-                increased_patterns.append(
-                    {
-                        "pattern": pattern,
-                        "current_count": current_count,
-                        "previous_count": previous_count,
-                        "absolute_change": current_count - previous_count,
-                        "percent_change": percent_increase,
-                        "sample_doc_references": current_data.get("sample_doc_references", []),
-                    }
-                )
+                # Ensure all required fields are present
+                increased_pattern: PatternDict = {
+                    "cluster_id": cluster_id,
+                    "count": current_count,
+                    "pattern": current_pattern["pattern"],
+                    "first_seen": current_pattern.get("first_seen", ""),
+                    "last_seen": current_pattern.get("last_seen", ""),
+                    "sample_log_lines": current_pattern.get("sample_log_lines", []),
+                    "sample_doc_references": current_pattern.get("sample_doc_references", []),
+                }
+                increased_patterns.append(increased_pattern)
 
-    # Sort increased patterns by percent change (descending)
-    increased_patterns.sort(key=lambda x: x["percent_change"], reverse=True)
+    # Sort by count (descending)
+    increased_patterns.sort(key=get_count, reverse=True)
     return increased_patterns
 
 
-def _find_decreased_patterns(current_dict: dict, previous_dict: dict) -> list:
+def _find_decreased_patterns(current_dict: dict, previous_dict: dict) -> List[PatternDict]:
     """
-    Find patterns whose count has decreased from previous to current.
+    Find patterns that have decreased in count from the previous data to the current data.
 
     Args:
-        current_dict: Dictionary of current patterns
-        previous_dict: Dictionary of previous patterns
+        current_dict: Dictionary containing the current normalization results.
+        previous_dict: Dictionary containing the previous normalization results.
 
     Returns:
-        List of patterns with decreased counts
+        List of patterns with decreased counts.
     """
-    decreased_patterns = []
-    for pattern, current_data in current_dict.items():
-        if pattern in previous_dict:
-            current_count = current_data["count"]
-            previous_count = previous_dict[pattern]["count"]
+    decreased_patterns: List[PatternDict] = []
+
+    # Build dictionaries for easier lookup
+    current_patterns = {p["cluster_id"]: p for p in current_dict.get("patterns", [])}
+    previous_patterns = {p["cluster_id"]: p for p in previous_dict.get("patterns", [])}
+
+    # Find patterns with decreased counts
+    for cluster_id, current_pattern in current_patterns.items():
+        if cluster_id in previous_patterns:
+            previous_count = previous_patterns[cluster_id]["count"]
+            current_count = current_pattern["count"]
 
             if current_count < previous_count:
-                percent_decrease = ((previous_count - current_count) / previous_count) * 100
-                decreased_patterns.append(
-                    {
-                        "pattern": pattern,
-                        "current_count": current_count,
-                        "previous_count": previous_count,
-                        "absolute_change": previous_count - current_count,
-                        "percent_change": percent_decrease,
-                        "sample_doc_references": current_data.get("sample_doc_references", []),
-                    }
-                )
+                # Ensure all required fields are present
+                decreased_pattern: PatternDict = {
+                    "cluster_id": cluster_id,
+                    "count": current_count,
+                    "pattern": current_pattern["pattern"],
+                    "first_seen": current_pattern.get("first_seen", ""),
+                    "last_seen": current_pattern.get("last_seen", ""),
+                    "sample_log_lines": current_pattern.get("sample_log_lines", []),
+                    "sample_doc_references": current_pattern.get("sample_doc_references", []),
+                }
+                decreased_patterns.append(decreased_pattern)
 
-    # Sort decreased patterns by percent change (descending)
-    decreased_patterns.sort(key=lambda x: x["percent_change"], reverse=True)
+    # Sort by count (descending)
+    decreased_patterns.sort(key=get_count, reverse=True)
     return decreased_patterns
 
 

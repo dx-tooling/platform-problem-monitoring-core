@@ -115,7 +115,7 @@ the different step scripts will use as needed.
 
 ## Performance considerations
 
-The application must be capable of handling large volumes of log data, potentially up to multiple millions of Elasticsearch 
+The application must be capable of handling large volumes of log data, potentially up to multiple millions of Elasticsearch
 logstash documents between runs. To handle this efficiently:
 
 - Streaming and pagination techniques must be used when interacting with Elasticsearch to prevent memory or resource exhaustion
@@ -125,8 +125,8 @@ logstash documents between runs. To handle this efficiently:
 
 ## Normalization logic and email design
 
-The message normalization logic should follow the approach demonstrated in the proof-of-concept implementation, using the 
-drain3 library to replace dynamic parts of messages (like timestamps, UUIDs, numbers) with placeholders, allowing for pattern 
+The message normalization logic should follow the approach demonstrated in the proof-of-concept implementation, using the
+drain3 library to replace dynamic parts of messages (like timestamps, UUIDs, numbers) with placeholders, allowing for pattern
 recognition across similar message types.
 
 For the HTML email report design:
@@ -262,13 +262,13 @@ The aforementioned run.sh shell script is able to read a configuration file with
 
     REMOTE_STATE_S3_BUCKET_NAME=""
     REMOTE_STATE_S3_FOLDER_NAME=""
-    
+
     ELASTICSEARCH_SERVER_BASE_URL=""
     ELASTICSEARCH_LUCENE_QUERY_FILE_PATH=""
-    
+
     KIBANA_DISCOVER_BASE_URL=""
     KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE=""
-    
+
     SMTP_SERVER_HOSTNAME=""
     SMTP_SERVER_PORT=""
     SMTP_SERVER_USERNAME=""

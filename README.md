@@ -61,13 +61,13 @@ This tool is ideal if:
    ```
    REMOTE_STATE_S3_BUCKET_NAME="your-s3-bucket"
    REMOTE_STATE_S3_FOLDER_NAME="platform-monitoring"
-   
+
    ELASTICSEARCH_SERVER_BASE_URL="https://your-elasticsearch-server:9200"
    ELASTICSEARCH_LUCENE_QUERY_FILE_PATH="path/to/lucene_query.json"
-   
+
    KIBANA_DISCOVER_BASE_URL="https://your-kibana-server:5601"
    KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE="https://your-kibana-server:5601/app/discover#/doc/logstash-*/{{index}}?id={{id}}"
-   
+
    SMTP_SERVER_HOSTNAME="smtp.example.com"
    SMTP_SERVER_PORT="587"
    SMTP_SERVER_USERNAME="your-smtp-username"
@@ -80,7 +80,7 @@ This tool is ideal if:
    ```bash
    cp src/lucene_query.json.dist lucene_query.json
    ```
-   
+
    This default query looks for error messages while filtering out noise:
    ```json
    {

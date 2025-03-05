@@ -2,6 +2,16 @@
 
 PYTHON = python3
 PACKAGE = platform_problem_monitoring_core
+
+# Detect if we're running in CI environment
+ifeq ($(CI),true)
+    # In CI, use commands directly (no venv prefix)
+    CMD_PREFIX =
+else
+    # Locally, use commands from venv
+    CMD_PREFIX = venv/bin/
+endif
+
 VENV_BIN = venv/bin
 
 help:
@@ -36,24 +46,24 @@ activate-venv:
 	@echo "  deactivate"
 
 format:
-	$(VENV_BIN)/black src/$(PACKAGE)
-	$(VENV_BIN)/isort src/$(PACKAGE)
+	$(CMD_PREFIX)black src/$(PACKAGE)
+	$(CMD_PREFIX)isort src/$(PACKAGE)
 
 format-check:
-	$(VENV_BIN)/black --check src/$(PACKAGE)
-	$(VENV_BIN)/isort --check src/$(PACKAGE)
+	$(CMD_PREFIX)black --check src/$(PACKAGE)
+	$(CMD_PREFIX)isort --check src/$(PACKAGE)
 
 lint:
-	$(VENV_BIN)/ruff check src/$(PACKAGE)
+	$(CMD_PREFIX)ruff check src/$(PACKAGE)
 
 lint-fix:
-	$(VENV_BIN)/ruff check --fix src/$(PACKAGE)
+	$(CMD_PREFIX)ruff check --fix src/$(PACKAGE)
 
 type-check:
-	$(VENV_BIN)/mypy src/$(PACKAGE)
+	$(CMD_PREFIX)mypy src/$(PACKAGE)
 
 security-check:
-	$(VENV_BIN)/bandit -r src/$(PACKAGE)
+	$(CMD_PREFIX)bandit -r src/$(PACKAGE)
 
 quality: format lint type-check security-check
 
@@ -67,4 +77,4 @@ clean:
 	find . -type d -name .mypy_cache -exec rm -rf {} +
 	find . -type d -name .pytest_cache -exec rm -rf {} +
 	find . -type d -name .ruff_cache -exec rm -rf {} +
-	find . -type f -name "*.pyc" -delete 
+	find . -type f -name "*.pyc" -delete

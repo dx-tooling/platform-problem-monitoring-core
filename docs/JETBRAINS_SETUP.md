@@ -103,4 +103,4 @@ If you experience issues with the IDE:
 
 1. **Invalidate Caches**: Try `File > Invalidate Caches and Restart`
 2. **Sync Project with pyproject.toml**: Ensure the IDE settings match the `pyproject.toml` settings
-3. **Check the Terminal**: Run commands directly in the terminal to see if errors are IDE-specific 
+3. **Check the Terminal**: Run commands directly in the terminal to see if errors are IDE-specific

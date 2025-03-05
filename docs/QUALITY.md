@@ -99,4 +99,4 @@ This project includes VS Code settings that integrate all these tools into your 
 
 ## Continuous Integration
 
-These quality checks are also run in CI to ensure that all code entering the main branch maintains the expected level of quality. 
+These quality checks are also run in CI to ensure that all code entering the main branch maintains the expected level of quality.

@@ -8,7 +8,7 @@
         --start-date-time-file "/tmp/latest-date-time.txt" \
         --output-file "/tmp/docs.json" \
         --current-date-time-file "/tmp/cur-date-time.txt"
-    
+
     curl -s -X GET "http://127.0.0.1:9201/_search?pretty" -H 'Content-Type: application/json' -d'
         {
         "query": {

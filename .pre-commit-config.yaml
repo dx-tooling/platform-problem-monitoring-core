@@ -16,8 +16,8 @@ repos:
     -   id: black
         args: [--line-length=100]
 
--   repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: 'v0.0.270'
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: 'v0.1.9'
     hooks:
     -   id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -39,4 +39,4 @@ repos:
     hooks:
     -   id: bandit
         args: ["-c", "pyproject.toml"]
-        additional_dependencies: ["bandit[toml]"] 
+        additional_dependencies: ["bandit[toml]"]
