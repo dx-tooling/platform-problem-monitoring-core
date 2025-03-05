@@ -1,0 +1,625 @@
+{
+  "current_patterns_count": 23,
+  "previous_patterns_count": 32,
+  "new_patterns": [
+    {
+      "cluster_id": 10,
+      "count": 248,
+      "pattern": "[TIMESTAMP] application_events.INFO: {\"applicationEvent\": {\"id\": \"<UUID>\", \"eventCategory\": \"<NUM>\", \"eventCategoryTitle\": \"error\", \"eventType\": \"<NUM>\", \"eventTypeTitle\": \"exception\", \"occuredAt\": \"TIMESTAMP\", \"affectedUserId\": <*> \"affectedUserIsJobofferer\": <*> \"affectedUserIsJobseeker\": <*> \"affectedUserRegisteredAt\": <*> \"metric\": null, \"errorMessage\": \"Component <*> not found.\", \"additionalData\": {\"throwableClass\": \"Symfony\\\\Component\\\\HttpKernel\\\\Exception\\\\NotFoundHttpException\", \"file\": \"/opt/website/prod/backend-app/vendor/symfony/ux-live-component/src/EventListener/LiveComponentSubscriber.php\", \"line\": \"<NUM>\"}, \"requestId\": \"<HEX>\", \"sessionId\": <*> \"clientId\": \"<HEX>\", \"isProbablyBotRequest\": \"<NUM>\"}} [] []",
+      "first_seen": "logstash-symfony-application-events-2025.03.05:GuGTZ5UBJdUWaJfymR_F",
+      "last_seen": "logstash-symfony-application-events-2025.03.05:6yzCZ5UBDnR7VQTq8Kvq",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-application-events-2025.03.05:GuGTZ5UBJdUWaJfymR_F",
+        "logstash-symfony-application-events-2025.03.05:KuGTZ5UBJdUWaJfymR_9",
+        "logstash-symfony-application-events-2025.03.05:EurCZ5UBJdUWaJfy76V3",
+        "logstash-symfony-application-events-2025.03.05:GOrCZ5UBJdUWaJfy76Xv",
+        "logstash-symfony-application-events-2025.03.05:6yzCZ5UBDnR7VQTq8Kvq"
+      ]
+    },
+    {
+      "cluster_id": 16,
+      "count": 248,
+      "pattern": "[TIMESTAMP] request.ERROR: Uncaught PHP Exception Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException: \"Component <*> not found.\" at /opt/website/prod/backend-app/vendor/symfony/ux-live-component/src/EventListener/LiveComponentSubscriber.php line <NUM> {\"exception\": \"[object] (Symfony\\\\Component\\\\HttpKernel\\\\Exception\\\\NotFoundHttpException(code: <NUM>): Component <*> not found. at /opt/website/prod/backend-app/vendor/symfony/ux-live-component/src/EventListener/LiveComponentSubscriber.php:<NUM>)\\n[previous exception] [object] (InvalidArgumentException(code: <NUM>): Unknown component <*> And no matching anonymous component template was found. at /opt/website/prod/backend-app/vendor/symfony/ux-twig-component/src/ComponentFactory.php:<NUM>)\"} []",
+      "first_seen": "logstash-symfony-errors-2025.03.05:mSq2Z5UBDnR7VQTq3YrZ",
+      "last_seen": "logstash-symfony-errors-2025.03.05:7izCZ5UBDnR7VQTq8Kvx",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-errors-2025.03.05:mSq2Z5UBDnR7VQTq3YrZ",
+        "logstash-symfony-errors-2025.03.05:2Sq2Z5UBDnR7VQTq4YvC",
+        "logstash-symfony-errors-2025.03.05:G-rCZ5UBJdUWaJfy8KWM",
+        "logstash-symfony-errors-2025.03.05:S-rCZ5UBJdUWaJfy8KXw",
+        "logstash-symfony-errors-2025.03.05:7izCZ5UBDnR7VQTq8Kvx"
+      ]
+    },
+    {
+      "cluster_id": 9,
+      "count": 20,
+      "pattern": "remote_addr=\"<IP>\" - <*> <IP>\" - <*> - - [05/Mar/2025:<TIME> +<NUM>] <*> HTTP/<NUM>.<NUM>\" <NUM> <*> \"Mozilla/5.0 (iPhone; CPU iPhone OS <*> like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) <*> Mobile/15E148 Safari/604.1\" request_time=\"<NUM>.<NUM>\" upstream_connect_time=\"<NUM>.<NUM>\" upstream_header_time=\"<NUM>.<NUM>\" upstream_response_time=\"<NUM>.<NUM>\" request_id=\"<HEX>\" <*>",
+      "first_seen": "logstash-nginx-access-2025.03.05:myiuZ5UBDnR7VQTqV8_F",
+      "last_seen": "logstash-nginx-access-2025.03.05:NyitZ5UBDnR7VQTqH4Sp",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-nginx-access-2025.03.05:myiuZ5UBDnR7VQTqV8_F",
+        "logstash-nginx-access-2025.03.05:hCitZ5UBDnR7VQTqMoy_",
+        "logstash-nginx-access-2025.03.05:DuatZ5UBJdUWaJfyWYcs",
+        "logstash-nginx-access-2025.03.05:t-atZ5UBJdUWaJfyH3lf",
+        "logstash-nginx-access-2025.03.05:NyitZ5UBDnR7VQTqH4Sp"
+      ]
+    },
+    {
+      "cluster_id": 21,
+      "count": 11,
+      "pattern": "2025/03/05 <TIME> [error] <NUM>#<NUM>: *<NUM> recv() failed (<NUM>: Unknown error) while reading response header from upstream, client: <IP>, server: <*> request: <*> HTTP/<NUM>.<NUM>\", upstream: \"fastcgi://unix:/var/run/php/php8.2-fpm.sock:\", host: <*> referrer: <*>",
+      "first_seen": "logstash-nginx-error-2025.03.05:WM8iZ5UBJdUWaJfywYoB",
+      "last_seen": "logstash-nginx-error-2025.03.05:dBIgZ5UBDnR7VQTqIjQv",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-nginx-error-2025.03.05:WM8iZ5UBJdUWaJfywYoB",
+        "logstash-nginx-error-2025.03.05:Dc8iZ5UBJdUWaJfyx4tj",
+        "logstash-nginx-error-2025.03.05:3M8gZ5UBJdUWaJfyH2hs",
+        "logstash-nginx-error-2025.03.05:Is8gZ5UBJdUWaJfyIWn_",
+        "logstash-nginx-error-2025.03.05:dBIgZ5UBDnR7VQTqIjQv"
+      ]
+    },
+    {
+      "cluster_id": 23,
+      "count": 7,
+      "pattern": "2025/03/05 <TIME> [error] <NUM>#<NUM>: *<NUM> access forbidden by rule, client: <IP>, server: www.joboo.de, request: \"GET <*> HTTP/<NUM>.<NUM>\", host: \"www.joboo.de\"",
+      "first_seen": "logstash-nginx-error-2025.03.05:6s4ZZ5UBJdUWaJfyhbqV",
+      "last_seen": "logstash-nginx-error-2025.03.05:ZNdYZ5UBJdUWaJfy9yyy",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-nginx-error-2025.03.05:6s4ZZ5UBJdUWaJfyhbqV",
+        "logstash-nginx-error-2025.03.05:A8sLZ5UBJdUWaJfyl8YP",
+        "logstash-nginx-error-2025.03.05:1NVQZ5UBJdUWaJfy8MQc",
+        "logstash-nginx-error-2025.03.05:tMsMZ5UBJdUWaJfyA9_C",
+        "logstash-nginx-error-2025.03.05:ZNdYZ5UBJdUWaJfy9yyy"
+      ]
+    },
+    {
+      "cluster_id": 14,
+      "count": 3,
+      "pattern": "[TIMESTAMP] application_events.INFO: {\"applicationEvent\": {\"id\": \"<UUID>\", \"eventCategory\": \"<NUM>\", \"eventCategoryTitle\": \"error\", \"eventType\": \"<NUM>\", \"eventTypeTitle\": \"exception\", \"occuredAt\": \"TIMESTAMP\", \"affectedUserId\": null, \"affectedUserIsJobofferer\": null, \"affectedUserIsJobseeker\": null, \"affectedUserRegisteredAt\": null, \"metric\": null, \"errorMessage\": <*> \"additionalData\": {\"throwableClass\": <*> \"file\": <*> \"line\": \"<NUM>\"}, \"requestId\": \"<HEX>\", \"sessionId\": <*> \"clientId\": \"<HEX>\", \"isProbablyBotRequest\": \"<NUM>\"}} [] []",
+      "first_seen": "logstash-symfony-application-events-2025.03.05:OhdLZ5UBDnR7VQTqT-ed",
+      "last_seen": "logstash-symfony-application-events-2025.03.05:hSGIZ5UBDnR7VQTqAmnS",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-application-events-2025.03.05:OhdLZ5UBDnR7VQTqT-ed",
+        "logstash-symfony-application-events-2025.03.05:ySSXZ5UBDnR7VQTqb2fI",
+        "logstash-symfony-application-events-2025.03.05:hSGIZ5UBDnR7VQTqAmnS"
+      ]
+    },
+    {
+      "cluster_id": 12,
+      "count": 2,
+      "pattern": "[TIMESTAMP] application_events.INFO: {\"applicationEvent\": {\"id\": \"<UUID>\", \"eventCategory\": \"<NUM>\", \"eventCategoryTitle\": \"error\", \"eventType\": \"<NUM>\", \"eventTypeTitle\": \"exception\", \"occuredAt\": \"TIMESTAMP\", \"affectedUserId\": null, \"affectedUserIsJobofferer\": null, \"affectedUserIsJobseeker\": null, \"affectedUserRegisteredAt\": null, \"metric\": null, \"errorMessage\": \"No database entry found for shortened url id <*> \"additionalData\": {\"throwableClass\": \"Symfony\\\\Component\\\\HttpKernel\\\\Exception\\\\NotFoundHttpException\", \"file\": \"/opt/website/prod/backend-app/src/App/Controller/ShortenedUrlController.php\", \"line\": \"<NUM>\"}, \"requestId\": \"<HEX>\", \"sessionId\": <*> \"clientId\": \"<HEX>\", \"isProbablyBotRequest\": \"<NUM>\"}} [] []",
+      "first_seen": "logstash-symfony-application-events-2025.03.05:HxhMZ5UBDnR7VQTqVRGe",
+      "last_seen": "logstash-symfony-application-events-2025.03.05:mRhMZ5UBDnR7VQTqQw8P",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-application-events-2025.03.05:HxhMZ5UBDnR7VQTqVRGe",
+        "logstash-symfony-application-events-2025.03.05:mRhMZ5UBDnR7VQTqQw8P"
+      ]
+    },
+    {
+      "cluster_id": 18,
+      "count": 2,
+      "pattern": "[TIMESTAMP] request.ERROR: Uncaught PHP Exception Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException: \"No database entry found for shortened url id <*> at /opt/website/prod/backend-app/src/App/Controller/ShortenedUrlController.php line <NUM> {\"exception\": \"[object] (Symfony\\\\Component\\\\HttpKernel\\\\Exception\\\\NotFoundHttpException(code: <NUM>): No database entry found for shortened url id <*> at /opt/website/prod/backend-app/src/App/Controller/ShortenedUrlController.php:<NUM>)\"} []",
+      "first_seen": "logstash-symfony-errors-2025.03.05:jhhMZ5UBDnR7VQTqQQ_N",
+      "last_seen": "logstash-symfony-errors-2025.03.05:RNVMZ5UBJdUWaJfyUlJN",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-errors-2025.03.05:jhhMZ5UBDnR7VQTqQQ_N",
+        "logstash-symfony-errors-2025.03.05:RNVMZ5UBJdUWaJfyUlJN"
+      ]
+    },
+    {
+      "cluster_id": 19,
+      "count": 2,
+      "pattern": "[TIMESTAMP] request.CRITICAL: Uncaught PHP Exception InvalidArgumentException: \"The HTTP status code is not a redirect (\"<NUM>\" given).\" at /opt/website/prod/backend-app/vendor/symfony/http-foundation/RedirectResponse.php line <NUM> {\"exception\": \"[object] (InvalidArgumentException(code: <NUM>): The HTTP status code is not a redirect (\\\"<NUM>\\\" given). at /opt/website/prod/backend-app/vendor/symfony/http-foundation/RedirectResponse.php:<NUM>)\"} []",
+      "first_seen": "logstash-symfony-errors-2025.03.05:VxdLZ5UBDnR7VQTqUOdK",
+      "last_seen": "logstash-symfony-errors-2025.03.05:IiGIZ5UBDnR7VQTqAWkx",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-errors-2025.03.05:VxdLZ5UBDnR7VQTqUOdK",
+        "logstash-symfony-errors-2025.03.05:IiGIZ5UBDnR7VQTqAWkx"
+      ]
+    },
+    {
+      "cluster_id": 22,
+      "count": 2,
+      "pattern": "2025/03/05 <TIME> [error] <NUM>#<NUM>: *<NUM> recv() failed (<NUM>: Unknown error) while reading response header from upstream, client: <IP>, server: www.joboo.de, request: <*> HTTP/<NUM>.<NUM>\", upstream: \"fastcgi://unix:/var/run/php/php8.2-fpm.sock:\", host: \"www.joboo.de\"",
+      "first_seen": "logstash-nginx-error-2025.03.05:Vc8iZ5UBJdUWaJfywYoB",
+      "last_seen": "logstash-nginx-error-2025.03.05:I88gZ5UBJdUWaJfyImlT",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-nginx-error-2025.03.05:Vc8iZ5UBJdUWaJfywYoB",
+        "logstash-nginx-error-2025.03.05:I88gZ5UBJdUWaJfyImlT"
+      ]
+    },
+    {
+      "cluster_id": 2,
+      "count": 1,
+      "pattern": "[TIMESTAMP] symfony_message_handlers.INFO: [ImportTenhilFeedItemSymfonyMessageHandler] Importing job with external id '14888372-1511222647' for customer 'tenhil-stellenanzeigen-de'. Title: 'Global Automation Engineer (w/m/d) Critical Data Management (CDM)', Company: 'B.Braun Melsungen AG', Zipcode: '<NUM>', City: 'Melsungen'. [] []",
+      "first_seen": "logstash-symfony-message-handlers-2025.03.05:a9RHZ5UBJdUWaJfy54G2",
+      "last_seen": "logstash-symfony-message-handlers-2025.03.05:a9RHZ5UBJdUWaJfy54G2",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-message-handlers-2025.03.05:a9RHZ5UBJdUWaJfy54G2"
+      ]
+    },
+    {
+      "cluster_id": 6,
+      "count": 1,
+      "pattern": "[TIMESTAMP] external_partner_events.INFO: {\"externalPartnerEvent\": {\"id\": \"<UUID>\", \"eventType\": \"<NUM>\", \"eventTypeTitle\": \"recurrent-job-updated\", \"occuredAt\": \"TIMESTAMP\", \"affectedUserId\": \"<UUID>\", \"adminUserId\": null, \"affectedUserIsJobofferer\": \"<NUM>\", \"affectedUserIsJobseeker\": \"<NUM>\", \"affectedUserRegisteredAt\": \"TIMESTAMP\", \"requestId\": null, \"sessionId\": null, \"clientId\": null, \"isMeerbuschOfficeRequest\": \"<NUM>\", \"additionalData\": null, \"platformSiteId\": null, \"conversionCampaignId\": null, \"businessName\": \"B.Braun Melsungen AG\", \"isProbablyBotRequest\": null, \"externalPartnerId\": \"<NUM>\", \"integratedExternalPartnerCustomerId\": \"<UUID>\", \"integratedExternalPartnerCustomerInternalId\": \"tenhil-stellenanzeigen-de\", \"recurrentJobId\": \"<UUID>\", \"recurrentJobCreatedAt\": \"TIMESTAMP\", \"recurrentJobZipcode\": \"<NUM>\", \"recurrentJobOccupationalFieldSearchterm\": \"Global Automation Engineer (w/m/d) Critical Data Management (CDM)\", \"recurrentJobExternalId\": \"14888372-1511222647\", \"recurrentJobExternalUrl\": null}} [] []",
+      "first_seen": "logstash-symfony-external-partner-events-2025.03.05:N9RHZ5UBJdUWaJfy5oEx",
+      "last_seen": "logstash-symfony-external-partner-events-2025.03.05:N9RHZ5UBJdUWaJfy5oEx",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-external-partner-events-2025.03.05:N9RHZ5UBJdUWaJfy5oEx"
+      ]
+    },
+    {
+      "cluster_id": 13,
+      "count": 1,
+      "pattern": "[TIMESTAMP] application_events.INFO: {\"applicationEvent\": {\"id\": \"<UUID>\", \"eventCategory\": \"<NUM>\", \"eventCategoryTitle\": \"error\", \"eventType\": \"<NUM>\", \"eventTypeTitle\": \"exception\", \"occuredAt\": \"TIMESTAMP\", \"affectedUserId\": null, \"affectedUserIsJobofferer\": null, \"affectedUserIsJobseeker\": null, \"affectedUserRegisteredAt\": null, \"metric\": null, \"errorMessage\": \"No route found for \\\"POST http://www.joboo.de/de/otl/router\\\": Method Not Allowed (Allow: GET)\", \"additionalData\": {\"throwableClass\": \"Symfony\\\\Component\\\\HttpKernel\\\\Exception\\\\MethodNotAllowedHttpException\", \"file\": \"/opt/website/prod/backend-app/vendor/symfony/http-kernel/EventListener/RouterListener.php\", \"line\": \"<NUM>\"}, \"requestId\": \"<HEX>\", \"sessionId\": \"31vjc2chejhjdpp7esrcma8dde\", \"clientId\": \"<HEX>\", \"isProbablyBotRequest\": \"<NUM>\"}} [] []",
+      "first_seen": "logstash-symfony-application-events-2025.03.05:ThdIZ5UBDnR7VQTqRWOv",
+      "last_seen": "logstash-symfony-application-events-2025.03.05:ThdIZ5UBDnR7VQTqRWOv",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-application-events-2025.03.05:ThdIZ5UBDnR7VQTqRWOv"
+      ]
+    },
+    {
+      "cluster_id": 15,
+      "count": 1,
+      "pattern": "[TIMESTAMP] request.ERROR: Uncaught PHP Exception Symfony\\Component\\HttpKernel\\Exception\\MethodNotAllowedHttpException: \"No route found for \"POST http://www.joboo.de/de/otl/router\": Method Not Allowed (Allow: GET)\" at /opt/website/prod/backend-app/vendor/symfony/http-kernel/EventListener/RouterListener.php line <NUM> {\"exception\": \"[object] (Symfony\\\\Component\\\\HttpKernel\\\\Exception\\\\MethodNotAllowedHttpException(code: <NUM>): No route found for \\\"POST http://www.joboo.de/de/otl/router\\\": Method Not Allowed (Allow: GET) at /opt/website/prod/backend-app/vendor/symfony/http-kernel/EventListener/RouterListener.php:<NUM>)\\n[previous exception] [object] (Symfony\\\\Component\\\\Routing\\\\Exception\\\\MethodNotAllowedException(code: <NUM>): at /opt/website/prod/backend-app/vendor/symfony/routing/Matcher/Dumper/CompiledUrlMatcherTrait.php:<NUM>)\"} []",
+      "first_seen": "logstash-symfony-errors-2025.03.05:OtRIZ5UBJdUWaJfyRpY0",
+      "last_seen": "logstash-symfony-errors-2025.03.05:OtRIZ5UBJdUWaJfyRpY0",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-errors-2025.03.05:OtRIZ5UBJdUWaJfyRpY0"
+      ]
+    },
+    {
+      "cluster_id": 20,
+      "count": 1,
+      "pattern": "[TIMESTAMP] request.CRITICAL: Uncaught PHP Exception Doctrine\\ORM\\EntityNotFoundException: \"Entity of type 'App\\Entity\\Profile\\JoboffererProfile' for IDs id(<UUID>) was not found\" at /opt/website/prod/backend-app/vendor/doctrine/orm/src/EntityNotFoundException.php line <NUM> {\"exception\": \"[object] (Doctrine\\\\ORM\\\\EntityNotFoundException(code: <NUM>): Entity of type 'App\\\\Entity\\\\Profile\\\\JoboffererProfile' for IDs id(<UUID>) was not found at /opt/website/prod/backend-app/vendor/doctrine/orm/src/EntityNotFoundException.php:<NUM>)\"} []",
+      "first_seen": "logstash-symfony-errors-2025.03.05:zCSXZ5UBDnR7VQTqcGdx",
+      "last_seen": "logstash-symfony-errors-2025.03.05:zCSXZ5UBDnR7VQTqcGdx",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-errors-2025.03.05:zCSXZ5UBDnR7VQTqcGdx"
+      ]
+    }
+  ],
+  "disappeared_patterns": [
+    {
+      "cluster_id": 21,
+      "count": 6489,
+      "pattern": "[TIMESTAMP] request.ERROR: Uncaught PHP Exception Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException: \"Component \"LinkedIcon\" not found.\" at /opt/website/prod/backend-app/vendor/symfony/ux-live-component/src/EventListener/LiveComponentSubscriber.php line <NUM> {\"exception\": \"[object] (Symfony\\\\Component\\\\HttpKernel\\\\Exception\\\\NotFoundHttpException(code: <NUM>): Component \\\"LinkedIcon\\\" not found. at /opt/website/prod/backend-app/vendor/symfony/ux-live-component/src/EventListener/LiveComponentSubscriber.php:<NUM>)\\n[previous exception] [object] (InvalidArgumentException(code: <NUM>): Unknown component \\\"LinkedIcon\\\". And no matching anonymous component template was found. at /opt/website/prod/backend-app/vendor/symfony/ux-twig-component/src/ComponentFactory.php:<NUM>)\"} []",
+      "first_seen": "logstash-symfony-errors-2025.03.05:Nw8KZ5UBDnR7VQTqxwvd",
+      "last_seen": "logstash-symfony-errors-2025.03.05:2ssKZ5UBJdUWaJfyy5XH",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-errors-2025.03.05:Nw8KZ5UBDnR7VQTqxwvd",
+        "logstash-symfony-errors-2025.03.05:zMsKZ5UBJdUWaJfyyJXq",
+        "logstash-symfony-errors-2025.03.05:Hw8KZ5UBDnR7VQTqygws",
+        "logstash-symfony-errors-2025.03.05:IQ8KZ5UBDnR7VQTqygzB",
+        "logstash-symfony-errors-2025.03.05:2ssKZ5UBJdUWaJfyy5XH"
+      ]
+    },
+    {
+      "cluster_id": 26,
+      "count": 6489,
+      "pattern": "[TIMESTAMP] application_events.INFO: {\"applicationEvent\": {\"id\": \"<UUID>\", \"eventCategory\": \"<NUM>\", \"eventCategoryTitle\": \"error\", \"eventType\": \"<NUM>\", \"eventTypeTitle\": \"exception\", \"occuredAt\": \"TIMESTAMP\", \"affectedUserId\": <*> \"affectedUserIsJobofferer\": <*> \"affectedUserIsJobseeker\": <*> \"affectedUserRegisteredAt\": <*> \"metric\": null, \"errorMessage\": \"Component \\\"LinkedIcon\\\" not found.\", \"additionalData\": {\"throwableClass\": \"Symfony\\\\Component\\\\HttpKernel\\\\Exception\\\\NotFoundHttpException\", \"file\": \"/opt/website/prod/backend-app/vendor/symfony/ux-live-component/src/EventListener/LiveComponentSubscriber.php\", \"line\": \"<NUM>\"}, \"requestId\": \"<HEX>\", \"sessionId\": <*> \"clientId\": \"<HEX>\", \"isProbablyBotRequest\": \"<NUM>\"}} [] []",
+      "first_seen": "logstash-symfony-application-events-2025.03.05:OA8KZ5UBDnR7VQTqxwvd",
+      "last_seen": "logstash-symfony-application-events-2025.03.05:5ssKZ5UBJdUWaJfyzJUl",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-application-events-2025.03.05:OA8KZ5UBDnR7VQTqxwvd",
+        "logstash-symfony-application-events-2025.03.05:rssKZ5UBJdUWaJfyyJU8",
+        "logstash-symfony-application-events-2025.03.05:zcsKZ5UBJdUWaJfyyZUb",
+        "logstash-symfony-application-events-2025.03.05:28sKZ5UBJdUWaJfyy5XH",
+        "logstash-symfony-application-events-2025.03.05:5ssKZ5UBJdUWaJfyzJUl"
+      ]
+    },
+    {
+      "cluster_id": 11,
+      "count": 60,
+      "pattern": "<TIME> ERROR [app] [RemoveRecurrentJobSymfonyMessageHandler] Recurrent job with id '<UUID>' not found.",
+      "first_seen": "logstash-symfony-messages-consumer-2025.03.05:Swr2ZpUBDnR7VQTq_NVA",
+      "last_seen": "logstash-symfony-messages-consumer-2025.03.05:twr1ZpUBDnR7VQTqhG5m",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-messages-consumer-2025.03.05:Swr2ZpUBDnR7VQTq_NVA",
+        "logstash-symfony-messages-consumer-2025.03.05:AMf2ZpUBJdUWaJfy_5HO",
+        "logstash-symfony-messages-consumer-2025.03.05:-Qr2ZpUBDnR7VQTqBZ-F",
+        "logstash-symfony-messages-consumer-2025.03.05:rcf1ZpUBJdUWaJfyNhQZ",
+        "logstash-symfony-messages-consumer-2025.03.05:twr1ZpUBDnR7VQTqhG5m"
+      ]
+    },
+    {
+      "cluster_id": 3,
+      "count": 18,
+      "pattern": "<TIME> CRITICAL [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions: update: /recurrent_jobs_prod/_doc/<UUID> caused [<UUID>]: version conflict, required seqNo [<NUM>], primary term [<NUM>]. current document has seqNo [<NUM>] and primary term [<NUM>] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: '<UUID>'].",
+      "first_seen": "logstash-symfony-messages-consumer-2025.03.05:tgXkZpUBDnR7VQTqC7e1",
+      "last_seen": "logstash-symfony-messages-consumer-2025.03.05:RwbmZpUBDnR7VQTqJx-X",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-messages-consumer-2025.03.05:tgXkZpUBDnR7VQTqC7e1",
+        "logstash-symfony-messages-consumer-2025.03.05:tcLlZpUBJdUWaJfy4eco",
+        "logstash-symfony-messages-consumer-2025.03.05:qAbmZpUBDnR7VQTqkTOB",
+        "logstash-symfony-messages-consumer-2025.03.05:MMLjZpUBJdUWaJfyS2j2",
+        "logstash-symfony-messages-consumer-2025.03.05:RwbmZpUBDnR7VQTqJx-X"
+      ]
+    },
+    {
+      "cluster_id": 5,
+      "count": 18,
+      "pattern": "[TIMESTAMP] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #<NUM> using <NUM> ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions: update: /recurrent_jobs_prod/_doc/<UUID> caused [<UUID>]: version conflict, required seqNo [<NUM>], primary term [<NUM>]. current document has seqNo [<NUM>] and primary term [<NUM>] [index: recurrent_jobs_prod] \" {\"class\": \"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\", \"retryCount\": \"<NUM>\", \"delay\": \"<NUM>\", \"error\": \"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/<UUID> caused [<UUID>]: version conflict, required seqNo [<NUM>], primary term [<NUM>]. current document has seqNo [<NUM>] and primary term [<NUM>] [index: recurrent_jobs_prod]\\n\", \"exception\": \"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: <NUM>): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/<UUID> caused [<UUID>]: version conflict, required seqNo [<NUM>], primary term [<NUM>]. current document has seqNo [<NUM>] and primary term [<NUM>] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:<NUM>)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: <NUM>): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/<UUID> caused [<UUID>]: version conflict, required seqNo [<NUM>], primary term [<NUM>]. current document has seqNo [<NUM>] and primary term [<NUM>] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:<NUM>)\"} []",
+      "first_seen": "logstash-symfony-errors-2025.03.05:isLkZpUBJdUWaJfyCY4k",
+      "last_seen": "logstash-symfony-errors-2025.03.05:XcPmZpUBJdUWaJfykgAE",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-errors-2025.03.05:isLkZpUBJdUWaJfyCY4k",
+        "logstash-symfony-errors-2025.03.05:E8LlZpUBJdUWaJfyEr2y",
+        "logstash-symfony-errors-2025.03.05:agblZpUBDnR7VQTq4RXc",
+        "logstash-symfony-errors-2025.03.05:D8LmZpUBJdUWaJfyKPEz",
+        "logstash-symfony-errors-2025.03.05:XcPmZpUBJdUWaJfykgAE"
+      ]
+    },
+    {
+      "cluster_id": 20,
+      "count": 12,
+      "pattern": "remote_addr=\"<IP>\" - x_forwarded_for=\"<NUM>:9e8:db25:1e00:b8e0:<NUM>:c133:8e41, <IP>\" - cf_connecting_ip=\"<NUM>:9e8:db25:1e00:b8e0:<NUM>:c133:8e41\" - - [05/Mar/2025:<TIME> +<NUM>] <*> HTTP/<NUM>.<NUM>\" <NUM> <*> \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15\" request_time=\"<NUM>.<NUM>\" upstream_connect_time=\"<NUM>.<NUM>\" upstream_header_time=\"<NUM>.<NUM>\" upstream_response_time=\"<NUM>.<NUM>\" request_id=\"<HEX>\" session_id=\"62l5prblnqd35qhb3gr8h0c8u9\"",
+      "first_seen": "logstash-nginx-access-2025.03.05:Wcn-ZpUBJdUWaJfyoREb",
+      "last_seen": "logstash-nginx-access-2025.03.05:Vgz_ZpUBDnR7VQTq0LtL",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-nginx-access-2025.03.05:Wcn-ZpUBJdUWaJfyoREb",
+        "logstash-nginx-access-2025.03.05:pQz_ZpUBDnR7VQTqq7BV",
+        "logstash-nginx-access-2025.03.05:rgz_ZpUBDnR7VQTqrbGD",
+        "logstash-nginx-access-2025.03.05:wAz_ZpUBDnR7VQTqrbGp",
+        "logstash-nginx-access-2025.03.05:Vgz_ZpUBDnR7VQTq0LtL"
+      ]
+    },
+    {
+      "cluster_id": 16,
+      "count": 9,
+      "pattern": "[TIMESTAMP] app.CRITICAL: [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions: update: /recurrent_jobs_prod/_doc/<UUID> caused [<UUID>]: version conflict, required seqNo [<NUM>], primary term [<NUM>]. current document has seqNo [<NUM>] and primary term [<NUM>] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: '<UUID>']. [] []",
+      "first_seen": "logstash-symfony-errors-2025.03.05:icLkZpUBJdUWaJfyCY4k",
+      "last_seen": "logstash-symfony-errors-2025.03.05:XMPmZpUBJdUWaJfykgAE",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-errors-2025.03.05:icLkZpUBJdUWaJfyCY4k",
+        "logstash-symfony-errors-2025.03.05:EcLlZpUBJdUWaJfyEr2y",
+        "logstash-symfony-errors-2025.03.05:bAblZpUBDnR7VQTq4RXg",
+        "logstash-symfony-errors-2025.03.05:VgbmZpUBDnR7VQTqKB8x",
+        "logstash-symfony-errors-2025.03.05:XMPmZpUBJdUWaJfykgAE"
+      ]
+    },
+    {
+      "cluster_id": 31,
+      "count": 9,
+      "pattern": "2025/03/05 <TIME> [error] <NUM>#<NUM>: *<NUM> FastCGI sent in stderr: \"PHP message: PHP Fatal error: Allowed memory size of <NUM> bytes exhausted (tried to allocate <NUM> bytes) in /opt/website/prod/janus-christophorus/vendor/composer/autoload_real.php:<NUM>\" while reading response header from upstream, client: <IP>, server: www.joboo.de, request: \"POST <*> HTTP/<NUM>.<NUM>\", upstream: \"fastcgi://unix:/var/run/php/php8.2-fpm.sock:\", host: \"www.joboo.de\", referrer: \"https://www.joboo.de/_jc/volumen-prozesse/%C3%BCbersicht\"",
+      "first_seen": "logstash-nginx-error-2025.03.05:bsbyZpUBJdUWaJfywUGg",
+      "last_seen": "logstash-nginx-error-2025.03.05:mAPZZpUBDnR7VQTqf-Q-",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-nginx-error-2025.03.05:bsbyZpUBJdUWaJfywUGg",
+        "logstash-nginx-error-2025.03.05:KQv8ZpUBDnR7VQTqh_Od",
+        "logstash-nginx-error-2025.03.05:GgTdZpUBDnR7VQTqwJlU",
+        "logstash-nginx-error-2025.03.05:XcHbZpUBJdUWaJfyoSye",
+        "logstash-nginx-error-2025.03.05:mAPZZpUBDnR7VQTqf-Q-"
+      ]
+    },
+    {
+      "cluster_id": 13,
+      "count": 2,
+      "pattern": "[TIMESTAMP] symfony_message_handlers.ERROR: [CreateExtendedApplicationFromExternallyIncomingApplicationSymfonyMessageHandler] Incoming Applications API request resulted in exception: Could not be matched to recurrent job. [] []",
+      "first_seen": "logstash-symfony-message-handlers-2025.03.05:8_27ZpUBDnR7VQTqjqOD",
+      "last_seen": "logstash-symfony-errors-2025.03.05:g7q7ZpUBJdUWaJfyu-ig",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-message-handlers-2025.03.05:8_27ZpUBDnR7VQTqjqOD",
+        "logstash-symfony-errors-2025.03.05:g7q7ZpUBJdUWaJfyu-ig"
+      ]
+    },
+    {
+      "cluster_id": 23,
+      "count": 2,
+      "pattern": "[TIMESTAMP] request.ERROR: Uncaught PHP Exception Symfony\\Component\\HttpKernel\\Exception\\AccessDeniedHttpException: \"\" at /opt/website/prod/backend-app/src/App/Controller/AccountController.php line <NUM> {\"exception\": \"[object] (Symfony\\\\Component\\\\HttpKernel\\\\Exception\\\\AccessDeniedHttpException(code: <NUM>): at /opt/website/prod/backend-app/src/App/Controller/AccountController.php:<NUM>)\"} []",
+      "first_seen": "logstash-symfony-errors-2025.03.05:MAbnZpUBDnR7VQTqWF1e",
+      "last_seen": "logstash-symfony-errors-2025.03.05:ewbnZpUBDnR7VQTqamAZ",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-errors-2025.03.05:MAbnZpUBDnR7VQTqWF1e",
+        "logstash-symfony-errors-2025.03.05:ewbnZpUBDnR7VQTqamAZ"
+      ]
+    },
+    {
+      "cluster_id": 24,
+      "count": 2,
+      "pattern": "[TIMESTAMP] app.ERROR: Frontend SPA API request resulted in exception: 'Zugriff verweigert \u2014 keine vertrauensw\u00fcrdige IP-Adresse.'. {\"exception\": \"[object] (Symfony\\\\Component\\\\HttpKernel\\\\Exception\\\\AccessDeniedHttpException(code: <NUM>): Zugriff verweigert \\u2014 keine vertrauensw\\u00fcrdige IP-Adresse. at /opt/website/prod/backend-app/src/FrontendSpaApi/Controller/FeedsManagementController.php:<NUM>)\"} []",
+      "first_seen": "logstash-symfony-errors-2025.03.05:FwXlZpUBDnR7VQTqS_Sv",
+      "last_seen": "logstash-symfony-errors-2025.03.05:n8LlZpUBJdUWaJfyUsVN",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-errors-2025.03.05:FwXlZpUBDnR7VQTqS_Sv",
+        "logstash-symfony-errors-2025.03.05:n8LlZpUBJdUWaJfyUsVN"
+      ]
+    },
+    {
+      "cluster_id": 28,
+      "count": 2,
+      "pattern": "[TIMESTAMP] application_events.INFO: {\"applicationEvent\": {\"id\": \"<UUID>\", \"eventCategory\": \"<NUM>\", \"eventCategoryTitle\": \"error\", \"eventType\": \"<NUM>\", \"eventTypeTitle\": \"exception\", \"occuredAt\": \"TIMESTAMP\", \"affectedUserId\": \"<UUID>\", \"affectedUserIsJobofferer\": \"<NUM>\", \"affectedUserIsJobseeker\": \"<NUM>\", \"affectedUserRegisteredAt\": \"TIMESTAMP\", \"metric\": null, \"errorMessage\": \"\", \"additionalData\": {\"throwableClass\": \"Symfony\\\\Component\\\\HttpKernel\\\\Exception\\\\AccessDeniedHttpException\", \"file\": \"/opt/website/prod/backend-app/src/App/Controller/AccountController.php\", \"line\": \"<NUM>\"}, \"requestId\": \"<HEX>\", \"sessionId\": \"95p5i22unbspr33gcb27kvecht\", \"clientId\": \"<HEX>\", \"isProbablyBotRequest\": \"<NUM>\"}} [] []",
+      "first_seen": "logstash-symfony-application-events-2025.03.05:ccPnZpUBJdUWaJfyaSnu",
+      "last_seen": "logstash-symfony-application-events-2025.03.05:MgbnZpUBDnR7VQTqWF1e",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-application-events-2025.03.05:ccPnZpUBJdUWaJfyaSnu",
+        "logstash-symfony-application-events-2025.03.05:MgbnZpUBDnR7VQTqWF1e"
+      ]
+    },
+    {
+      "cluster_id": 29,
+      "count": 2,
+      "pattern": "[TIMESTAMP] application_events.INFO: {\"applicationEvent\": {\"id\": \"<UUID>\", \"eventCategory\": \"<NUM>\", \"eventCategoryTitle\": \"error\", \"eventType\": \"<NUM>\", \"eventTypeTitle\": \"flaschenpost-import-failed\", \"occuredAt\": \"TIMESTAMP\", \"affectedUserId\": null, \"affectedUserIsJobofferer\": null, \"affectedUserIsJobseeker\": null, \"affectedUserRegisteredAt\": null, \"metric\": null, \"errorMessage\": \"Skipping job <*> - <NUM> because no city was found for zipcode 90939.\", \"additionalData\": {\"businessName\": \"flaschenpost\"}, \"requestId\": null, \"sessionId\": null, \"clientId\": null, \"isProbablyBotRequest\": null}} [] []",
+      "first_seen": "logstash-symfony-application-events-2025.03.05:eQfqZpUBDnR7VQTq9CyU",
+      "last_seen": "logstash-symfony-application-events-2025.03.05:lcPqZpUBJdUWaJfy-PV7",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-application-events-2025.03.05:eQfqZpUBDnR7VQTq9CyU",
+        "logstash-symfony-application-events-2025.03.05:lcPqZpUBJdUWaJfy-PV7"
+      ]
+    },
+    {
+      "cluster_id": 30,
+      "count": 2,
+      "pattern": "[TIMESTAMP] application_events.INFO: {\"applicationEvent\": {\"id\": \"<UUID>\", \"eventCategory\": \"<NUM>\", \"eventCategoryTitle\": \"error\", \"eventType\": \"<NUM>\", \"eventTypeTitle\": \"milch-und-zucker-import-failed\", \"occuredAt\": \"TIMESTAMP\", \"affectedUserId\": null, \"affectedUserIsJobofferer\": null, \"affectedUserIsJobseeker\": null, \"affectedUserRegisteredAt\": null, \"metric\": null, \"errorMessage\": \"Update failed for <*> because searchterm/'positionTitle' changed.\", \"additionalData\": {\"businessName\": <*> \"requestId\": null, \"sessionId\": null, \"clientId\": null, \"isProbablyBotRequest\": null}} [] []",
+      "first_seen": "logstash-symfony-application-events-2025.03.05:zgfsZpUBDnR7VQTqzZ-Q",
+      "last_seen": "logstash-symfony-application-events-2025.03.05:PAftZpUBDnR7VQTqG766",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-application-events-2025.03.05:zgfsZpUBDnR7VQTqzZ-Q",
+        "logstash-symfony-application-events-2025.03.05:PAftZpUBDnR7VQTqG766"
+      ]
+    },
+    {
+      "cluster_id": 1,
+      "count": 1,
+      "pattern": "<TIME> CRITICAL [console] Error thrown while running command \"--env=prod app:sendmailnotifications:formissingjoboffererbaseprofile\". Message: \"The EntityManager is closed.\" [\"exception\" => Doctrine\\ORM\\Exception\\EntityManagerClosed { \u2026},\"command\" => \"--env=prod app:sendmailnotifications:formissingjoboffererbaseprofile\",\"message\" => \"The EntityManager is closed.\"]",
+      "first_seen": "logstash-jobs-2025.03.05:ccsJZ5UBJdUWaJfyrVfk",
+      "last_seen": "logstash-jobs-2025.03.05:ccsJZ5UBJdUWaJfyrVfk",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-jobs-2025.03.05:ccsJZ5UBJdUWaJfyrVfk"
+      ]
+    },
+    {
+      "cluster_id": 2,
+      "count": 1,
+      "pattern": "<TIME> CRITICAL [console] Error thrown while running command \"--env=prod --no-debug app:classifyrecurrentjobsforcontentdistribution e5\". Message: \"Entity of type 'App\\Entity\\Profile\\JoboffererProfile' for IDs id(<UUID>) was not found\" [\"exception\" => Doctrine\\ORM\\EntityNotFoundException { \u2026},\"command\" => \"--env=prod --no-debug app:classifyrecurrentjobsforcontentdistribution e5\",\"message\" => \"Entity of type 'App\\Entity\\Profile\\JoboffererProfile' for IDs id(<UUID>) was not found\"]",
+      "first_seen": "logstash-jobs-2025.03.05:AMf2ZpUBJdUWaJfyyoIc",
+      "last_seen": "logstash-jobs-2025.03.05:AMf2ZpUBJdUWaJfyyoIc",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-jobs-2025.03.05:AMf2ZpUBJdUWaJfyyoIc"
+      ]
+    },
+    {
+      "cluster_id": 4,
+      "count": 1,
+      "pattern": "<TIME> CRITICAL [console] Error thrown while running command \"--env=prod --no-debug app:classifyrecurrentjobsforcontentdistribution b0\". Message: \"App\\Repository\\ZipcodeCircumcirclesRepository::getBundeslandForZipcode(): Argument #<NUM> ($zipcode) must be of type string, null given, called in /opt/website/prod/backend-app/src/App/Service/ExternalFeedsService.php:<NUM>\" [\"exception\" => TypeError { \u2026},\"command\" => \"--env=prod --no-debug app:classifyrecurrentjobsforcontentdistribution b0\",\"message\" => \"App\\Repository\\ZipcodeCircumcirclesRepository::getBundeslandForZipcode(): Argument #<NUM> ($zipcode) must be of type string, null given, called in /opt/website/prod/backend-app/src/App/Service/ExternalFeedsService.php:<NUM>\"]",
+      "first_seen": "logstash-jobs-2025.03.05:_cDWZpUBJdUWaJfyulg3",
+      "last_seen": "logstash-jobs-2025.03.05:_cDWZpUBJdUWaJfyulg3",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-jobs-2025.03.05:_cDWZpUBJdUWaJfyulg3"
+      ]
+    },
+    {
+      "cluster_id": 9,
+      "count": 1,
+      "pattern": "[\"exception\" => ErrorException { \u2026}]",
+      "first_seen": "logstash-jobs-2025.03.05:CwwAZ5UBDnR7VQTqNNIS",
+      "last_seen": "logstash-jobs-2025.03.05:CwwAZ5UBDnR7VQTqNNIS",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-jobs-2025.03.05:CwwAZ5UBDnR7VQTqNNIS"
+      ]
+    },
+    {
+      "cluster_id": 10,
+      "count": 1,
+      "pattern": "Entity Manager is closed after Throwable with message 'An exception occurred while executing a query: SQLSTATE[<NUM>]: Integrity constraint violation: <NUM> Cannot add or update a child row: a foreign key constraint fails (`gogastro_prod`.`onetime_login_tokens`, CONSTRAINT `FK_ED5790DD67B3B43D` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)', triggering premature shutdown.",
+      "first_seen": "logstash-jobs-2025.03.05:Fw4JZ5UBDnR7VQTqqdax",
+      "last_seen": "logstash-jobs-2025.03.05:Fw4JZ5UBDnR7VQTqqdax",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-jobs-2025.03.05:Fw4JZ5UBDnR7VQTqqdax"
+      ]
+    },
+    {
+      "cluster_id": 14,
+      "count": 1,
+      "pattern": "[TIMESTAMP] console.CRITICAL: Error thrown while running command \"--env=prod app:sendmailnotifications:formissingjoboffererbaseprofile\". Message: \"The EntityManager is closed.\" {\"exception\": \"[object] (Doctrine\\\\ORM\\\\Exception\\\\EntityManagerClosed(code: <NUM>): The EntityManager is closed. at /opt/website/prod/backend-app/vendor/doctrine/orm/src/Exception/EntityManagerClosed.php:<NUM>)\", \"command\": \"--env=prod app:sendmailnotifications:formissingjoboffererbaseprofile\", \"message\": \"The EntityManager is closed.\"} []",
+      "first_seen": "logstash-symfony-errors-2025.03.05:PssJZ5UBJdUWaJfyqlXD",
+      "last_seen": "logstash-symfony-errors-2025.03.05:PssJZ5UBJdUWaJfyqlXD",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-errors-2025.03.05:PssJZ5UBJdUWaJfyqlXD"
+      ]
+    },
+    {
+      "cluster_id": 15,
+      "count": 1,
+      "pattern": "[TIMESTAMP] console.CRITICAL: Error thrown while running command \"--env=prod --no-debug app:classifyrecurrentjobsforcontentdistribution b0\". Message: \"App\\Repository\\ZipcodeCircumcirclesRepository::getBundeslandForZipcode(): Argument #<NUM> ($zipcode) must be of type string, null given, called in /opt/website/prod/backend-app/src/App/Service/ExternalFeedsService.php:<NUM>\" {\"exception\": \"[object] (TypeError(code: <NUM>): App\\\\Repository\\\\ZipcodeCircumcirclesRepository::getBundeslandForZipcode(): Argument #<NUM> ($zipcode) must be of type string, null given, called in /opt/website/prod/backend-app/src/App/Service/ExternalFeedsService.php:<NUM> at /opt/website/prod/backend-app/src/App/Repository/ZipcodeCircumcirclesRepository.php:<NUM>)\", \"command\": \"--env=prod --no-debug app:classifyrecurrentjobsforcontentdistribution b0\", \"message\": \"App\\\\Repository\\\\ZipcodeCircumcirclesRepository::getBundeslandForZipcode(): Argument #<NUM> ($zipcode) must be of type string, null given, called in /opt/website/prod/backend-app/src/App/Service/ExternalFeedsService.php:<NUM>\"} []",
+      "first_seen": "logstash-symfony-errors-2025.03.05:HMDWZpUBJdUWaJfypVhl",
+      "last_seen": "logstash-symfony-errors-2025.03.05:HMDWZpUBJdUWaJfypVhl",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-errors-2025.03.05:HMDWZpUBJdUWaJfypVhl"
+      ]
+    },
+    {
+      "cluster_id": 17,
+      "count": 1,
+      "pattern": "[TIMESTAMP] console.CRITICAL: Error thrown while running command \"--env=prod --no-debug app:classifyrecurrentjobsforcontentdistribution e5\". Message: \"Entity of type 'App\\Entity\\Profile\\JoboffererProfile' for IDs id(<UUID>) was not found\" {\"exception\": \"[object] (Doctrine\\\\ORM\\\\EntityNotFoundException(code: <NUM>): Entity of type 'App\\\\Entity\\\\Profile\\\\JoboffererProfile' for IDs id(<UUID>) was not found at /opt/website/prod/backend-app/vendor/doctrine/orm/src/EntityNotFoundException.php:<NUM>)\", \"command\": \"--env=prod --no-debug app:classifyrecurrentjobsforcontentdistribution e5\", \"message\": \"Entity of type 'App\\\\Entity\\\\Profile\\\\JoboffererProfile' for IDs id(<UUID>) was not found\"} []",
+      "first_seen": "logstash-symfony-errors-2025.03.05:Gcf2ZpUBJdUWaJfyzIJL",
+      "last_seen": "logstash-symfony-errors-2025.03.05:Gcf2ZpUBJdUWaJfyzIJL",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-errors-2025.03.05:Gcf2ZpUBJdUWaJfyzIJL"
+      ]
+    },
+    {
+      "cluster_id": 25,
+      "count": 1,
+      "pattern": "[TIMESTAMP] app.INFO: [Command Run][<NUM>][<UUID>][{\"command\":\"app:sendmailnotifications:formissingjoboffererbaseprofile\"}][{\"help\":false,\"quiet\":false,\"verbose\":false,\"version\":false,\"ansi\":null,\"no-interaction\":false,\"env\":\"prod\",\"no-debug\":false}] <fg=red>Entity Manager is closed after Throwable with message 'An exception occurred while executing a query: SQLSTATE[<NUM>]: Integrity constraint violation: <NUM> Cannot add or update a child row: a foreign key constraint fails (`gogastro_prod`.`onetime_login_tokens`, CONSTRAINT `FK_ED5790DD67B3B43D` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)', triggering premature shutdown.</fg=red> [] []",
+      "first_seen": "logstash-symfony-errors-2025.03.05:LQ4JZ5UBDnR7VQTqqtfC",
+      "last_seen": "logstash-symfony-errors-2025.03.05:LQ4JZ5UBDnR7VQTqqtfC",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-errors-2025.03.05:LQ4JZ5UBDnR7VQTqqtfC"
+      ]
+    },
+    {
+      "cluster_id": 32,
+      "count": 1,
+      "pattern": "2025/03/05 <TIME> [error] <NUM>#<NUM>: *<NUM> access forbidden by rule, client: <IP>, server: www.joboo.de, request: \"GET /api/src/.env HTTP/<NUM>.<NUM>\", host: \"www.joboo.de\"",
+      "first_seen": "logstash-nginx-error-2025.03.05:zcLjZpUBJdUWaJfyNmP2",
+      "last_seen": "logstash-nginx-error-2025.03.05:zcLjZpUBJdUWaJfyNmP2",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-nginx-error-2025.03.05:zcLjZpUBJdUWaJfyNmP2"
+      ]
+    }
+  ],
+  "increased_patterns": [
+    {
+      "cluster_id": 5,
+      "count": 16,
+      "pattern": "PHP Fatal error: Uncaught LogicException: Instance of \"Symfony\\Component\\HttpClient\\Response\\CurlResponse\" is already consumed and cannot be managed by \"Symfony\\Component\\HttpClient\\RetryableHttpClient\". A decorated client should not call any of the response's methods in its \"request()\" method. in /opt/website/prod/backend-app/vendor/symfony/http-client/Response/AsyncResponse.php:<NUM>",
+      "first_seen": "logstash-symfony-messages-consumer-2025.03.05:9hQ0Z5UBDnR7VQTqRtTl",
+      "last_seen": "logstash-symfony-messages-consumer-2025.03.05:XiagZ5UBDnR7VQTq9HLe",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-messages-consumer-2025.03.05:9hQ0Z5UBDnR7VQTqRtTl",
+        "logstash-symfony-messages-consumer-2025.03.05:qg8LZ5UBDnR7VQTqKSFU",
+        "logstash-symfony-messages-consumer-2025.03.05:HNZUZ5UBJdUWaJfy1D0C",
+        "logstash-symfony-messages-consumer-2025.03.05:PeSgZ5UBJdUWaJfy0XGc",
+        "logstash-symfony-messages-consumer-2025.03.05:XiagZ5UBDnR7VQTq9HLe"
+      ]
+    },
+    {
+      "cluster_id": 4,
+      "count": 10,
+      "pattern": "[TIMESTAMP] app.INFO: Application Appointment Scheduling API request for handling superchat error: No mapping found for superchat message id <*> This will not affect any schedulings. [] []",
+      "first_seen": "logstash-symfony-main-2025.03.05:SyWaZ5UBDnR7VQTqMScT",
+      "last_seen": "logstash-symfony-main-2025.03.05:Uyq4Z5UBDnR7VQTqIce1",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-main-2025.03.05:SyWaZ5UBDnR7VQTqMScT",
+        "logstash-symfony-main-2025.03.05:ziWbZ5UBDnR7VQTqOl6F",
+        "logstash-symfony-main-2025.03.05:OOarZ5UBJdUWaJfyfSa5",
+        "logstash-symfony-main-2025.03.05:ryiuZ5UBDnR7VQTqtt5D",
+        "logstash-symfony-main-2025.03.05:Uyq4Z5UBDnR7VQTqIce1"
+      ]
+    },
+    {
+      "cluster_id": 8,
+      "count": 10,
+      "pattern": "remote_addr=\"<IP>\" - x_forwarded_for=\"<IP>, <IP>\" - cf_connecting_ip=\"<IP>\" - - [05/Mar/2025:<TIME> +<NUM>] \"POST /_/application-appointment-schedulings/superchat-error<<?PARAMS>> HTTP/<NUM>.<NUM>\" <NUM> \"-\" \"Apache-HttpClient/4.5.14 (Java/21.0.6)\" request_time=\"<NUM>.<NUM>\" upstream_connect_time=\"<NUM>.<NUM>\" upstream_header_time=\"<NUM>.<NUM>\" upstream_response_time=\"<NUM>.<NUM>\" request_id=\"<HEX>\" session_id=\"-\"",
+      "first_seen": "logstash-nginx-access-2025.03.05:9SWbZ5UBDnR7VQTqQF-X",
+      "last_seen": "logstash-nginx-access-2025.03.05:FSiuZ5UBDnR7VQTqxuBJ",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-nginx-access-2025.03.05:9SWbZ5UBDnR7VQTqQF-X",
+        "logstash-nginx-access-2025.03.05:qSKPZ5UBDnR7VQTq0n7u",
+        "logstash-nginx-access-2025.03.05:nyirZ5UBDnR7VQTqiDqn",
+        "logstash-nginx-access-2025.03.05:mCq4Z5UBDnR7VQTqLclm",
+        "logstash-nginx-access-2025.03.05:FSiuZ5UBDnR7VQTqxuBJ"
+      ]
+    },
+    {
+      "cluster_id": 1,
+      "count": 9,
+      "pattern": "Error renewing booking <UUID>: Error in communication with Billwerk API: Client error: `POST https://app.billwerk.com/api/v1/Contracts/<HEX>/usage<?PARAMS> resulted in a `<NUM> Unprocessable Entity` response:",
+      "first_seen": "logstash-jobs-2025.03.05:B9tpZ5UBJdUWaJfyW3m1",
+      "last_seen": "logstash-jobs-2025.03.05:xiagZ5UBDnR7VQTqPEn_",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-jobs-2025.03.05:B9tpZ5UBJdUWaJfyW3m1",
+        "logstash-jobs-2025.03.05:DdtpZ5UBJdUWaJfyW3m1",
+        "logstash-jobs-2025.03.05:TSagZ5UBDnR7VQTqQEqn",
+        "logstash-jobs-2025.03.05:UyagZ5UBDnR7VQTqQEqn",
+        "logstash-jobs-2025.03.05:xiagZ5UBDnR7VQTqPEn_"
+      ]
+    },
+    {
+      "cluster_id": 11,
+      "count": 6,
+      "pattern": "[TIMESTAMP] application_events.INFO: {\"applicationEvent\": {\"id\": \"<UUID>\", \"eventCategory\": \"<NUM>\", \"eventCategoryTitle\": \"error\", \"eventType\": \"<NUM>\", \"eventTypeTitle\": \"exception\", \"occuredAt\": \"TIMESTAMP\", \"affectedUserId\": null, \"affectedUserIsJobofferer\": null, \"affectedUserIsJobseeker\": null, \"affectedUserRegisteredAt\": null, \"metric\": null, \"errorMessage\": \"RecurrentJob with id <UUID> does not exist.\", \"additionalData\": {\"throwableClass\": \"Symfony\\\\Component\\\\HttpKernel\\\\Exception\\\\NotFoundHttpException\", \"file\": \"/opt/website/prod/backend-app/src/App/Controller/RecurrentJobsShareController.php\", \"line\": \"<NUM>\"}, \"requestId\": \"<HEX>\", \"sessionId\": <*> \"clientId\": \"<HEX>\", \"isProbablyBotRequest\": \"<NUM>\"}} [] []",
+      "first_seen": "logstash-symfony-application-events-2025.03.05:HxMoZ5UBDnR7VQTqfk1_",
+      "last_seen": "logstash-symfony-application-events-2025.03.05:CCKOZ5UBDnR7VQTqNSWH",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-application-events-2025.03.05:HxMoZ5UBDnR7VQTqfk1_",
+        "logstash-symfony-application-events-2025.03.05:PBU8Z5UBDnR7VQTqHoCD",
+        "logstash-symfony-application-events-2025.03.05:cxlWZ5UBDnR7VQTqRlv4",
+        "logstash-symfony-application-events-2025.03.05:Fui2Z5UBJdUWaJfy54kF",
+        "logstash-symfony-application-events-2025.03.05:CCKOZ5UBDnR7VQTqNSWH"
+      ]
+    },
+    {
+      "cluster_id": 17,
+      "count": 6,
+      "pattern": "[TIMESTAMP] request.ERROR: Uncaught PHP Exception Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException: \"RecurrentJob with id <UUID> does not exist.\" at /opt/website/prod/backend-app/src/App/Controller/RecurrentJobsShareController.php line <NUM> {\"exception\": \"[object] (Symfony\\\\Component\\\\HttpKernel\\\\Exception\\\\NotFoundHttpException(code: <NUM>): RecurrentJob with id <UUID> does not exist. at /opt/website/prod/backend-app/src/App/Controller/RecurrentJobsShareController.php:<NUM>)\"} []",
+      "first_seen": "logstash-symfony-errors-2025.03.05:AdAoZ5UBJdUWaJfye4bL",
+      "last_seen": "logstash-symfony-errors-2025.03.05:Fiq2Z5UBDnR7VQTq6IyM",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-errors-2025.03.05:AdAoZ5UBJdUWaJfye4bL",
+        "logstash-symfony-errors-2025.03.05:lRU8Z5UBDnR7VQTqIIFF",
+        "logstash-symfony-errors-2025.03.05:tdZWZ5UBJdUWaJfyRI-H",
+        "logstash-symfony-errors-2025.03.05:8iKOZ5UBDnR7VQTqMyNg",
+        "logstash-symfony-errors-2025.03.05:Fiq2Z5UBDnR7VQTq6IyM"
+      ]
+    },
+    {
+      "cluster_id": 7,
+      "count": 5,
+      "pattern": "[TIMESTAMP] request.INFO: Matched route \"returnurls.billwerk.subscription_error\". {\"route\": \"returnurls.billwerk.subscription_error\", \"route_parameters\": {\"_route\": \"returnurls.billwerk.subscription_error\", \"_controller\": \"App\\\\Controller\\\\BillwerkReturnurlController::subscriptionErrorAction\"}, \"request_uri\": \"http://www.joboo.de/returnurls/billwerk/subscription-error<?PARAMS><NUM>&billwerkReferenceId=null\", \"method\": \"GET\"} []",
+      "first_seen": "logstash-symfony-errors-2025.03.05:W916Z5UBJdUWaJfyEIlz",
+      "last_seen": "logstash-symfony-errors-2025.03.05:kienZ5UBDnR7VQTqKm3Y",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-errors-2025.03.05:W916Z5UBJdUWaJfyEIlz",
+        "logstash-symfony-errors-2025.03.05:LeauZ5UBJdUWaJfyS731",
+        "logstash-symfony-errors-2025.03.05:3iitZ5UBDnR7VQTqG4LF",
+        "logstash-symfony-errors-2025.03.05:GyeoZ5UBDnR7VQTq6cU0",
+        "logstash-symfony-errors-2025.03.05:kienZ5UBDnR7VQTqKm3Y"
+      ]
+    }
+  ],
+  "decreased_patterns": [
+    {
+      "cluster_id": 3,
+      "count": 15,
+      "pattern": "[TIMESTAMP] app.INFO: Google Captcha Check Result: {\"success\": \"<NUM>\", \"error-codes\": [\"invalid-input-response\"]} [] []",
+      "first_seen": "logstash-symfony-main-2025.03.05:pRU9Z5UBDnR7VQTqRJp4",
+      "last_seen": "logstash-symfony-main-2025.03.05:Xyu8Z5UBDnR7VQTqrqLn",
+      "sample_log_lines": [],
+      "sample_doc_references": [
+        "logstash-symfony-main-2025.03.05:pRU9Z5UBDnR7VQTqRJp4",
+        "logstash-symfony-main-2025.03.05:ZieqZ5UBDnR7VQTqHfhm",
+        "logstash-symfony-main-2025.03.05:diu8Z5UBDnR7VQTqtqRq",
+        "logstash-symfony-main-2025.03.05:Tem8Z5UBJdUWaJfytpP0",
+        "logstash-symfony-main-2025.03.05:Xyu8Z5UBDnR7VQTqrqLn"
+      ]
+    }
+  ]
+}
