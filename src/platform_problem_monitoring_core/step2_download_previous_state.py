@@ -4,6 +4,7 @@
 import argparse
 import datetime
 import sys
+from datetime import timezone
 from pathlib import Path
 
 import boto3
@@ -41,7 +42,7 @@ def download_previous_state(
         logger.warning(f"Failed to download date time file: {e}")
         logger.info("Using fallback: 24 hours ago")
         # Set default to 24 hours ago
-        now = datetime.datetime.now(datetime.UTC)
+        now = datetime.datetime.now(timezone.utc)
         yesterday = now - datetime.timedelta(days=1)
         with Path(date_time_file).open('w') as f:
             f.write(yesterday.isoformat())

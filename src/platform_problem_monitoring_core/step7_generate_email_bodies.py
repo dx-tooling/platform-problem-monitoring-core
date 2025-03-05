@@ -4,7 +4,7 @@
 import argparse
 import re
 import sys
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -508,7 +508,7 @@ def generate_email_bodies(
     decreased_patterns = comparison.get("decreased_patterns", [])
 
     # Generate timestamp
-    timestamp = datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
     # Load HTML templates
     templates = load_html_template()

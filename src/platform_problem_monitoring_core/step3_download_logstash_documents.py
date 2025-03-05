@@ -6,6 +6,7 @@ import datetime
 import json
 import sys
 import time
+from datetime import timezone
 from pathlib import Path
 
 import requests
@@ -92,7 +93,7 @@ def _get_start_date_time(start_date_time_file: str) -> str:
         logger.warning(f"Start date and time file not found: {start_date_time_file}")
         # Default to 24 hours ago if file not found
         # Using timezone-aware approach to address deprecation warning
-        start_date_time = (datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1)).isoformat()
+        start_date_time = (datetime.datetime.now(timezone.utc) - datetime.timedelta(days=1)).isoformat()
         logger.info(f"Using default start date and time: {start_date_time}")
         return start_date_time
 
@@ -154,7 +155,7 @@ def _download_documents_with_pagination(elasticsearch_url: str, query_data: dict
     
     search_response = requests.post(
         search_url,
-        params=search_params,
+        params=search_params,  # type: ignore
         headers=headers,
         json=query_data
     )
@@ -261,7 +262,7 @@ def download_logstash_documents(
         
         # Get the current date and time
         # Using timezone-aware approach to address deprecation warning
-        current_date_time = datetime.datetime.now(datetime.UTC).isoformat()
+        current_date_time = datetime.datetime.now(timezone.utc).isoformat()
         logger.info(f"Current date and time: {current_date_time}")
         
         # Save the current date and time for the next run

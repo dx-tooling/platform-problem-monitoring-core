@@ -6,7 +6,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, List
 
 from drain3 import TemplateMiner
 from drain3.masking import MaskingInstruction
@@ -249,7 +249,7 @@ def preprocess_log_line(line: str) -> str:
     # Identify and temporarily mark HTTP verb + URL patterns
     http_pattern = r'(GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS) ([^ ]+) HTTP/\d+\.\d+'
     
-    def replace_numbers_except_in_urls(match):
+    def replace_numbers_except_in_urls(match: re.Match) -> str:
         verb = match.group(1)
         url = match.group(2)
         http_version = match.group(0).split(' ')[-1]
@@ -309,7 +309,7 @@ def post_process_template(template: str) -> str:
     return template
 
 
-def _process_document(doc: dict, template_miner, pattern_doc_references: dict):
+def _process_document(doc: dict, template_miner: TemplateMiner, pattern_doc_references: dict) -> bool:
     """
     Process a single document to extract and normalize its message.
     
@@ -348,7 +348,7 @@ def _process_document(doc: dict, template_miner, pattern_doc_references: dict):
     return True
 
 
-def _prepare_results(template_miner, pattern_doc_references: dict) -> list:
+def _prepare_results(template_miner: TemplateMiner, pattern_doc_references: dict) -> list:
     """
     Prepare normalized results from template miner clusters.
     
@@ -397,7 +397,7 @@ def normalize_messages(fields_file: str, output_file: str) -> None:
     template_miner = configure_template_miner()
     
     # Dictionary to store document IDs for each template
-    pattern_doc_references = {}
+    pattern_doc_references: Dict[str, List[dict]] = {}
     
     try:
         # Process the input file
