@@ -1,0 +1,764 @@
+[
+    {
+        "_index": "logstash-jobs-2025.03.05",
+        "_type": "_doc",
+        "_id": "ccsJZ5UBJdUWaJfyrVfk",
+        "_score": 57.453278,
+        "_source": {
+            "@timestamp": "2025-03-05T16:00:42.360Z",
+            "message": "16:00:41 CRITICAL  [console] Error thrown while running command \"--env=prod app:sendmailnotifications:formissingjoboffererbaseprofile\". Message: \"The EntityManager is closed.\" [\"exception\" => Doctrine\\ORM\\Exception\\EntityManagerClosed { \u2026},\"command\" => \"--env=prod app:sendmailnotifications:formissingjoboffererbaseprofile\",\"message\" => \"The EntityManager is closed.\"]",
+            "path": "/var/tmp/go-gastro-website-sendmailnotifications-formissingjoboffererbaseprofile.2025-03-05_15_20_01.log",
+            "type": "jobs",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-jobs-2025.03.05",
+        "_type": "_doc",
+        "_id": "AMf2ZpUBJdUWaJfyyoIc",
+        "_score": 54.736847,
+        "_source": {
+            "@timestamp": "2025-03-05T15:40:04.392Z",
+            "message": "15:40:00 CRITICAL  [console] Error thrown while running command \"--env=prod --no-debug app:classifyrecurrentjobsforcontentdistribution e5\". Message: \"Entity of type 'App\\Entity\\Profile\\JoboffererProfile' for IDs id(e5b51b34-f51f-11ef-83f7-f7edc7c04fb4) was not found\" [\"exception\" => Doctrine\\ORM\\EntityNotFoundException { \u2026},\"command\" => \"--env=prod --no-debug app:classifyrecurrentjobsforcontentdistribution e5\",\"message\" => \"Entity of type 'App\\Entity\\Profile\\JoboffererProfile' for IDs id(e5b51b34-f51f-11ef-83f7-f7edc7c04fb4) was not found\"]",
+            "path": "/var/tmp/go-gastro-website-run-command-classifyrecurrentjobsforcontentdistribution.2025-03-05_14.2025-03-05_15_38_29.e5.log",
+            "type": "jobs",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-jobs-2025.03.05",
+        "_type": "_doc",
+        "_id": "S8LkZpUBJdUWaJfyC4-_",
+        "_score": 54.736847,
+        "_source": {
+            "@timestamp": "2025-03-05T15:19:36.018Z",
+            "message": "15:19:35 CRITICAL  [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa caused [3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa]: version conflict, required seqNo [58491983], primary term [1]. current document has seqNo [58491985] and primary term [1] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: '3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa'].",
+            "path": "/var/tmp/go-gastro-website-run-symfony-messages-consumer.immediate-searchsync.ip-10-0-1-113.website-immediate-searchsync-symfony-messages-consumer.02.log",
+            "type": "jobs",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-jobs-2025.03.05",
+        "_type": "_doc",
+        "_id": "HsLkZpUBJdUWaJfyjaMU",
+        "_score": 54.736847,
+        "_source": {
+            "@timestamp": "2025-03-05T15:20:09.115Z",
+            "message": "15:20:08 CRITICAL  [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/52612ac0-f9d5-11ef-bb46-6b1dac061040 caused [52612ac0-f9d5-11ef-bb46-6b1dac061040]: version conflict, required seqNo [57171539], primary term [1]. current document has seqNo [57171540] and primary term [1] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: '52612ac0-f9d5-11ef-bb46-6b1dac061040'].",
+            "path": "/var/tmp/go-gastro-website-run-symfony-messages-consumer.immediate-searchsync.ip-10-0-1-113.website-immediate-searchsync-symfony-messages-consumer.04.log",
+            "type": "jobs",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-jobs-2025.03.05",
+        "_type": "_doc",
+        "_id": "_cDWZpUBJdUWaJfyulg3",
+        "_score": 54.736847,
+        "_source": {
+            "@timestamp": "2025-03-05T15:05:03.165Z",
+            "message": "15:04:57 CRITICAL  [console] Error thrown while running command \"--env=prod --no-debug app:classifyrecurrentjobsforcontentdistribution b0\". Message: \"App\\Repository\\ZipcodeCircumcirclesRepository::getBundeslandForZipcode(): Argument #1 ($zipcode) must be of type string, null given, called in /opt/website/prod/backend-app/src/App/Service/ExternalFeedsService.php on line 554\" [\"exception\" => TypeError { \u2026},\"command\" => \"--env=prod --no-debug app:classifyrecurrentjobsforcontentdistribution b0\",\"message\" => \"App\\Repository\\ZipcodeCircumcirclesRepository::getBundeslandForZipcode(): Argument #1 ($zipcode) must be of type string, null given, called in /opt/website/prod/backend-app/src/App/Service/ExternalFeedsService.php on line 554\"]",
+            "path": "/var/tmp/go-gastro-website-run-command-classifyrecurrentjobsforcontentdistribution.2025-03-05_14.2025-03-05_15_04_52.b0.log",
+            "type": "jobs",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-jobs-2025.03.05",
+        "_type": "_doc",
+        "_id": "ZsHbZpUBJdUWaJfy1TRj",
+        "_score": 54.736847,
+        "_source": {
+            "@timestamp": "2025-03-05T15:10:37.819Z",
+            "message": "15:10:37 CRITICAL  [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/fe0044a8-f9d3-11ef-b886-e911eb3505f2 caused [fe0044a8-f9d3-11ef-b886-e911eb3505f2]: version conflict, required seqNo [57326550], primary term [1]. current document has seqNo [57326552] and primary term [1] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: 'fe0044a8-f9d3-11ef-b886-e911eb3505f2'].",
+            "path": "/var/tmp/go-gastro-website-run-symfony-messages-consumer.immediate-searchsync.ip-10-0-1-113.website-immediate-searchsync-symfony-messages-consumer.05.log",
+            "type": "jobs",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-jobs-2025.03.05",
+        "_type": "_doc",
+        "_id": "9QXlZpUBDnR7VQTqD-ui",
+        "_score": 54.736847,
+        "_source": {
+            "@timestamp": "2025-03-05T15:20:42.547Z",
+            "message": "15:20:42 CRITICAL  [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/6695b524-f9d5-11ef-ae5f-cd57ea06ffe1 caused [6695b524-f9d5-11ef-ae5f-cd57ea06ffe1]: version conflict, required seqNo [58492221], primary term [1]. current document has seqNo [58492222] and primary term [1] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: '6695b524-f9d5-11ef-ae5f-cd57ea06ffe1'].",
+            "path": "/var/tmp/go-gastro-website-run-symfony-messages-consumer.immediate-searchsync.ip-10-0-1-113.website-immediate-searchsync-symfony-messages-consumer.05.log",
+            "type": "jobs",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-jobs-2025.03.05",
+        "_type": "_doc",
+        "_id": "usLlZpUBJdUWaJfy4ufF",
+        "_score": 54.736847,
+        "_source": {
+            "@timestamp": "2025-03-05T15:21:36.605Z",
+            "message": "15:21:35 CRITICAL  [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/862d70ca-f9d5-11ef-bf92-9142287a9283 caused [862d70ca-f9d5-11ef-bf92-9142287a9283]: version conflict, required seqNo [57974356], primary term [1]. current document has seqNo [57974357] and primary term [1] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: '862d70ca-f9d5-11ef-bf92-9142287a9283'].",
+            "path": "/var/tmp/go-gastro-website-run-symfony-messages-consumer.immediate-searchsync.ip-10-0-1-113.website-immediate-searchsync-symfony-messages-consumer.00.log",
+            "type": "jobs",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-jobs-2025.03.05",
+        "_type": "_doc",
+        "_id": "DMLmZpUBJdUWaJfyJ_Gj",
+        "_score": 54.736847,
+        "_source": {
+            "@timestamp": "2025-03-05T15:21:54.233Z",
+            "message": "15:21:54 CRITICAL  [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/91a197d8-f9d5-11ef-8a7e-7924f73da87e caused [91a197d8-f9d5-11ef-8a7e-7924f73da87e]: version conflict, required seqNo [57974413], primary term [1]. current document has seqNo [57974415] and primary term [1] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: '91a197d8-f9d5-11ef-8a7e-7924f73da87e'].",
+            "path": "/var/tmp/go-gastro-website-run-symfony-messages-consumer.immediate-searchsync.ip-10-0-1-113.website-immediate-searchsync-symfony-messages-consumer.00.log",
+            "type": "jobs",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-jobs-2025.03.05",
+        "_type": "_doc",
+        "_id": "xwbmZpUBDnR7VQTqkjMA",
+        "_score": 54.736847,
+        "_source": {
+            "@timestamp": "2025-03-05T15:22:21.319Z",
+            "message": "15:22:20 CRITICAL  [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/a10069f2-f9d5-11ef-b94a-a7d4b4de143d caused [a10069f2-f9d5-11ef-b94a-a7d4b4de143d]: version conflict, required seqNo [57329485], primary term [1]. current document has seqNo [57329487] and primary term [1] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: 'a10069f2-f9d5-11ef-b94a-a7d4b4de143d'].",
+            "path": "/var/tmp/go-gastro-website-run-symfony-messages-consumer.immediate-searchsync.ip-10-0-1-113.website-immediate-searchsync-symfony-messages-consumer.07.log",
+            "type": "jobs",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-jobs-2025.03.05",
+        "_type": "_doc",
+        "_id": "ZwTfZpUBDnR7VQTqFNJ6",
+        "_score": 54.736847,
+        "_source": {
+            "@timestamp": "2025-03-05T15:14:10.503Z",
+            "message": "15:14:10 CRITICAL  [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b caused [7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b]: version conflict, required seqNo [57327534], primary term [1]. current document has seqNo [57327535] and primary term [1] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: '7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b'].",
+            "path": "/var/tmp/go-gastro-website-run-symfony-messages-consumer.immediate-searchsync.ip-10-0-1-113.website-immediate-searchsync-symfony-messages-consumer.06.log",
+            "type": "jobs",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-jobs-2025.03.05",
+        "_type": "_doc",
+        "_id": "OgXjZpUBDnR7VQTqTZFo",
+        "_score": 54.736847,
+        "_source": {
+            "@timestamp": "2025-03-05T15:18:47.276Z",
+            "message": "15:18:46 CRITICAL  [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/219d2d4e-f9d5-11ef-a2c0-c7ed7a539269 caused [219d2d4e-f9d5-11ef-a2c0-c7ed7a539269]: version conflict, required seqNo [57171291], primary term [1]. current document has seqNo [57171293] and primary term [1] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: '219d2d4e-f9d5-11ef-a2c0-c7ed7a539269'].",
+            "path": "/var/tmp/go-gastro-website-run-symfony-messages-consumer.immediate-searchsync.ip-10-0-1-113.website-immediate-searchsync-symfony-messages-consumer.00.log",
+            "type": "jobs",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-main-2025.03.05",
+        "_type": "_doc",
+        "_id": "XgbmZpUBDnR7VQTqKh9n",
+        "_score": 43.322212,
+        "_source": {
+            "@timestamp": "2025-03-05T15:21:55.037Z",
+            "message": "[2025-03-05T15:21:54.123929+00:00] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #1 using 1000 ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/91a197d8-f9d5-11ef-8a7e-7924f73da87e caused [91a197d8-f9d5-11ef-8a7e-7924f73da87e]: version conflict, required seqNo [57974413], primary term [1]. current document has seqNo [57974415] and primary term [1] [index: recurrent_jobs_prod] \" {\"class\":\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\",\"retryCount\":1,\"delay\":1000,\"error\":\"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/91a197d8-f9d5-11ef-8a7e-7924f73da87e caused [91a197d8-f9d5-11ef-8a7e-7924f73da87e]: version conflict, required seqNo [57974413], primary term [1]. current document has seqNo [57974415] and primary term [1] [index: recurrent_jobs_prod]\\n\",\"exception\":\"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: 0): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/91a197d8-f9d5-11ef-8a7e-7924f73da87e caused [91a197d8-f9d5-11ef-8a7e-7924f73da87e]: version conflict, required seqNo [57974413], primary term [1]. current document has seqNo [57974415] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:130)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: 0): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/91a197d8-f9d5-11ef-8a7e-7924f73da87e caused [91a197d8-f9d5-11ef-8a7e-7924f73da87e]: version conflict, required seqNo [57974413], primary term [1]. current document has seqNo [57974415] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:357)\"} []",
+            "path": "/opt/website/prod/backend-app/var/log/prod.main.log",
+            "type": "symfony-main",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-main-2025.03.05",
+        "_type": "_doc",
+        "_id": "ncLlZpUBJdUWaJfy4Oc8",
+        "_score": 43.322212,
+        "_source": {
+            "@timestamp": "2025-03-05T15:21:35.952Z",
+            "message": "[2025-03-05T15:21:35.810957+00:00] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #1 using 1000 ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/862d70ca-f9d5-11ef-bf92-9142287a9283 caused [862d70ca-f9d5-11ef-bf92-9142287a9283]: version conflict, required seqNo [57974356], primary term [1]. current document has seqNo [57974357] and primary term [1] [index: recurrent_jobs_prod] \" {\"class\":\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\",\"retryCount\":1,\"delay\":1000,\"error\":\"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/862d70ca-f9d5-11ef-bf92-9142287a9283 caused [862d70ca-f9d5-11ef-bf92-9142287a9283]: version conflict, required seqNo [57974356], primary term [1]. current document has seqNo [57974357] and primary term [1] [index: recurrent_jobs_prod]\\n\",\"exception\":\"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: 0): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/862d70ca-f9d5-11ef-bf92-9142287a9283 caused [862d70ca-f9d5-11ef-bf92-9142287a9283]: version conflict, required seqNo [57974356], primary term [1]. current document has seqNo [57974357] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:130)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: 0): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/862d70ca-f9d5-11ef-bf92-9142287a9283 caused [862d70ca-f9d5-11ef-bf92-9142287a9283]: version conflict, required seqNo [57974356], primary term [1]. current document has seqNo [57974357] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:357)\"} []",
+            "path": "/opt/website/prod/backend-app/var/log/prod.main.log",
+            "type": "symfony-main",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-main-2025.03.05",
+        "_type": "_doc",
+        "_id": "9QbmZpUBDnR7VQTqkDKA",
+        "_score": 43.322212,
+        "_source": {
+            "@timestamp": "2025-03-05T15:22:21.172Z",
+            "message": "[2025-03-05T15:22:20.850474+00:00] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #1 using 1000 ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/a10069f2-f9d5-11ef-b94a-a7d4b4de143d caused [a10069f2-f9d5-11ef-b94a-a7d4b4de143d]: version conflict, required seqNo [57329485], primary term [1]. current document has seqNo [57329487] and primary term [1] [index: recurrent_jobs_prod] \" {\"class\":\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\",\"retryCount\":1,\"delay\":1000,\"error\":\"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/a10069f2-f9d5-11ef-b94a-a7d4b4de143d caused [a10069f2-f9d5-11ef-b94a-a7d4b4de143d]: version conflict, required seqNo [57329485], primary term [1]. current document has seqNo [57329487] and primary term [1] [index: recurrent_jobs_prod]\\n\",\"exception\":\"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: 0): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/a10069f2-f9d5-11ef-b94a-a7d4b4de143d caused [a10069f2-f9d5-11ef-b94a-a7d4b4de143d]: version conflict, required seqNo [57329485], primary term [1]. current document has seqNo [57329487] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:130)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: 0): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/a10069f2-f9d5-11ef-b94a-a7d4b4de143d caused [a10069f2-f9d5-11ef-b94a-a7d4b4de143d]: version conflict, required seqNo [57329485], primary term [1]. current document has seqNo [57329487] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:357)\"} []",
+            "path": "/opt/website/prod/backend-app/var/log/prod.main.log",
+            "type": "symfony-main",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-main-2025.03.05",
+        "_type": "_doc",
+        "_id": "BwXjZpUBDnR7VQTqTJGj",
+        "_score": 43.322212,
+        "_source": {
+            "@timestamp": "2025-03-05T15:18:47.093Z",
+            "message": "[2025-03-05T15:18:46.397500+00:00] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #1 using 1000 ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/219d2d4e-f9d5-11ef-a2c0-c7ed7a539269 caused [219d2d4e-f9d5-11ef-a2c0-c7ed7a539269]: version conflict, required seqNo [57171291], primary term [1]. current document has seqNo [57171293] and primary term [1] [index: recurrent_jobs_prod] \" {\"class\":\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\",\"retryCount\":1,\"delay\":1000,\"error\":\"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/219d2d4e-f9d5-11ef-a2c0-c7ed7a539269 caused [219d2d4e-f9d5-11ef-a2c0-c7ed7a539269]: version conflict, required seqNo [57171291], primary term [1]. current document has seqNo [57171293] and primary term [1] [index: recurrent_jobs_prod]\\n\",\"exception\":\"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: 0): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/219d2d4e-f9d5-11ef-a2c0-c7ed7a539269 caused [219d2d4e-f9d5-11ef-a2c0-c7ed7a539269]: version conflict, required seqNo [57171291], primary term [1]. current document has seqNo [57171293] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:130)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: 0): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/219d2d4e-f9d5-11ef-a2c0-c7ed7a539269 caused [219d2d4e-f9d5-11ef-a2c0-c7ed7a539269]: version conflict, required seqNo [57171291], primary term [1]. current document has seqNo [57171293] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:357)\"} []",
+            "path": "/opt/website/prod/backend-app/var/log/prod.main.log",
+            "type": "symfony-main",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-main-2025.03.05",
+        "_type": "_doc",
+        "_id": "xsHbZpUBJdUWaJfy1jRQ",
+        "_score": 43.322212,
+        "_source": {
+            "@timestamp": "2025-03-05T15:10:38.006Z",
+            "message": "[2025-03-05T15:10:37.345191+00:00] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #1 using 1000 ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/fe0044a8-f9d3-11ef-b886-e911eb3505f2 caused [fe0044a8-f9d3-11ef-b886-e911eb3505f2]: version conflict, required seqNo [57326550], primary term [1]. current document has seqNo [57326552] and primary term [1] [index: recurrent_jobs_prod] \" {\"class\":\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\",\"retryCount\":1,\"delay\":1000,\"error\":\"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/fe0044a8-f9d3-11ef-b886-e911eb3505f2 caused [fe0044a8-f9d3-11ef-b886-e911eb3505f2]: version conflict, required seqNo [57326550], primary term [1]. current document has seqNo [57326552] and primary term [1] [index: recurrent_jobs_prod]\\n\",\"exception\":\"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: 0): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/fe0044a8-f9d3-11ef-b886-e911eb3505f2 caused [fe0044a8-f9d3-11ef-b886-e911eb3505f2]: version conflict, required seqNo [57326550], primary term [1]. current document has seqNo [57326552] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:130)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: 0): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/fe0044a8-f9d3-11ef-b886-e911eb3505f2 caused [fe0044a8-f9d3-11ef-b886-e911eb3505f2]: version conflict, required seqNo [57326550], primary term [1]. current document has seqNo [57326552] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:357)\"} []",
+            "path": "/opt/website/prod/backend-app/var/log/prod.main.log",
+            "type": "symfony-main",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-main-2025.03.05",
+        "_type": "_doc",
+        "_id": "iQXlZpUBDnR7VQTqEOyT",
+        "_score": 43.322212,
+        "_source": {
+            "@timestamp": "2025-03-05T15:20:42.695Z",
+            "message": "[2025-03-05T15:20:42.424033+00:00] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #1 using 1000 ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/6695b524-f9d5-11ef-ae5f-cd57ea06ffe1 caused [6695b524-f9d5-11ef-ae5f-cd57ea06ffe1]: version conflict, required seqNo [58492221], primary term [1]. current document has seqNo [58492222] and primary term [1] [index: recurrent_jobs_prod] \" {\"class\":\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\",\"retryCount\":1,\"delay\":1000,\"error\":\"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/6695b524-f9d5-11ef-ae5f-cd57ea06ffe1 caused [6695b524-f9d5-11ef-ae5f-cd57ea06ffe1]: version conflict, required seqNo [58492221], primary term [1]. current document has seqNo [58492222] and primary term [1] [index: recurrent_jobs_prod]\\n\",\"exception\":\"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: 0): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/6695b524-f9d5-11ef-ae5f-cd57ea06ffe1 caused [6695b524-f9d5-11ef-ae5f-cd57ea06ffe1]: version conflict, required seqNo [58492221], primary term [1]. current document has seqNo [58492222] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:130)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: 0): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/6695b524-f9d5-11ef-ae5f-cd57ea06ffe1 caused [6695b524-f9d5-11ef-ae5f-cd57ea06ffe1]: version conflict, required seqNo [58492221], primary term [1]. current document has seqNo [58492222] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:357)\"} []",
+            "path": "/opt/website/prod/backend-app/var/log/prod.main.log",
+            "type": "symfony-main",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-main-2025.03.05",
+        "_type": "_doc",
+        "_id": "DQTfZpUBDnR7VQTqFdOC",
+        "_score": 43.322212,
+        "_source": {
+            "@timestamp": "2025-03-05T15:14:10.935Z",
+            "message": "[2025-03-05T15:14:10.222631+00:00] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #1 using 1000 ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b caused [7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b]: version conflict, required seqNo [57327534], primary term [1]. current document has seqNo [57327535] and primary term [1] [index: recurrent_jobs_prod] \" {\"class\":\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\",\"retryCount\":1,\"delay\":1000,\"error\":\"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b caused [7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b]: version conflict, required seqNo [57327534], primary term [1]. current document has seqNo [57327535] and primary term [1] [index: recurrent_jobs_prod]\\n\",\"exception\":\"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: 0): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b caused [7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b]: version conflict, required seqNo [57327534], primary term [1]. current document has seqNo [57327535] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:130)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: 0): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b caused [7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b]: version conflict, required seqNo [57327534], primary term [1]. current document has seqNo [57327535] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:357)\"} []",
+            "path": "/opt/website/prod/backend-app/var/log/prod.main.log",
+            "type": "symfony-main",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-main-2025.03.05",
+        "_type": "_doc",
+        "_id": "mMLkZpUBJdUWaJfyCY4k",
+        "_score": 43.322212,
+        "_source": {
+            "@timestamp": "2025-03-05T15:19:35.346Z",
+            "message": "[2025-03-05T15:19:35.150169+00:00] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #1 using 1000 ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa caused [3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa]: version conflict, required seqNo [58491983], primary term [1]. current document has seqNo [58491985] and primary term [1] [index: recurrent_jobs_prod] \" {\"class\":\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\",\"retryCount\":1,\"delay\":1000,\"error\":\"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa caused [3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa]: version conflict, required seqNo [58491983], primary term [1]. current document has seqNo [58491985] and primary term [1] [index: recurrent_jobs_prod]\\n\",\"exception\":\"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: 0): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa caused [3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa]: version conflict, required seqNo [58491983], primary term [1]. current document has seqNo [58491985] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:130)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: 0): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa caused [3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa]: version conflict, required seqNo [58491983], primary term [1]. current document has seqNo [58491985] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:357)\"} []",
+            "path": "/opt/website/prod/backend-app/var/log/prod.main.log",
+            "type": "symfony-main",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-main-2025.03.05",
+        "_type": "_doc",
+        "_id": "0gXkZpUBDnR7VQTqiss4",
+        "_score": 43.322212,
+        "_source": {
+            "@timestamp": "2025-03-05T15:20:08.487Z",
+            "message": "[2025-03-05T15:20:08.204111+00:00] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #1 using 1000 ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/52612ac0-f9d5-11ef-bb46-6b1dac061040 caused [52612ac0-f9d5-11ef-bb46-6b1dac061040]: version conflict, required seqNo [57171539], primary term [1]. current document has seqNo [57171540] and primary term [1] [index: recurrent_jobs_prod] \" {\"class\":\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\",\"retryCount\":1,\"delay\":1000,\"error\":\"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/52612ac0-f9d5-11ef-bb46-6b1dac061040 caused [52612ac0-f9d5-11ef-bb46-6b1dac061040]: version conflict, required seqNo [57171539], primary term [1]. current document has seqNo [57171540] and primary term [1] [index: recurrent_jobs_prod]\\n\",\"exception\":\"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: 0): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/52612ac0-f9d5-11ef-bb46-6b1dac061040 caused [52612ac0-f9d5-11ef-bb46-6b1dac061040]: version conflict, required seqNo [57171539], primary term [1]. current document has seqNo [57171540] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:130)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: 0): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/52612ac0-f9d5-11ef-bb46-6b1dac061040 caused [52612ac0-f9d5-11ef-bb46-6b1dac061040]: version conflict, required seqNo [57171539], primary term [1]. current document has seqNo [57171540] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:357)\"} []",
+            "path": "/opt/website/prod/backend-app/var/log/prod.main.log",
+            "type": "symfony-main",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-messages-consumer-2025.03.05",
+        "_type": "_doc",
+        "_id": "LgXkZpUBDnR7VQTqjcwT",
+        "_score": 20.733711,
+        "_source": {
+            "@timestamp": "2025-03-05T15:20:09.060Z",
+            "message": "15:20:08 CRITICAL  [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/52612ac0-f9d5-11ef-bb46-6b1dac061040 caused [52612ac0-f9d5-11ef-bb46-6b1dac061040]: version conflict, required seqNo [57171539], primary term [1]. current document has seqNo [57171540] and primary term [1] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: '52612ac0-f9d5-11ef-bb46-6b1dac061040'].",
+            "path": "/var/tmp/go-gastro-website-run-symfony-messages-consumer.immediate-searchsync.ip-10-0-1-113.website-immediate-searchsync-symfony-messages-consumer.04.log",
+            "type": "symfony-messages-consumer",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-messages-consumer-2025.03.05",
+        "_type": "_doc",
+        "_id": "EMLlZpUBJdUWaJfyEb3N",
+        "_score": 20.733711,
+        "_source": {
+            "@timestamp": "2025-03-05T15:20:43.109Z",
+            "message": "15:20:42 CRITICAL  [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/6695b524-f9d5-11ef-ae5f-cd57ea06ffe1 caused [6695b524-f9d5-11ef-ae5f-cd57ea06ffe1]: version conflict, required seqNo [58492221], primary term [1]. current document has seqNo [58492222] and primary term [1] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: '6695b524-f9d5-11ef-ae5f-cd57ea06ffe1'].",
+            "path": "/var/tmp/go-gastro-website-run-symfony-messages-consumer.immediate-searchsync.ip-10-0-1-113.website-immediate-searchsync-symfony-messages-consumer.05.log",
+            "type": "symfony-messages-consumer",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-messages-consumer-2025.03.05",
+        "_type": "_doc",
+        "_id": "YwTbZpUBDnR7VQTq1kfa",
+        "_score": 20.733711,
+        "_source": {
+            "@timestamp": "2025-03-05T15:10:38.169Z",
+            "message": "15:10:37 CRITICAL  [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/fe0044a8-f9d3-11ef-b886-e911eb3505f2 caused [fe0044a8-f9d3-11ef-b886-e911eb3505f2]: version conflict, required seqNo [57326550], primary term [1]. current document has seqNo [57326552] and primary term [1] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: 'fe0044a8-f9d3-11ef-b886-e911eb3505f2'].",
+            "path": "/var/tmp/go-gastro-website-run-symfony-messages-consumer.immediate-searchsync.ip-10-0-1-113.website-immediate-searchsync-symfony-messages-consumer.05.log",
+            "type": "symfony-messages-consumer",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-messages-consumer-2025.03.05",
+        "_type": "_doc",
+        "_id": "2ATfZpUBDnR7VQTqFNJ6",
+        "_score": 20.733711,
+        "_source": {
+            "@timestamp": "2025-03-05T15:14:10.525Z",
+            "message": "15:14:10 CRITICAL  [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b caused [7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b]: version conflict, required seqNo [57327534], primary term [1]. current document has seqNo [57327535] and primary term [1] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: '7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b'].",
+            "path": "/var/tmp/go-gastro-website-run-symfony-messages-consumer.immediate-searchsync.ip-10-0-1-113.website-immediate-searchsync-symfony-messages-consumer.06.log",
+            "type": "symfony-messages-consumer",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-messages-consumer-2025.03.05",
+        "_type": "_doc",
+        "_id": "tgXkZpUBDnR7VQTqC7e1",
+        "_score": 20.733711,
+        "_source": {
+            "@timestamp": "2025-03-05T15:19:36.004Z",
+            "message": "15:19:35 CRITICAL  [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa caused [3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa]: version conflict, required seqNo [58491983], primary term [1]. current document has seqNo [58491985] and primary term [1] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: '3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa'].",
+            "path": "/var/tmp/go-gastro-website-run-symfony-messages-consumer.immediate-searchsync.ip-10-0-1-113.website-immediate-searchsync-symfony-messages-consumer.02.log",
+            "type": "symfony-messages-consumer",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-messages-consumer-2025.03.05",
+        "_type": "_doc",
+        "_id": "tcLlZpUBJdUWaJfy4eco",
+        "_score": 20.733711,
+        "_source": {
+            "@timestamp": "2025-03-05T15:21:36.190Z",
+            "message": "15:21:35 CRITICAL  [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/862d70ca-f9d5-11ef-bf92-9142287a9283 caused [862d70ca-f9d5-11ef-bf92-9142287a9283]: version conflict, required seqNo [57974356], primary term [1]. current document has seqNo [57974357] and primary term [1] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: '862d70ca-f9d5-11ef-bf92-9142287a9283'].",
+            "path": "/var/tmp/go-gastro-website-run-symfony-messages-consumer.immediate-searchsync.ip-10-0-1-113.website-immediate-searchsync-symfony-messages-consumer.00.log",
+            "type": "symfony-messages-consumer",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-messages-consumer-2025.03.05",
+        "_type": "_doc",
+        "_id": "qAbmZpUBDnR7VQTqkTOB",
+        "_score": 20.733711,
+        "_source": {
+            "@timestamp": "2025-03-05T15:22:21.264Z",
+            "message": "15:22:20 CRITICAL  [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/a10069f2-f9d5-11ef-b94a-a7d4b4de143d caused [a10069f2-f9d5-11ef-b94a-a7d4b4de143d]: version conflict, required seqNo [57329485], primary term [1]. current document has seqNo [57329487] and primary term [1] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: 'a10069f2-f9d5-11ef-b94a-a7d4b4de143d'].",
+            "path": "/var/tmp/go-gastro-website-run-symfony-messages-consumer.immediate-searchsync.ip-10-0-1-113.website-immediate-searchsync-symfony-messages-consumer.07.log",
+            "type": "symfony-messages-consumer",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-messages-consumer-2025.03.05",
+        "_type": "_doc",
+        "_id": "MMLjZpUBJdUWaJfyS2j2",
+        "_score": 20.733711,
+        "_source": {
+            "@timestamp": "2025-03-05T15:18:46.926Z",
+            "message": "15:18:46 CRITICAL  [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/219d2d4e-f9d5-11ef-a2c0-c7ed7a539269 caused [219d2d4e-f9d5-11ef-a2c0-c7ed7a539269]: version conflict, required seqNo [57171291], primary term [1]. current document has seqNo [57171293] and primary term [1] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: '219d2d4e-f9d5-11ef-a2c0-c7ed7a539269'].",
+            "path": "/var/tmp/go-gastro-website-run-symfony-messages-consumer.immediate-searchsync.ip-10-0-1-113.website-immediate-searchsync-symfony-messages-consumer.00.log",
+            "type": "symfony-messages-consumer",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-messages-consumer-2025.03.05",
+        "_type": "_doc",
+        "_id": "RwbmZpUBDnR7VQTqJx-X",
+        "_score": 20.733711,
+        "_source": {
+            "@timestamp": "2025-03-05T15:21:54.222Z",
+            "message": "15:21:54 CRITICAL  [app] [SyncRecurrentJobWithSearchesSymfonyMessageHandler] Got a throwable of class 'Elastica\\Exception\\Bulk\\ResponseException' with message 'Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/91a197d8-f9d5-11ef-8a7e-7924f73da87e caused [91a197d8-f9d5-11ef-8a7e-7924f73da87e]: version conflict, required seqNo [57974413], primary term [1]. current document has seqNo [57974415] and primary term [1] [index: recurrent_jobs_prod] ', message identifier: [recurrentJobId: '91a197d8-f9d5-11ef-8a7e-7924f73da87e'].",
+            "path": "/var/tmp/go-gastro-website-run-symfony-messages-consumer.immediate-searchsync.ip-10-0-1-113.website-immediate-searchsync-symfony-messages-consumer.00.log",
+            "type": "symfony-messages-consumer",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-jobs-2025.03.05",
+        "_type": "_doc",
+        "_id": "lb3EZpUBJdUWaJfykUQK",
+        "_score": 20.448547,
+        "_source": {
+            "@timestamp": "2025-03-05T14:45:13.076Z",
+            "message": "Error renewing booking 193dee7a-66b6-11ef-a97e-0d2d661e36d3: Error in communication with Billwerk API: Client error: `POST https://app.billwerk.com/api/v1/Contracts/673c920b7a71db3c873d1941/usage?access_token=pXQVxSFkjvT4HYhf6Qvp3DDEO3lWKclezx9v_Z0im9ztXAST-VGlC_ai85F9qASI1Azx5qHjnlE5b4-PZBc6nw==` resulted in a `422 Unprocessable Entity` response:",
+            "path": "/var/tmp/go-gastro-website-renewrecurrentjobbookings.2025-03-05_14_45_01.log",
+            "type": "jobs",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-jobs-2025.03.05",
+        "_type": "_doc",
+        "_id": "kr3EZpUBJdUWaJfykUUR",
+        "_score": 20.448547,
+        "_source": {
+            "@timestamp": "2025-03-05T14:45:13.076Z",
+            "message": "Error renewing booking 4f8e2ecc-8169-11ef-a849-7f35342d30a6: Error in communication with Billwerk API: Client error: `POST https://app.billwerk.com/api/v1/Contracts/6794b7c7827eb035785e5f26/usage?access_token=pXQVxSFkjvT4HYhf6Qvp3DDEO3lWKclezx9v_Z0im9ztXAST-VGlC_ai85F9qASI1Azx5qHjnlE5b4-PZBc6nw==` resulted in a `422 Unprocessable Entity` response:",
+            "path": "/var/tmp/go-gastro-website-renewrecurrentjobbookings.2025-03-05_14_45_01.log",
+            "type": "jobs",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-jobs-2025.03.05",
+        "_type": "_doc",
+        "_id": "qADEZpUBDnR7VQTqkT4Q",
+        "_score": 20.448547,
+        "_source": {
+            "@timestamp": "2025-03-05T14:45:13.076Z",
+            "message": "Error renewing booking 9bd67c92-dbe9-11ee-973b-697febe45d46: Error in communication with Billwerk API: Client error: `POST https://app.billwerk.com/api/v1/Contracts/6797cbf0692dd74ffac1d536/usage?access_token=pXQVxSFkjvT4HYhf6Qvp3DDEO3lWKclezx9v_Z0im9ztXAST-VGlC_ai85F9qASI1Azx5qHjnlE5b4-PZBc6nw==` resulted in a `422 Unprocessable Entity` response:",
+            "path": "/var/tmp/go-gastro-website-renewrecurrentjobbookings.2025-03-05_14_45_01.log",
+            "type": "jobs",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-jobs-2025.03.05",
+        "_type": "_doc",
+        "_id": "w8j7ZpUBJdUWaJfydHCf",
+        "_score": 20.448547,
+        "_source": {
+            "@timestamp": "2025-03-05T15:45:10.175Z",
+            "message": "Error renewing booking 9bd67c92-dbe9-11ee-973b-697febe45d46: Error in communication with Billwerk API: Client error: `POST https://app.billwerk.com/api/v1/Contracts/6797cbf0692dd74ffac1d536/usage?access_token=pXQVxSFkjvT4HYhf6Qvp3DDEO3lWKclezx9v_Z0im9ztXAST-VGlC_ai85F9qASI1Azx5qHjnlE5b4-PZBc6nw==` resulted in a `422 Unprocessable Entity` response:",
+            "path": "/var/tmp/go-gastro-website-renewrecurrentjobbookings.2025-03-05_15_45_01.log",
+            "type": "jobs",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-jobs-2025.03.05",
+        "_type": "_doc",
+        "_id": "5Qv7ZpUBDnR7VQTqdMOI",
+        "_score": 20.448547,
+        "_source": {
+            "@timestamp": "2025-03-05T15:45:10.174Z",
+            "message": "Error renewing booking 193dee7a-66b6-11ef-a97e-0d2d661e36d3: Error in communication with Billwerk API: Client error: `POST https://app.billwerk.com/api/v1/Contracts/673c920b7a71db3c873d1941/usage?access_token=pXQVxSFkjvT4HYhf6Qvp3DDEO3lWKclezx9v_Z0im9ztXAST-VGlC_ai85F9qASI1Azx5qHjnlE5b4-PZBc6nw==` resulted in a `422 Unprocessable Entity` response:",
+            "path": "/var/tmp/go-gastro-website-renewrecurrentjobbookings.2025-03-05_15_45_01.log",
+            "type": "jobs",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-jobs-2025.03.05",
+        "_type": "_doc",
+        "_id": "5wv7ZpUBDnR7VQTqdMOI",
+        "_score": 20.448547,
+        "_source": {
+            "@timestamp": "2025-03-05T15:45:10.175Z",
+            "message": "Error renewing booking 4f8e2ecc-8169-11ef-a849-7f35342d30a6: Error in communication with Billwerk API: Client error: `POST https://app.billwerk.com/api/v1/Contracts/6794b7c7827eb035785e5f26/usage?access_token=pXQVxSFkjvT4HYhf6Qvp3DDEO3lWKclezx9v_Z0im9ztXAST-VGlC_ai85F9qASI1Azx5qHjnlE5b4-PZBc6nw==` resulted in a `422 Unprocessable Entity` response:",
+            "path": "/var/tmp/go-gastro-website-renewrecurrentjobbookings.2025-03-05_15_45_01.log",
+            "type": "jobs",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-errors-2025.03.05",
+        "_type": "_doc",
+        "_id": "PQXjZpUBDnR7VQTqTZFo",
+        "_score": 17.887348,
+        "_source": {
+            "@timestamp": "2025-03-05T15:18:47.292Z",
+            "tags": [
+                "_grokparsefailure"
+            ],
+            "message": "[2025-03-05T15:18:46.397500+00:00] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #1 using 1000 ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/219d2d4e-f9d5-11ef-a2c0-c7ed7a539269 caused [219d2d4e-f9d5-11ef-a2c0-c7ed7a539269]: version conflict, required seqNo [57171291], primary term [1]. current document has seqNo [57171293] and primary term [1] [index: recurrent_jobs_prod] \" {\"class\":\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\",\"retryCount\":1,\"delay\":1000,\"error\":\"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/219d2d4e-f9d5-11ef-a2c0-c7ed7a539269 caused [219d2d4e-f9d5-11ef-a2c0-c7ed7a539269]: version conflict, required seqNo [57171291], primary term [1]. current document has seqNo [57171293] and primary term [1] [index: recurrent_jobs_prod]\\n\",\"exception\":\"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: 0): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/219d2d4e-f9d5-11ef-a2c0-c7ed7a539269 caused [219d2d4e-f9d5-11ef-a2c0-c7ed7a539269]: version conflict, required seqNo [57171291], primary term [1]. current document has seqNo [57171293] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:130)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: 0): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/219d2d4e-f9d5-11ef-a2c0-c7ed7a539269 caused [219d2d4e-f9d5-11ef-a2c0-c7ed7a539269]: version conflict, required seqNo [57171291], primary term [1]. current document has seqNo [57171293] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:357)\"} []",
+            "path": "/opt/website/prod/backend-app/var/log/prod.errors.log",
+            "type": "symfony-errors",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-errors-2025.03.05",
+        "_type": "_doc",
+        "_id": "fwXkZpUBDnR7VQTqicvq",
+        "_score": 17.887348,
+        "_source": {
+            "@timestamp": "2025-03-05T15:20:08.321Z",
+            "tags": [
+                "_grokparsefailure"
+            ],
+            "message": "[2025-03-05T15:20:08.204111+00:00] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #1 using 1000 ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/52612ac0-f9d5-11ef-bb46-6b1dac061040 caused [52612ac0-f9d5-11ef-bb46-6b1dac061040]: version conflict, required seqNo [57171539], primary term [1]. current document has seqNo [57171540] and primary term [1] [index: recurrent_jobs_prod] \" {\"class\":\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\",\"retryCount\":1,\"delay\":1000,\"error\":\"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/52612ac0-f9d5-11ef-bb46-6b1dac061040 caused [52612ac0-f9d5-11ef-bb46-6b1dac061040]: version conflict, required seqNo [57171539], primary term [1]. current document has seqNo [57171540] and primary term [1] [index: recurrent_jobs_prod]\\n\",\"exception\":\"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: 0): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/52612ac0-f9d5-11ef-bb46-6b1dac061040 caused [52612ac0-f9d5-11ef-bb46-6b1dac061040]: version conflict, required seqNo [57171539], primary term [1]. current document has seqNo [57171540] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:130)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: 0): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/52612ac0-f9d5-11ef-bb46-6b1dac061040 caused [52612ac0-f9d5-11ef-bb46-6b1dac061040]: version conflict, required seqNo [57171539], primary term [1]. current document has seqNo [57171540] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:357)\"} []",
+            "path": "/opt/website/prod/backend-app/var/log/prod.errors.log",
+            "type": "symfony-errors",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-errors-2025.03.05",
+        "_type": "_doc",
+        "_id": "9MHfZpUBJdUWaJfyFrLe",
+        "_score": 17.887348,
+        "_source": {
+            "@timestamp": "2025-03-05T15:14:11.172Z",
+            "tags": [
+                "_grokparsefailure"
+            ],
+            "message": "[2025-03-05T15:14:10.222631+00:00] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #1 using 1000 ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b caused [7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b]: version conflict, required seqNo [57327534], primary term [1]. current document has seqNo [57327535] and primary term [1] [index: recurrent_jobs_prod] \" {\"class\":\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\",\"retryCount\":1,\"delay\":1000,\"error\":\"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b caused [7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b]: version conflict, required seqNo [57327534], primary term [1]. current document has seqNo [57327535] and primary term [1] [index: recurrent_jobs_prod]\\n\",\"exception\":\"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: 0): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b caused [7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b]: version conflict, required seqNo [57327534], primary term [1]. current document has seqNo [57327535] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:130)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: 0): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b caused [7c9ce3a2-f9d4-11ef-af65-43a81b4f0d2b]: version conflict, required seqNo [57327534], primary term [1]. current document has seqNo [57327535] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:357)\"} []",
+            "path": "/opt/website/prod/backend-app/var/log/prod.errors.log",
+            "type": "symfony-errors",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-errors-2025.03.05",
+        "_type": "_doc",
+        "_id": "88HbZpUBJdUWaJfy1jRQ",
+        "_score": 17.887348,
+        "_source": {
+            "@timestamp": "2025-03-05T15:10:38.050Z",
+            "tags": [
+                "_grokparsefailure"
+            ],
+            "message": "[2025-03-05T15:10:37.345191+00:00] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #1 using 1000 ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/fe0044a8-f9d3-11ef-b886-e911eb3505f2 caused [fe0044a8-f9d3-11ef-b886-e911eb3505f2]: version conflict, required seqNo [57326550], primary term [1]. current document has seqNo [57326552] and primary term [1] [index: recurrent_jobs_prod] \" {\"class\":\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\",\"retryCount\":1,\"delay\":1000,\"error\":\"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/fe0044a8-f9d3-11ef-b886-e911eb3505f2 caused [fe0044a8-f9d3-11ef-b886-e911eb3505f2]: version conflict, required seqNo [57326550], primary term [1]. current document has seqNo [57326552] and primary term [1] [index: recurrent_jobs_prod]\\n\",\"exception\":\"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: 0): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/fe0044a8-f9d3-11ef-b886-e911eb3505f2 caused [fe0044a8-f9d3-11ef-b886-e911eb3505f2]: version conflict, required seqNo [57326550], primary term [1]. current document has seqNo [57326552] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:130)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: 0): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/fe0044a8-f9d3-11ef-b886-e911eb3505f2 caused [fe0044a8-f9d3-11ef-b886-e911eb3505f2]: version conflict, required seqNo [57326550], primary term [1]. current document has seqNo [57326552] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:357)\"} []",
+            "path": "/opt/website/prod/backend-app/var/log/prod.errors.log",
+            "type": "symfony-errors",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-errors-2025.03.05",
+        "_type": "_doc",
+        "_id": "isLkZpUBJdUWaJfyCY4k",
+        "_score": 17.887348,
+        "_source": {
+            "@timestamp": "2025-03-05T15:19:35.309Z",
+            "tags": [
+                "_grokparsefailure"
+            ],
+            "message": "[2025-03-05T15:19:35.150169+00:00] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #1 using 1000 ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa caused [3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa]: version conflict, required seqNo [58491983], primary term [1]. current document has seqNo [58491985] and primary term [1] [index: recurrent_jobs_prod] \" {\"class\":\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\",\"retryCount\":1,\"delay\":1000,\"error\":\"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa caused [3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa]: version conflict, required seqNo [58491983], primary term [1]. current document has seqNo [58491985] and primary term [1] [index: recurrent_jobs_prod]\\n\",\"exception\":\"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: 0): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa caused [3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa]: version conflict, required seqNo [58491983], primary term [1]. current document has seqNo [58491985] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:130)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: 0): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa caused [3ec459e2-f9d5-11ef-9d6b-5be7d7a7f0aa]: version conflict, required seqNo [58491983], primary term [1]. current document has seqNo [58491985] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:357)\"} []",
+            "path": "/opt/website/prod/backend-app/var/log/prod.errors.log",
+            "type": "symfony-errors",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-errors-2025.03.05",
+        "_type": "_doc",
+        "_id": "E8LlZpUBJdUWaJfyEr2y",
+        "_score": 17.887348,
+        "_source": {
+            "@timestamp": "2025-03-05T15:20:43.338Z",
+            "tags": [
+                "_grokparsefailure"
+            ],
+            "message": "[2025-03-05T15:20:42.424033+00:00] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #1 using 1000 ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/6695b524-f9d5-11ef-ae5f-cd57ea06ffe1 caused [6695b524-f9d5-11ef-ae5f-cd57ea06ffe1]: version conflict, required seqNo [58492221], primary term [1]. current document has seqNo [58492222] and primary term [1] [index: recurrent_jobs_prod] \" {\"class\":\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\",\"retryCount\":1,\"delay\":1000,\"error\":\"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/6695b524-f9d5-11ef-ae5f-cd57ea06ffe1 caused [6695b524-f9d5-11ef-ae5f-cd57ea06ffe1]: version conflict, required seqNo [58492221], primary term [1]. current document has seqNo [58492222] and primary term [1] [index: recurrent_jobs_prod]\\n\",\"exception\":\"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: 0): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/6695b524-f9d5-11ef-ae5f-cd57ea06ffe1 caused [6695b524-f9d5-11ef-ae5f-cd57ea06ffe1]: version conflict, required seqNo [58492221], primary term [1]. current document has seqNo [58492222] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:130)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: 0): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/6695b524-f9d5-11ef-ae5f-cd57ea06ffe1 caused [6695b524-f9d5-11ef-ae5f-cd57ea06ffe1]: version conflict, required seqNo [58492221], primary term [1]. current document has seqNo [58492222] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:357)\"} []",
+            "path": "/opt/website/prod/backend-app/var/log/prod.errors.log",
+            "type": "symfony-errors",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-errors-2025.03.05",
+        "_type": "_doc",
+        "_id": "agblZpUBDnR7VQTq4RXc",
+        "_score": 17.887348,
+        "_source": {
+            "@timestamp": "2025-03-05T15:21:36.368Z",
+            "tags": [
+                "_grokparsefailure"
+            ],
+            "message": "[2025-03-05T15:21:35.810957+00:00] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #1 using 1000 ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/862d70ca-f9d5-11ef-bf92-9142287a9283 caused [862d70ca-f9d5-11ef-bf92-9142287a9283]: version conflict, required seqNo [57974356], primary term [1]. current document has seqNo [57974357] and primary term [1] [index: recurrent_jobs_prod] \" {\"class\":\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\",\"retryCount\":1,\"delay\":1000,\"error\":\"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/862d70ca-f9d5-11ef-bf92-9142287a9283 caused [862d70ca-f9d5-11ef-bf92-9142287a9283]: version conflict, required seqNo [57974356], primary term [1]. current document has seqNo [57974357] and primary term [1] [index: recurrent_jobs_prod]\\n\",\"exception\":\"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: 0): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/862d70ca-f9d5-11ef-bf92-9142287a9283 caused [862d70ca-f9d5-11ef-bf92-9142287a9283]: version conflict, required seqNo [57974356], primary term [1]. current document has seqNo [57974357] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:130)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: 0): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/862d70ca-f9d5-11ef-bf92-9142287a9283 caused [862d70ca-f9d5-11ef-bf92-9142287a9283]: version conflict, required seqNo [57974356], primary term [1]. current document has seqNo [57974357] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:357)\"} []",
+            "path": "/opt/website/prod/backend-app/var/log/prod.errors.log",
+            "type": "symfony-errors",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-errors-2025.03.05",
+        "_type": "_doc",
+        "_id": "D8LmZpUBJdUWaJfyKPEz",
+        "_score": 17.887348,
+        "_source": {
+            "@timestamp": "2025-03-05T15:21:54.376Z",
+            "tags": [
+                "_grokparsefailure"
+            ],
+            "message": "[2025-03-05T15:21:54.123929+00:00] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #1 using 1000 ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/91a197d8-f9d5-11ef-8a7e-7924f73da87e caused [91a197d8-f9d5-11ef-8a7e-7924f73da87e]: version conflict, required seqNo [57974413], primary term [1]. current document has seqNo [57974415] and primary term [1] [index: recurrent_jobs_prod] \" {\"class\":\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\",\"retryCount\":1,\"delay\":1000,\"error\":\"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/91a197d8-f9d5-11ef-8a7e-7924f73da87e caused [91a197d8-f9d5-11ef-8a7e-7924f73da87e]: version conflict, required seqNo [57974413], primary term [1]. current document has seqNo [57974415] and primary term [1] [index: recurrent_jobs_prod]\\n\",\"exception\":\"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: 0): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/91a197d8-f9d5-11ef-8a7e-7924f73da87e caused [91a197d8-f9d5-11ef-8a7e-7924f73da87e]: version conflict, required seqNo [57974413], primary term [1]. current document has seqNo [57974415] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:130)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: 0): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/91a197d8-f9d5-11ef-8a7e-7924f73da87e caused [91a197d8-f9d5-11ef-8a7e-7924f73da87e]: version conflict, required seqNo [57974413], primary term [1]. current document has seqNo [57974415] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:357)\"} []",
+            "path": "/opt/website/prod/backend-app/var/log/prod.errors.log",
+            "type": "symfony-errors",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-errors-2025.03.05",
+        "_type": "_doc",
+        "_id": "XcPmZpUBJdUWaJfykgAE",
+        "_score": 17.887348,
+        "_source": {
+            "@timestamp": "2025-03-05T15:22:21.389Z",
+            "tags": [
+                "_grokparsefailure"
+            ],
+            "message": "[2025-03-05T15:22:20.850474+00:00] messenger.WARNING: Error thrown while handling message App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage. Sending for retry #1 using 1000 ms delay. Error: \"Handling \"App\\SymfonyMessage\\SyncRecurrentJobWithSearchesSymfonyMessage\" failed: Error in one or more bulk request actions:  update: /recurrent_jobs_prod/_doc/a10069f2-f9d5-11ef-b94a-a7d4b4de143d caused [a10069f2-f9d5-11ef-b94a-a7d4b4de143d]: version conflict, required seqNo [57329485], primary term [1]. current document has seqNo [57329487] and primary term [1] [index: recurrent_jobs_prod] \" {\"class\":\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\",\"retryCount\":1,\"delay\":1000,\"error\":\"Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/a10069f2-f9d5-11ef-b94a-a7d4b4de143d caused [a10069f2-f9d5-11ef-b94a-a7d4b4de143d]: version conflict, required seqNo [57329485], primary term [1]. current document has seqNo [57329487] and primary term [1] [index: recurrent_jobs_prod]\\n\",\"exception\":\"[object] (Symfony\\\\Component\\\\Messenger\\\\Exception\\\\HandlerFailedException(code: 0): Handling \\\"App\\\\SymfonyMessage\\\\SyncRecurrentJobWithSearchesSymfonyMessage\\\" failed: Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/a10069f2-f9d5-11ef-b94a-a7d4b4de143d caused [a10069f2-f9d5-11ef-b94a-a7d4b4de143d]: version conflict, required seqNo [57329485], primary term [1]. current document has seqNo [57329487] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/symfony/messenger/Middleware/HandleMessageMiddleware.php:130)\\n[previous exception] [object] (Elastica\\\\Exception\\\\Bulk\\\\ResponseException(code: 0): Error in one or more bulk request actions:\\n\\nupdate: /recurrent_jobs_prod/_doc/a10069f2-f9d5-11ef-b94a-a7d4b4de143d caused [a10069f2-f9d5-11ef-b94a-a7d4b4de143d]: version conflict, required seqNo [57329485], primary term [1]. current document has seqNo [57329487] and primary term [1] [index: recurrent_jobs_prod]\\n at /opt/website/prod/backend-app/vendor/ruflin/elastica/src/Bulk.php:357)\"} []",
+            "path": "/opt/website/prod/backend-app/var/log/prod.errors.log",
+            "type": "symfony-errors",
+            "host": "ip-10-0-1-113",
+            "@version": "1",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-main-2025.03.05",
+        "_type": "_doc",
+        "_id": "Cbm2ZpUBJdUWaJfy5Q0f",
+        "_score": 17.819723,
+        "_source": {
+            "@timestamp": "2025-03-05T14:30:16.925Z",
+            "path": "/opt/website/prod/backend-app/var/log/prod.main.log",
+            "host": "ip-10-0-1-31",
+            "role": "website-server",
+            "message": "[2025-03-05T14:30:16.302701+00:00] app.INFO: Application Appointment Scheduling API request for handling superchat error: No mapping found for superchat message id 'ms_SBEke2NeZvG03T6ALRuyJ'. This will not affect any schedulings. [] []",
+            "type": "symfony-main",
+            "@version": "1"
+        }
+    },
+    {
+        "_index": "logstash-symfony-main-2025.03.05",
+        "_type": "_doc",
+        "_id": "9L_OZpUBJdUWaJfyEA-V",
+        "_score": 17.819723,
+        "_source": {
+            "host": "ip-10-0-0-226",
+            "@timestamp": "2025-03-05T14:55:35.464Z",
+            "path": "/opt/website/prod/backend-app/var/log/prod.main.log",
+            "message": "[2025-03-05T14:55:35.463138+00:00] app.INFO: Google Captcha Check Result: {\"success\":false,\"error-codes\":[\"invalid-input-response\"]} [] []",
+            "role": "website-server",
+            "@version": "1",
+            "type": "symfony-main"
+        }
+    },
+    {
+        "_index": "logstash-symfony-main-2025.03.05",
+        "_type": "_doc",
+        "_id": "Kr_OZpUBJdUWaJfyFhCo",
+        "_score": 17.819723,
+        "_source": {
+            "message": "[2025-03-05T14:55:36.959482+00:00] app.INFO: Google Captcha Check Result: {\"success\":false,\"error-codes\":[\"invalid-input-response\"]} [] []",
+            "type": "symfony-main",
+            "@version": "1",
+            "@timestamp": "2025-03-05T14:55:36.964Z",
+            "path": "/opt/website/prod/backend-app/var/log/prod.main.log",
+            "host": "ip-10-0-1-229",
+            "role": "website-server"
+        }
+    },
+    {
+        "_index": "logstash-symfony-main-2025.03.05",
+        "_type": "_doc",
+        "_id": "SL_OZpUBJdUWaJfyHBAS",
+        "_score": 17.819723,
+        "_source": {
+            "path": "/opt/website/prod/backend-app/var/log/prod.main.log",
+            "role": "website-server",
+            "message": "[2025-03-05T14:55:37.715887+00:00] app.INFO: Google Captcha Check Result: {\"success\":false,\"error-codes\":[\"invalid-input-response\"]} [] []",
+            "host": "ip-10-0-0-36",
+            "type": "symfony-main",
+            "@version": "1",
+            "@timestamp": "2025-03-05T14:55:38.407Z"
+        }
+    }
+]

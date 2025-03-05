@@ -1,5 +1,6 @@
 .PHONY: install format format-check lint lint-fix type-check security-check quality ci-quality venv clean help activate-venv
 .PHONY: format-check-files isort-check-files lint-files type-check-files security-check-files
+.PHONY: test test-verbose test-coverage test-file
 
 PYTHON = python3
 PACKAGE = platform_problem_monitoring_core
@@ -27,6 +28,10 @@ help:
 	@echo "  make security-check Run bandit security checks"
 	@echo "  make quality        Run all code quality checks (with formatting)"
 	@echo "  make ci-quality     Run all code quality checks (without modifying files)"
+	@echo "  make test           Run tests"
+	@echo "  make test-verbose   Run tests with verbose output"
+	@echo "  make test-coverage  Run tests with coverage report"
+	@echo "  make test-file      Run tests for a specific file (usage: make test-file file=path/to/test_file.py)"
 	@echo "  make clean          Remove build artifacts and cache directories"
 	@echo "  make help           Show this help message"
 
@@ -47,12 +52,12 @@ activate-venv:
 	@echo "  deactivate"
 
 format:
-	$(CMD_PREFIX)black src/$(PACKAGE)
-	$(CMD_PREFIX)isort src/$(PACKAGE)
+	$(CMD_PREFIX)black src
+	$(CMD_PREFIX)isort src
 
 format-check:
-	$(CMD_PREFIX)black --check src/$(PACKAGE)
-	$(CMD_PREFIX)isort --check src/$(PACKAGE)
+	$(CMD_PREFIX)black --check src
+	$(CMD_PREFIX)isort --check src
 
 # Pre-commit compatible targets that operate on specific files
 format-check-files:
@@ -62,25 +67,42 @@ isort-check-files:
 	$(CMD_PREFIX)isort --check $(filter-out $@,$(MAKECMDGOALS))
 
 lint:
-	$(CMD_PREFIX)ruff check src/$(PACKAGE)
+	$(CMD_PREFIX)ruff check src
 
 lint-fix:
-	$(CMD_PREFIX)ruff check --fix src/$(PACKAGE)
+	$(CMD_PREFIX)ruff check --fix src
 
 lint-files:
 	$(CMD_PREFIX)ruff check $(filter-out $@,$(MAKECMDGOALS))
 
 type-check:
-	$(CMD_PREFIX)mypy src/$(PACKAGE)
+	$(CMD_PREFIX)mypy src
 
 type-check-files:
 	$(CMD_PREFIX)mypy $(filter-out $@,$(MAKECMDGOALS))
 
 security-check:
-	$(CMD_PREFIX)bandit -r src/$(PACKAGE)
+	$(CMD_PREFIX)bandit -r src -x src/tests
 
 security-check-files:
-	$(CMD_PREFIX)bandit $(filter-out $@,$(MAKECMDGOALS))
+	if [[ "$(filter-out $@,$(MAKECMDGOALS))" == *"test_"* ]]; then \
+		echo "Skipping security check for test file"; \
+	else \
+		$(CMD_PREFIX)bandit $(filter-out $@,$(MAKECMDGOALS)); \
+	fi
+
+# Test targets
+test:
+	$(CMD_PREFIX)pytest src/tests
+
+test-verbose:
+	$(CMD_PREFIX)pytest -v src/tests
+
+test-coverage:
+	$(CMD_PREFIX)pytest --cov=$(PACKAGE) --cov-report=term-missing --cov-report=xml src/tests
+
+test-file:
+	$(CMD_PREFIX)pytest $(file) -v
 
 quality: format lint type-check security-check
 
@@ -95,6 +117,8 @@ clean:
 	find . -type d -name .pytest_cache -exec rm -rf {} +
 	find . -type d -name .ruff_cache -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete
+	rm -f .coverage
+	rm -f coverage.xml
 
 # This allows passing filenames as arguments to make targets
 %:

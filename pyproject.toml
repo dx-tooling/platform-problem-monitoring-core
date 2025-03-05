@@ -23,6 +23,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0.0",
+    "pytest-cov>=4.1.0",
     "black>=23.0.0",
     "flake8>=6.0.0",
     "mypy>=1.0.0",
@@ -66,6 +67,38 @@ profile = "black"
 line_length = 120
 multi_line_output = 3
 
+[tool.pytest]
+testpaths = ["src/tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "--strict-markers"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+]
+
+[tool.coverage.run]
+source = ["platform_problem_monitoring_core"]
+omit = ["*/tests/*", "*/venv/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "pass",
+    "raise ImportError",
+]
+
 [tool.ruff]
 # General configuration
 line-length = 120
@@ -83,5 +116,5 @@ ignore = ["D203", "D212"]
 convention = "google"
 
 [tool.bandit]
-exclude_dirs = ["tests", "venv"]
-skips = ["B101"] # Skip assert warning as we use it in tests
+exclude_dirs = ["venv"]
+skips = ["B101"]  # Skip assert warning as we use it in tests

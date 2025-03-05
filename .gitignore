@@ -26,6 +26,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 references/
+coverage.xml
 
 # Cache directories
 .mypy_cache/

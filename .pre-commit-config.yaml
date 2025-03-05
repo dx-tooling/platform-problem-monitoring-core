@@ -45,4 +45,5 @@ repos:
         entry: make security-check-files
         language: system
         types: [python]
+        exclude: ^src/tests/
         pass_filenames: true

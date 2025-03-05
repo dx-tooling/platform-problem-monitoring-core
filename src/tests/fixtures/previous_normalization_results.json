@@ -1,0 +1,56 @@
+{
+    "patterns": [
+        {
+            "cluster_id": 3,
+            "count": 713,
+            "pattern": "[TIMESTAMP] request.ERROR: Uncaught PHP Exception Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException: \"Component \"LinkedIcon\" not found.\" at /opt/website/prod/backend-app/vendor/symfony/ux-live-component/src/EventListener/LiveComponentSubscriber.php line <NUM> {\"exception\": \"[object] (Symfony\\\\Component\\\\HttpKernel\\\\Exception\\\\NotFoundHttpException(code: <NUM>): Component \\\"LinkedIcon\\\" not found. at /opt/website/prod/backend-app/vendor/symfony/ux-live-component/src/EventListener/LiveComponentSubscriber.php:<NUM>)\\n[previous exception] [object] (InvalidArgumentException(code: <NUM>): Unknown component \\\"LinkedIcon\\\". And no matching anonymous component template was found. at /opt/website/prod/backend-app/vendor/symfony/ux-twig-component/src/ComponentFactory.php:<NUM>)\"} []",
+            "first_seen": "logstash-symfony-errors-2025.03.05:dLi0ZpUBJdUWaJfyqGCm",
+            "last_seen": "logstash-symfony-errors-2025.03.05:0Pu0ZpUBDnR7VQTqsAl9",
+            "sample_log_lines": [],
+            "sample_doc_references": [
+                "logstash-symfony-errors-2025.03.05:dLi0ZpUBJdUWaJfyqGCm",
+                "logstash-symfony-errors-2025.03.05:9Pu0ZpUBDnR7VQTqqQi2",
+                "logstash-symfony-errors-2025.03.05:ebi0ZpUBJdUWaJfyqmAj",
+                "logstash-symfony-errors-2025.03.05:c7i0ZpUBJdUWaJfyrWGb",
+                "logstash-symfony-errors-2025.03.05:0Pu0ZpUBDnR7VQTqsAl9"
+            ]
+        },
+        {
+            "cluster_id": 4,
+            "count": 713,
+            "pattern": "[TIMESTAMP] application_events.INFO: {\"applicationEvent\": {\"id\": \"<UUID>\", \"eventCategory\": \"<NUM>\", \"eventCategoryTitle\": \"error\", \"eventType\": \"<NUM>\", \"eventTypeTitle\": \"exception\", \"occuredAt\": \"TIMESTAMP\", \"affectedUserId\": <*> \"affectedUserIsJobofferer\": <*> \"affectedUserIsJobseeker\": <*> \"affectedUserRegisteredAt\": <*> \"metric\": null, \"errorMessage\": \"Component \\\"LinkedIcon\\\" not found.\", \"additionalData\": {\"throwableClass\": \"Symfony\\\\Component\\\\HttpKernel\\\\Exception\\\\NotFoundHttpException\", \"file\": \"/opt/website/prod/backend-app/vendor/symfony/ux-live-component/src/EventListener/LiveComponentSubscriber.php\", \"line\": \"<NUM>\"}, \"requestId\": \"<HEX>\", \"sessionId\": <*> \"clientId\": \"<HEX>\", \"isProbablyBotRequest\": \"<NUM>\"}} [] []",
+            "first_seen": "logstash-symfony-application-events-2025.03.05:8Pu0ZpUBDnR7VQTqqAis",
+            "last_seen": "logstash-symfony-application-events-2025.03.05:0fu0ZpUBDnR7VQTqsAl-",
+            "sample_log_lines": [],
+            "sample_doc_references": [
+                "logstash-symfony-application-events-2025.03.05:8Pu0ZpUBDnR7VQTqqAis",
+                "logstash-symfony-application-events-2025.03.05:8fu0ZpUBDnR7VQTqqAjK",
+                "logstash-symfony-application-events-2025.03.05:dri0ZpUBJdUWaJfyqWBl",
+                "logstash-symfony-application-events-2025.03.05:cbi0ZpUBJdUWaJfyrGG3",
+                "logstash-symfony-application-events-2025.03.05:0fu0ZpUBDnR7VQTqsAl-"
+            ]
+        },
+        {
+            "cluster_id": 1,
+            "count": 1,
+            "pattern": "[TIMESTAMP] app.INFO: Application Appointment Scheduling API request for handling superchat error: No mapping found for superchat message id 'ms_nVVaoWgbvdQk5lIFyYWTK'. This will not affect any schedulings. [] []",
+            "first_seen": "logstash-symfony-main-2025.03.05:9_qzZpUBDnR7VQTqSpIZ",
+            "last_seen": "logstash-symfony-main-2025.03.05:9_qzZpUBDnR7VQTqSpIZ",
+            "sample_log_lines": [],
+            "sample_doc_references": [
+                "logstash-symfony-main-2025.03.05:9_qzZpUBDnR7VQTqSpIZ"
+            ]
+        },
+        {
+            "cluster_id": 2,
+            "count": 1,
+            "pattern": "remote_addr=\"<IP>\" - x_forwarded_for=\"<IP>, <IP>\" - cf_connecting_ip=\"<IP>\" - - [05/Mar/2025:<TIME> +<NUM>] \"POST /_/application-appointment-schedulings/superchat-error<<?PARAMS>> HTTP/<NUM>.<NUM>\" <NUM> \"-\" \"Apache-HttpClient/4.5.14 (Java/21.0.6)\" request_time=\"<NUM>.<NUM>\" upstream_connect_time=\"<NUM>.<NUM>\" upstream_header_time=\"<NUM>.<NUM>\" upstream_response_time=\"<NUM>.<NUM>\" request_id=\"<HEX>\" session_id=\"-\"",
+            "first_seen": "logstash-nginx-access-2025.03.05:8vqzZpUBDnR7VQTqVZbV",
+            "last_seen": "logstash-nginx-access-2025.03.05:8vqzZpUBDnR7VQTqVZbV",
+            "sample_log_lines": [],
+            "sample_doc_references": [
+                "logstash-nginx-access-2025.03.05:8vqzZpUBDnR7VQTqVZbV"
+            ]
+        }
+    ]
+}
