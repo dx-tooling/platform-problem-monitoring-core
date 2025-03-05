@@ -46,15 +46,12 @@ def _find_new_patterns(current_dict: dict, previous_dict: dict) -> List[PatternD
         List of new patterns that weren't in the previous data.
     """
     new_patterns: List[PatternDict] = []
-    current_ids = {p["cluster_id"] for p in current_dict.get("patterns", [])}
-    previous_ids = {p["cluster_id"] for p in previous_dict.get("patterns", [])}
+    current_patterns = current_dict.get("patterns", [])
+    previous_patterns = {p["pattern"]: p for p in previous_dict.get("patterns", [])}
 
-    # Find IDs that are in current but not in previous
-    new_ids = current_ids - previous_ids
-
-    # Extract the new patterns
-    for pattern in current_dict.get("patterns", []):
-        if pattern["cluster_id"] in new_ids:
+    # Find patterns that are in current but not in previous
+    for pattern in current_patterns:
+        if pattern["pattern"] not in previous_patterns:
             # Ensure all required fields are present
             new_pattern: PatternDict = {
                 "cluster_id": pattern["cluster_id"],
@@ -84,12 +81,12 @@ def _find_disappeared_patterns(current_dict: dict, previous_dict: dict) -> List[
         List of patterns that disappeared from previous to current data.
     """
     disappeared_patterns: List[PatternDict] = []
-    current_ids = {p["cluster_id"] for p in current_dict.get("patterns", [])}
+    current_patterns = {p["pattern"]: p for p in current_dict.get("patterns", [])}
     previous_patterns = previous_dict.get("patterns", [])
 
     # Extract the disappeared patterns
     for pattern in previous_patterns:
-        if pattern["cluster_id"] not in current_ids:
+        if pattern["pattern"] not in current_patterns:
             # Ensure all required fields are present
             disappeared_pattern: PatternDict = {
                 "cluster_id": pattern["cluster_id"],
@@ -121,21 +118,21 @@ def _find_increased_patterns(current_dict: dict, previous_dict: dict) -> List[Pa
     increased_patterns: List[PatternDict] = []
 
     # Build dictionaries for easier lookup
-    current_patterns = {p["cluster_id"]: p for p in current_dict.get("patterns", [])}
-    previous_patterns = {p["cluster_id"]: p for p in previous_dict.get("patterns", [])}
+    current_patterns = {p["pattern"]: p for p in current_dict.get("patterns", [])}
+    previous_patterns = {p["pattern"]: p for p in previous_dict.get("patterns", [])}
 
     # Find patterns with increased counts
-    for cluster_id, current_pattern in current_patterns.items():
-        if cluster_id in previous_patterns:
-            previous_count = previous_patterns[cluster_id]["count"]
+    for pattern_text, current_pattern in current_patterns.items():
+        if pattern_text in previous_patterns:
+            previous_count = previous_patterns[pattern_text]["count"]
             current_count = current_pattern["count"]
 
             if current_count > previous_count:
                 # Ensure all required fields are present
                 increased_pattern: PatternDict = {
-                    "cluster_id": cluster_id,
+                    "cluster_id": current_pattern["cluster_id"],
                     "count": current_count,
-                    "pattern": current_pattern["pattern"],
+                    "pattern": pattern_text,
                     "first_seen": current_pattern.get("first_seen", ""),
                     "last_seen": current_pattern.get("last_seen", ""),
                     "sample_log_lines": current_pattern.get("sample_log_lines", []),
@@ -162,21 +159,21 @@ def _find_decreased_patterns(current_dict: dict, previous_dict: dict) -> List[Pa
     decreased_patterns: List[PatternDict] = []
 
     # Build dictionaries for easier lookup
-    current_patterns = {p["cluster_id"]: p for p in current_dict.get("patterns", [])}
-    previous_patterns = {p["cluster_id"]: p for p in previous_dict.get("patterns", [])}
+    current_patterns = {p["pattern"]: p for p in current_dict.get("patterns", [])}
+    previous_patterns = {p["pattern"]: p for p in previous_dict.get("patterns", [])}
 
     # Find patterns with decreased counts
-    for cluster_id, current_pattern in current_patterns.items():
-        if cluster_id in previous_patterns:
-            previous_count = previous_patterns[cluster_id]["count"]
+    for pattern_text, current_pattern in current_patterns.items():
+        if pattern_text in previous_patterns:
+            previous_count = previous_patterns[pattern_text]["count"]
             current_count = current_pattern["count"]
 
             if current_count < previous_count:
                 # Ensure all required fields are present
                 decreased_pattern: PatternDict = {
-                    "cluster_id": cluster_id,
+                    "cluster_id": current_pattern["cluster_id"],
                     "count": current_count,
-                    "pattern": current_pattern["pattern"],
+                    "pattern": pattern_text,
                     "first_seen": current_pattern.get("first_seen", ""),
                     "last_seen": current_pattern.get("last_seen", ""),
                     "sample_log_lines": current_pattern.get("sample_log_lines", []),
@@ -215,24 +212,28 @@ def compare_normalizations(current_file: str, previous_file: str, output_file: s
         logger.info(f"Current patterns: {len(current_patterns)}")
         logger.info(f"Previous patterns: {len(previous_patterns)}")
 
-        # Create dictionaries for easier comparison
-        current_dict = {pattern["pattern"]: pattern for pattern in current_patterns}
-        previous_dict = {pattern["pattern"]: pattern for pattern in previous_patterns}
-
         # Find new patterns (in current but not in previous)
-        new_patterns = _find_new_patterns(current_dict, previous_dict)
+        new_patterns = _find_new_patterns(
+            {"patterns": current_patterns}, {"patterns": previous_patterns}
+        )
         logger.info(f"New patterns: {len(new_patterns)}")
 
         # Find disappeared patterns (in previous but not in current)
-        disappeared_patterns = _find_disappeared_patterns(current_dict, previous_dict)
+        disappeared_patterns = _find_disappeared_patterns(
+            {"patterns": current_patterns}, {"patterns": previous_patterns}
+        )
         logger.info(f"Disappeared patterns: {len(disappeared_patterns)}")
 
         # Find patterns with increased counts
-        increased_patterns = _find_increased_patterns(current_dict, previous_dict)
+        increased_patterns = _find_increased_patterns(
+            {"patterns": current_patterns}, {"patterns": previous_patterns}
+        )
         logger.info(f"Increased patterns: {len(increased_patterns)}")
 
         # Find patterns with decreased counts
-        decreased_patterns = _find_decreased_patterns(current_dict, previous_dict)
+        decreased_patterns = _find_decreased_patterns(
+            {"patterns": current_patterns}, {"patterns": previous_patterns}
+        )
         logger.info(f"Decreased patterns: {len(decreased_patterns)}")
 
         # Prepare comparison results

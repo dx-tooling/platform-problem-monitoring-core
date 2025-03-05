@@ -363,7 +363,8 @@ def _prepare_results(
     """
     results: List[PatternResult] = []
 
-    for cluster_id, cluster in template_miner.drain.clusters.items():
+    # Access the id_to_cluster dictionary directly instead of using clusters
+    for cluster_id, cluster in template_miner.drain.id_to_cluster.items():
         # Post-process the template to make it more readable
         template = post_process_template(cluster.get_template())
 
@@ -382,7 +383,9 @@ def _prepare_results(
                 if pattern_doc_references.get(cluster_id, [])
                 else ""
             ),
-            "sample_log_lines": [],  # Fill this in based on your data structure
+            "sample_log_lines": (
+                cluster.get_sample_logs() if hasattr(cluster, "get_sample_logs") else []
+            ),
             "sample_doc_references": pattern_doc_references.get(cluster_id, []),
         }
         results.append(result)
@@ -408,7 +411,7 @@ def normalize_messages(fields_file: str, output_file: str) -> None:
     template_miner = configure_template_miner()
 
     # Dictionary to store document IDs for each template
-    pattern_doc_references: Dict[str, List[dict]] = {}
+    pattern_doc_references: Dict[str, List[str]] = {}  # Changed from List[dict] to List[str]
 
     try:
         # Process the input file
