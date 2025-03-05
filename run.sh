@@ -20,6 +20,41 @@ fi
 # Source the configuration file
 source "$CONFIG_FILE"
 
+
+# Step 0: Prepare Python environment
+echo "Step 0: Preparing Python environment..."
+
+# Resolve the actual script location, even when called through a symlink
+SOURCE=${BASH_SOURCE[0]}
+if [ -z "$SOURCE" ]; then
+    echo "Failed to determine script source" >&2
+    exit 1
+fi
+
+while [ -L "$SOURCE" ]; do
+    DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
+    if [ -z "$DIR" ]; then
+        echo "Failed to resolve symlink directory" >&2
+        exit 1
+    fi
+    SOURCE=$(readlink "$SOURCE")
+    [[ $SOURCE != /* ]] && SOURCE=$DIR/$SOURCE
+done
+
+SCRIPT_FOLDER=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
+if [ -z "$SCRIPT_FOLDER" ]; then
+    echo "Failed to determine script folder" >&2
+    exit 1
+fi
+
+cd "$SCRIPT_FOLDER"
+/usr/bin/env python3 -m venv venv
+source venv/bin/activate
+
+pip install --upgrade pip
+pip install -e . -q
+
+
 # Define file paths for intermediate results
 WORK_DIR=""
 START_DATE_TIME_FILE=""
@@ -34,8 +69,8 @@ TEXT_EMAIL_BODY_FILE=""
 
 echo "Starting Platform Problem Monitoring process..."
 
-# Step 1: Prepare environment
-echo "Step 1: Preparing environment..."
+# Step 1: Prepare application environment
+echo "Step 1: Preparing application environment..."
 # Capture all output but only use the last line as the work directory
 PREPARE_OUTPUT=$(python -m platform_problem_monitoring_core.step1_prepare)
 if [ $? -ne 0 ]; then

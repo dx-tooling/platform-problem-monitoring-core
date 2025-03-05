@@ -2,6 +2,8 @@
 
 A proactive monitoring solution that automatically analyzes your Elasticsearch logs, detects patterns, and delivers concise email reports about your platform's health.
 
+tbd: visualization: "your ELK stack ---> now gets an awesome email report"
+
 ## What This Tool Does
 
 Platform Problem Monitoring Core helps platform engineers and system administrators by:
