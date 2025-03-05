@@ -115,19 +115,20 @@ the different step scripts will use as needed.
 
 ## Performance considerations
 
-The application must be capable of handling large volumes of log data, potentially up to multiple millions of Elasticsearch
-logstash documents between runs. To handle this efficiently:
+The application must be capable of handling large volumes of log data, potentially up to multiple millions of
+Elasticsearch  logstash documents between runs. To handle this efficiently:
 
-- Streaming and pagination techniques must be used when interacting with Elasticsearch to prevent memory or resource exhaustion
+- Streaming and pagination techniques must be used when interacting with Elasticsearch to prevent memory or resource
+  exhaustion
 - It is acceptable if a full process run takes several minutes to complete
 - All operations should be optimized for memory efficiency, especially when processing large datasets
 - The application should provide appropriate progress feedback during long-running operations
 
 ## Normalization logic and email design
 
-The message normalization logic should follow the approach demonstrated in the proof-of-concept implementation, using the
-drain3 library to replace dynamic parts of messages (like timestamps, UUIDs, numbers) with placeholders, allowing for pattern
-recognition across similar message types.
+The message normalization logic should follow the approach demonstrated in the proof-of-concept implementation, using
+the drain3 library to replace dynamic parts of messages (like timestamps, UUIDs, numbers) with placeholders, allowing
+for pattern recognition across similar message types.
 
 For the HTML email report design:
 - The report should be well-designed and visually appealing
@@ -138,7 +139,8 @@ For the HTML email report design:
 
 ## Low-level: the process in detail
 
-Here is a blow-by-blow description for all process steps that lead to a new report email, with their respective Inputs, Main operations & side effects, and Outputs:
+Here is a blow-by-blow description for all process steps that lead to a new report email, with their respective Inputs,
+Main operations & side effects, and Outputs:
 
 1. Prepare environment for a process run - file step1_prepare.py
     - Inputs: none
@@ -216,15 +218,17 @@ Here is a blow-by-blow description for all process steps that lead to a new repo
         - the file path to use for storing the HTML version of the resulting email message body
         - the file path to use for storing the plaintext version of the resulting email message body
         - Optionally: a Kibana base URL (KIBANA_DISCOVER_BASE_URL) for the "View in Kibana" button
-        - Optionally: a Kibana document deeplink URL structure (KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE) with {{index}} and {{id}} placeholders for individual document links
+        - Optionally: a Kibana document deeplink URL structure (KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE) with {{index}}
+          and {{id}} placeholders for individual document links
     - Main operations & side effects:
         - creation of a well-designed email report that presents the normalized messages comparison results, followed by
           the top 25 normalization results, in an easy-to-scan and easy-to-comprehend form
         - If a Kibana base URL is provided, a "View in Kibana" button is added to the report
-        - If a Kibana document deeplink URL structure is provided, each normalized message presented in the report is accompanied by up to 5
-          deep links to message samples matching the normalized message (using the Elasticsearch index name and
-          Elasticsearch document id from the normalization results file)
-        - If only the Kibana base URL is provided (without the deeplink structure), a legacy format will be used to generate document links
+        - If a Kibana document deeplink URL structure is provided, each normalized message presented in the report is
+          accompanied by up to 5 deep links to message samples matching the normalized message (using the Elasticsearch
+          index name and Elasticsearch document id from the normalization results file)
+        - If only the Kibana base URL is provided (without the deeplink structure), a legacy format will be used to
+          generate document links
         - The email design should be compatible with a wide range of email clients
         - Both HTML and plaintext versions of the email must be created
     - Outputs: none (besides exit code and progress, success, and error messages)
@@ -276,9 +280,9 @@ The aforementioned run.sh shell script is able to read a configuration file with
     SMTP_SENDER_ADDRESS=""
     SMTP_RECEIVER_ADDRESS=""
 
-If this configuration is stored in a file called platform_problem_monitoring_core.conf, then the run.sh script can be called
-as `run.sh ./platform_problem_monitoring_core.conf` and will make use of these parameters when executing the different step
-scripts.
+If this configuration is stored in a file called platform_problem_monitoring_core.conf, then the run.sh script can be
+called as `run.sh ./platform_problem_monitoring_core.conf` and will make use of these parameters when executing the
+different step scripts.
 
 Other parameters that are relevant between step script executions, like for example the name of the JSON file where
 downloaded logstash documents are stored, are hardcoded within the run.sh shell script (but paths of intermediate result
@@ -286,4 +290,53 @@ files are of course located within the temporary work folder created in step 1).
 
 The resulting Python and Bash code must be clean, well documented, with concise and comprehensible naming.
 
-Parameters for scripts that take more than one parameter must always be name-based, not position-based, (that is, `step5_normalize_messages.py --logstash-fields-file=foo.txt --results-file=bar.txt`, not `step5_normalize_messages.py foo.txt bar.txt`)
+Parameters for scripts that take more than one parameter must always be name-based, not position-based, (that is,
+`step5_normalize_messages.py --logstash-fields-file=foo.txt --results-file=bar.txt`, not
+`step5_normalize_messages.py foo.txt bar.txt`).
+
+
+## Code quality requirements and practices
+
+The codebase must adhere to strict quality standards to ensure maintainability, readability, and correctness. The
+following quality assurance practices and tools must be employed:
+
+
+### Development workflow and quality checks
+
+- All code must pass automated quality checks before being committed to the repository
+- A pre-commit hook system must be in place to automatically check code before commits
+- Continuous Integration (CI) must run quality checks on multiple Python versions (3.8-3.13)
+- A comprehensive Makefile must be provided to streamline development tasks
+
+
+### Code formatting and style
+
+- All Python code must follow consistent formatting via Black with a line length of 100 characters
+- Import statements must be consistently organized via isort
+- Code must comply with PEP 8 style guidelines and additional best practices enforced by Ruff
+
+
+### Static analysis and type safety
+
+- All functions must include complete type annotations
+- Static type checking via mypy must be enforced in strict mode
+- Security vulnerabilities must be detected via Bandit
+- All public methods and functions must have Google-style docstrings
+
+
+### Testing requirements
+
+- Unit tests must be written using pytest
+- Tests must verify correct behavior of each module and function
+
+
+### Documentation
+
+- Code quality practices and tools must be documented for contributors
+- Usage of code quality tools must be explained in project documentation
+
+The quality assurance tools and configuration are managed via:
+- pyproject.toml for tool settings
+- pre-commit configuration in .pre-commit-config.yaml
+- Make targets for manual and CI quality checks
+- GitHub Actions workflows for automated quality verification

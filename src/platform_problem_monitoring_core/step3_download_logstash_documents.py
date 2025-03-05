@@ -14,9 +14,7 @@ import requests
 from platform_problem_monitoring_core.utils import load_json, logger, save_json
 
 
-def _add_time_range_to_query(
-    query_data: dict, start_date_time: str, current_date_time: str
-) -> dict:
+def _add_time_range_to_query(query_data: dict, start_date_time: str, current_date_time: str) -> dict:
     """
     Add time range filter to the Elasticsearch query.
 
@@ -43,23 +41,13 @@ def _add_time_range_to_query(
             query_data["query"] = {
                 "bool": {
                     "must": [original_query],
-                    "filter": [
-                        {
-                            "range": {
-                                "@timestamp": {"gte": start_date_time, "lte": current_date_time}
-                            }
-                        }
-                    ],
+                    "filter": [{"range": {"@timestamp": {"gte": start_date_time, "lte": current_date_time}}}],
                 }
             }
     else:
         # If there's no query at all, create a simple one
         query_data["query"] = {
-            "bool": {
-                "filter": [
-                    {"range": {"@timestamp": {"gte": start_date_time, "lte": current_date_time}}}
-                ]
-            }
+            "bool": {"filter": [{"range": {"@timestamp": {"gte": start_date_time, "lte": current_date_time}}}]}
         }
 
     return query_data
@@ -84,9 +72,7 @@ def _get_start_date_time(start_date_time_file: str) -> str:
         logger.warning(f"Start date and time file not found: {start_date_time_file}")
         # Default to 24 hours ago if file not found
         # Using timezone-aware approach to address deprecation warning
-        start_date_time = (
-            datetime.datetime.now(timezone.utc) - datetime.timedelta(days=1)
-        ).isoformat()
+        start_date_time = (datetime.datetime.now(timezone.utc) - datetime.timedelta(days=1)).isoformat()
         logger.info(f"Using default start date and time: {start_date_time}")
         return start_date_time
 
@@ -151,9 +137,7 @@ def _download_documents_with_pagination(elasticsearch_url: str, query_data: dict
     )
 
     if search_response.status_code != 200:
-        error_msg = (
-            f"Search request failed: HTTP {search_response.status_code}, {search_response.text}"
-        )
+        error_msg = f"Search request failed: HTTP {search_response.status_code}, {search_response.text}"
         logger.error(error_msg)
         raise Exception(error_msg)
 
@@ -179,14 +163,10 @@ def _download_documents_with_pagination(elasticsearch_url: str, query_data: dict
             scroll_url = f"{elasticsearch_url.rstrip('/')}/_search/scroll"
             scroll_data = {"scroll": scroll_timeout, "scroll_id": scroll_id}
 
-            scroll_response = requests.post(
-                scroll_url, headers=headers, json=scroll_data, timeout=30
-            )
+            scroll_response = requests.post(scroll_url, headers=headers, json=scroll_data, timeout=30)
 
             if scroll_response.status_code != 200:
-                logger.error(
-                    f"Scroll request failed: HTTP {scroll_response.status_code}, {scroll_response.text}"
-                )
+                logger.error(f"Scroll request failed: HTTP {scroll_response.status_code}, {scroll_response.text}")
                 break
 
             response = scroll_response.json()
@@ -206,9 +186,7 @@ def _download_documents_with_pagination(elasticsearch_url: str, query_data: dict
                 clear_scroll_url = f"{elasticsearch_url.rstrip('/')}/_search/scroll"
                 clear_scroll_data = {"scroll_id": [scroll_id]}
 
-                requests.delete(
-                    clear_scroll_url, headers=headers, json=clear_scroll_data, timeout=30
-                )
+                requests.delete(clear_scroll_url, headers=headers, json=clear_scroll_data, timeout=30)
             except Exception as e:
                 logger.warning(f"Failed to clear scroll context: {str(e)}")
 
@@ -288,12 +266,8 @@ def main() -> None:
         required=True,
         help="Path to the file containing the start date and time",
     )
-    parser.add_argument(
-        "--output-file", required=True, help="Path to store the downloaded logstash documents"
-    )
-    parser.add_argument(
-        "--current-date-time-file", required=True, help="Path to store the current date and time"
-    )
+    parser.add_argument("--output-file", required=True, help="Path to store the downloaded logstash documents")
+    parser.add_argument("--current-date-time-file", required=True, help="Path to store the current date and time")
 
     args = parser.parse_args()
 

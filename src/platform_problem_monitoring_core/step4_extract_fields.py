@@ -66,9 +66,7 @@ def extract_fields(logstash_file: str, output_file: str) -> None:
 def main() -> None:
     """Parse command line arguments and extract fields from logstash documents."""
     parser = argparse.ArgumentParser(description="Extract fields from logstash documents")
-    parser.add_argument(
-        "--logstash-file", required=True, help="Path to the logstash documents file"
-    )
+    parser.add_argument("--logstash-file", required=True, help="Path to the logstash documents file")
     parser.add_argument("--output-file", required=True, help="Path to store the extracted fields")
 
     args = parser.parse_args()

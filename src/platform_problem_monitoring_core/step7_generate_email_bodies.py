@@ -68,9 +68,7 @@ def load_html_template() -> Dict[str, str]:
             templates["css"] = ""
 
         # Extract all template sections
-        template_matches = re.finditer(
-            r'<template id="([^"]+)">(.*?)</template>', template_content, re.DOTALL
-        )
+        template_matches = re.finditer(r'<template id="([^"]+)">(.*?)</template>', template_content, re.DOTALL)
         template_count = 0
         for match in template_matches:
             template_id = match.group(1)
@@ -117,7 +115,7 @@ def generate_sample_links_html(
     Args:
         pattern: Pattern data containing sample document references
         kibana_url: Optional Kibana base URL for deep links (used for backward compatibility)
-        kibana_deeplink_structure: Optional URL structure for Kibana document deeplinks with {{index}} and {{id}} placeholders
+        kibana_deeplink_structure: Optional URL structure for Kibana document links {{index}} and {{id}} placeholders
         dark_mode: Whether to use dark mode templates
 
     Returns:
@@ -154,9 +152,7 @@ def generate_sample_links_html(
             # Create a deep link to Kibana
             if kibana_deeplink_structure:
                 # Use the new configurable deeplink structure
-                kibana_link = kibana_deeplink_structure.replace("{{index}}", index).replace(
-                    "{{id}}", doc_id
-                )
+                kibana_link = kibana_deeplink_structure.replace("{{index}}", index).replace("{{id}}", doc_id)
             elif kibana_url:
                 # Fallback to the old method for backward compatibility
                 kibana_link = f"{kibana_url}/app/discover#/doc/logstash-*/{index}?id={doc_id}"
@@ -214,9 +210,7 @@ def generate_pattern_list_html(
         pattern_id = f"pattern-{i}"
 
         # Generate sample links
-        sample_links = generate_sample_links_html(
-            pattern, kibana_url, kibana_deeplink_structure, dark_mode=False
-        )
+        sample_links = generate_sample_links_html(pattern, kibana_url, kibana_deeplink_structure, dark_mode=False)
 
         # Replace placeholders in the template
         pattern_html = pattern_item_template.replace("{{INDEX}}", str(i))
@@ -272,9 +266,7 @@ def generate_increased_pattern_list_html(
         pattern_id = f"increased-pattern-{i}"
 
         # Generate sample links
-        sample_links = generate_sample_links_html(
-            pattern, kibana_url, kibana_deeplink_structure, dark_mode=False
-        )
+        sample_links = generate_sample_links_html(pattern, kibana_url, kibana_deeplink_structure, dark_mode=False)
 
         # Replace placeholders in the template
         pattern_html = pattern_item_template.replace("{{INDEX}}", str(i))
@@ -332,9 +324,7 @@ def generate_decreased_pattern_list_html(
         pattern_id = f"decreased-pattern-{i}"
 
         # Generate sample links
-        sample_links = generate_sample_links_html(
-            pattern, kibana_url, kibana_deeplink_structure, dark_mode=False
-        )
+        sample_links = generate_sample_links_html(pattern, kibana_url, kibana_deeplink_structure, dark_mode=False)
 
         # Replace placeholders in the template
         pattern_html = pattern_item_template.replace("{{INDEX}}", str(i))
@@ -422,9 +412,7 @@ def generate_increased_pattern_list_text(patterns: List[Dict[str, Any]]) -> str:
         absolute_change = pattern.get("absolute_change", 0)
         percent_change = pattern.get("percent_change", 0)
 
-        text += (
-            f"{i}. [{current_count}] (+{absolute_change}, +{percent_change:.1f}%) {pattern_text}\n"
-        )
+        text += f"{i}. [{current_count}] (+{absolute_change}, +{percent_change:.1f}%) {pattern_text}\n"
 
         # Add sample document references if available
         if "sample_doc_references" in pattern and pattern["sample_doc_references"]:
@@ -476,9 +464,7 @@ def generate_decreased_pattern_list_text(patterns: List[Dict[str, Any]]) -> str:
         absolute_change = pattern.get("absolute_change", 0)
         percent_change = pattern.get("percent_change", 0)
 
-        text += (
-            f"{i}. [{current_count}] (-{absolute_change}, -{percent_change:.1f}%) {pattern_text}\n"
-        )
+        text += f"{i}. [{current_count}] (-{absolute_change}, -{percent_change:.1f}%) {pattern_text}\n"
 
         # Add sample document references if available
         if "sample_doc_references" in pattern and pattern["sample_doc_references"]:
@@ -688,16 +674,10 @@ This is an automated report from the Platform Problem Monitoring system.
 def main() -> None:
     """Execute the script when run directly."""
     parser = argparse.ArgumentParser(description="Generate email bodies")
-    parser.add_argument(
-        "--comparison-file", required=True, help="Path to the comparison results file"
-    )
-    parser.add_argument(
-        "--norm-results-file", required=True, help="Path to the normalization results file"
-    )
+    parser.add_argument("--comparison-file", required=True, help="Path to the comparison results file")
+    parser.add_argument("--norm-results-file", required=True, help="Path to the normalization results file")
     parser.add_argument("--html-output", required=True, help="Path to store the HTML email body")
-    parser.add_argument(
-        "--text-output", required=True, help="Path to store the plaintext email body"
-    )
+    parser.add_argument("--text-output", required=True, help="Path to store the plaintext email body")
     parser.add_argument("--kibana-url", help="Kibana base URL for the 'View in Kibana' button")
     parser.add_argument(
         "--kibana-deeplink-structure",

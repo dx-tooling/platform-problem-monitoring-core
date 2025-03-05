@@ -213,9 +213,7 @@ def compare_normalizations(current_file: str, previous_file: str, output_file: s
         logger.info(f"Previous patterns: {len(previous_patterns)}")
 
         # Find new patterns (in current but not in previous)
-        new_patterns = _find_new_patterns(
-            {"patterns": current_patterns}, {"patterns": previous_patterns}
-        )
+        new_patterns = _find_new_patterns({"patterns": current_patterns}, {"patterns": previous_patterns})
         logger.info(f"New patterns: {len(new_patterns)}")
 
         # Find disappeared patterns (in previous but not in current)
@@ -225,15 +223,11 @@ def compare_normalizations(current_file: str, previous_file: str, output_file: s
         logger.info(f"Disappeared patterns: {len(disappeared_patterns)}")
 
         # Find patterns with increased counts
-        increased_patterns = _find_increased_patterns(
-            {"patterns": current_patterns}, {"patterns": previous_patterns}
-        )
+        increased_patterns = _find_increased_patterns({"patterns": current_patterns}, {"patterns": previous_patterns})
         logger.info(f"Increased patterns: {len(increased_patterns)}")
 
         # Find patterns with decreased counts
-        decreased_patterns = _find_decreased_patterns(
-            {"patterns": current_patterns}, {"patterns": previous_patterns}
-        )
+        decreased_patterns = _find_decreased_patterns({"patterns": current_patterns}, {"patterns": previous_patterns})
         logger.info(f"Decreased patterns: {len(decreased_patterns)}")
 
         # Prepare comparison results
@@ -264,12 +258,8 @@ def compare_normalizations(current_file: str, previous_file: str, output_file: s
 def main() -> None:
     """Parse command line arguments and compare normalization results."""
     parser = argparse.ArgumentParser(description="Compare normalization results")
-    parser.add_argument(
-        "--current-file", required=True, help="Path to the current normalization results file"
-    )
-    parser.add_argument(
-        "--previous-file", required=True, help="Path to the previous normalization results file"
-    )
+    parser.add_argument("--current-file", required=True, help="Path to the current normalization results file")
+    parser.add_argument("--previous-file", required=True, help="Path to the previous normalization results file")
     parser.add_argument("--output-file", required=True, help="Path to store the comparison results")
 
     args = parser.parse_args()

@@ -11,9 +11,7 @@ from botocore.exceptions import ClientError
 from platform_problem_monitoring_core.utils import logger
 
 
-def store_new_state(
-    s3_bucket: str, s3_folder: str, date_time_file: str, norm_results_file: str
-) -> None:
+def store_new_state(s3_bucket: str, s3_folder: str, date_time_file: str, norm_results_file: str) -> None:
     """
     Store new state to S3.
 
@@ -71,9 +69,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Store new state to S3")
     parser.add_argument("--s3-bucket", required=True, help="S3 bucket name")
     parser.add_argument("--s3-folder", required=True, help="S3 folder name")
-    parser.add_argument(
-        "--date-time-file", required=True, help="Path to the date and time file to upload"
-    )
+    parser.add_argument("--date-time-file", required=True, help="Path to the date and time file to upload")
     parser.add_argument(
         "--norm-results-file",
         required=True,

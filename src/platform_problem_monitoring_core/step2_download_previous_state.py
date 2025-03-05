@@ -13,9 +13,7 @@ from botocore.exceptions import ClientError
 from platform_problem_monitoring_core.utils import logger, save_json
 
 
-def download_previous_state(
-    s3_bucket: str, s3_folder: str, date_time_file: str, norm_results_file: str
-) -> None:
+def download_previous_state(s3_bucket: str, s3_folder: str, date_time_file: str, norm_results_file: str) -> None:
     """
     Download previous state from S3.
 
@@ -69,9 +67,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Download previous state from S3")
     parser.add_argument("--s3-bucket", required=True, help="S3 bucket name")
     parser.add_argument("--s3-folder", required=True, help="S3 folder name")
-    parser.add_argument(
-        "--date-time-file", required=True, help="Path to store the start date and time"
-    )
+    parser.add_argument("--date-time-file", required=True, help="Path to store the start date and time")
     parser.add_argument(
         "--norm-results-file",
         required=True,
@@ -81,9 +77,7 @@ def main() -> None:
     args = parser.parse_args()
 
     try:
-        download_previous_state(
-            args.s3_bucket, args.s3_folder, args.date_time_file, args.norm_results_file
-        )
+        download_previous_state(args.s3_bucket, args.s3_folder, args.date_time_file, args.norm_results_file)
     except Exception as e:
         logger.error(f"Error downloading previous state: {e}")
         sys.exit(1)

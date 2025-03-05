@@ -42,9 +42,7 @@ def configure_template_miner() -> TemplateMiner:
         )
     )
     config.masking_instructions.append(
-        MaskingInstruction(
-            pattern=r"\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?\]", mask_with="[TIMESTAMP]"
-        )
+        MaskingInstruction(pattern=r"\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?\]", mask_with="[TIMESTAMP]")
     )
     config.masking_instructions.append(
         MaskingInstruction(
@@ -53,21 +51,13 @@ def configure_template_miner() -> TemplateMiner:
         )
     )
     config.masking_instructions.append(
-        MaskingInstruction(
-            pattern=r"\d{2}/[A-Za-z]{3}/\d{4}:\d{2}:\d{2}:\d{2} (\+|-)\d{4}", mask_with="TIMESTAMP"
-        )
+        MaskingInstruction(pattern=r"\d{2}/[A-Za-z]{3}/\d{4}:\d{2}:\d{2}:\d{2} (\+|-)\d{4}", mask_with="TIMESTAMP")
     )
     config.masking_instructions.append(
-        MaskingInstruction(
-            pattern=r"[A-Z][a-z]{2} \d{1,2} \d{2}:\d{2}:\d{2}", mask_with="TIMESTAMP"
-        )
+        MaskingInstruction(pattern=r"[A-Z][a-z]{2} \d{1,2} \d{2}:\d{2}:\d{2}", mask_with="TIMESTAMP")
     )
-    config.masking_instructions.append(
-        MaskingInstruction(pattern=r"\d{4}-\d{2}-\d{2}", mask_with="DATE")
-    )
-    config.masking_instructions.append(
-        MaskingInstruction(pattern=r"\d{2}:\d{2}:\d{2}(\.\d+)?", mask_with="TIME")
-    )
+    config.masking_instructions.append(MaskingInstruction(pattern=r"\d{4}-\d{2}-\d{2}", mask_with="DATE"))
+    config.masking_instructions.append(MaskingInstruction(pattern=r"\d{2}:\d{2}:\d{2}(\.\d+)?", mask_with="TIME"))
 
     # UUIDs
     config.masking_instructions.append(
@@ -78,23 +68,17 @@ def configure_template_miner() -> TemplateMiner:
     )
 
     # Hexadecimal identifiers
-    config.masking_instructions.append(
-        MaskingInstruction(pattern=r"\b[0-9a-f]{16,}\b", mask_with="HEX")
-    )
+    config.masking_instructions.append(MaskingInstruction(pattern=r"\b[0-9a-f]{16,}\b", mask_with="HEX"))
 
     # Process IDs
     config.masking_instructions.append(MaskingInstruction(pattern=r"\[\d+\]", mask_with="[PID]"))
 
     # Line numbers in stack traces
-    config.masking_instructions.append(
-        MaskingInstruction(pattern=r"line:? \d+", mask_with="line: NUM")
-    )
+    config.masking_instructions.append(MaskingInstruction(pattern=r"line:? \d+", mask_with="line: NUM"))
     config.masking_instructions.append(MaskingInstruction(pattern=r":\d+\)", mask_with=":NUM)"))
 
     # Query parameters in URLs
-    config.masking_instructions.append(
-        MaskingInstruction(pattern=r'\?[^"\'<>\s]*', mask_with="?PARAMS")
-    )
+    config.masking_instructions.append(MaskingInstruction(pattern=r'\?[^"\'<>\s]*', mask_with="?PARAMS"))
 
     return TemplateMiner(config=config)
 
@@ -294,9 +278,7 @@ class PatternResult(TypedDict):
     sample_doc_references: List[str]
 
 
-def _process_document(
-    doc: dict, template_miner: TemplateMiner, pattern_doc_references: dict
-) -> bool:
+def _process_document(doc: dict, template_miner: TemplateMiner, pattern_doc_references: dict) -> bool:
     """
     Process a single document to extract and normalize its message.
 
@@ -348,9 +330,7 @@ def get_count(pattern: PatternResult) -> int:
     return pattern["count"]
 
 
-def _prepare_results(
-    template_miner: TemplateMiner, pattern_doc_references: dict
-) -> List[PatternResult]:
+def _prepare_results(template_miner: TemplateMiner, pattern_doc_references: dict) -> List[PatternResult]:
     """
     Prepare results from template miner.
 
@@ -374,18 +354,12 @@ def _prepare_results(
             "count": cluster.size,
             "pattern": template,
             "first_seen": (
-                pattern_doc_references.get(cluster_id, [""])[0]
-                if pattern_doc_references.get(cluster_id, [])
-                else ""
+                pattern_doc_references.get(cluster_id, [""])[0] if pattern_doc_references.get(cluster_id, []) else ""
             ),
             "last_seen": (
-                pattern_doc_references.get(cluster_id, [""])[-1]
-                if pattern_doc_references.get(cluster_id, [])
-                else ""
+                pattern_doc_references.get(cluster_id, [""])[-1] if pattern_doc_references.get(cluster_id, []) else ""
             ),
-            "sample_log_lines": (
-                cluster.get_sample_logs() if hasattr(cluster, "get_sample_logs") else []
-            ),
+            "sample_log_lines": (cluster.get_sample_logs() if hasattr(cluster, "get_sample_logs") else []),
             "sample_doc_references": pattern_doc_references.get(cluster_id, []),
         }
         results.append(result)
@@ -458,9 +432,7 @@ def main() -> None:
     """Parse command line arguments and normalize messages."""
     parser = argparse.ArgumentParser(description="Normalize messages and summarize them")
     parser.add_argument("--fields-file", required=True, help="Path to the extracted fields file")
-    parser.add_argument(
-        "--output-file", required=True, help="Path to store the normalization results"
-    )
+    parser.add_argument("--output-file", required=True, help="Path to store the normalization results")
 
     args = parser.parse_args()
 
