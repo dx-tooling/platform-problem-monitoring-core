@@ -10,33 +10,39 @@ repos:
     -   id: check-toml
     -   id: detect-private-key
 
--   repo: https://github.com/psf/black
-    rev: 23.3.0
+-   repo: local
     hooks:
     -   id: black
-        args: [--line-length=100]
+        name: black
+        entry: make format-check-files
+        language: system
+        types: [python]
+        pass_filenames: true
 
--   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: 'v0.1.9'
-    hooks:
-    -   id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
-
--   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.3.0
-    hooks:
-    -   id: mypy
-        additional_dependencies: [types-requests, types-boto3]
-
--   repo: https://github.com/pycqa/isort
-    rev: 5.12.0
-    hooks:
     -   id: isort
-        args: ["--profile", "black", "--line-length", "100"]
+        name: isort
+        entry: make isort-check-files
+        language: system
+        types: [python]
+        pass_filenames: true
 
--   repo: https://github.com/PyCQA/bandit
-    rev: 1.7.5
-    hooks:
+    -   id: ruff
+        name: ruff
+        entry: make lint-files
+        language: system
+        types: [python]
+        pass_filenames: true
+
+    -   id: mypy
+        name: mypy
+        entry: make type-check-files
+        language: system
+        types: [python]
+        pass_filenames: true
+
     -   id: bandit
-        args: ["-c", "pyproject.toml"]
-        additional_dependencies: ["bandit[toml]"]
+        name: bandit
+        entry: make security-check-files
+        language: system
+        types: [python]
+        pass_filenames: true

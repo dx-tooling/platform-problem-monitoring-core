@@ -1,4 +1,5 @@
 .PHONY: install format format-check lint lint-fix type-check security-check quality ci-quality venv clean help activate-venv
+.PHONY: format-check-files isort-check-files lint-files type-check-files security-check-files
 
 PYTHON = python3
 PACKAGE = platform_problem_monitoring_core
@@ -53,17 +54,33 @@ format-check:
 	$(CMD_PREFIX)black --check src/$(PACKAGE)
 	$(CMD_PREFIX)isort --check src/$(PACKAGE)
 
+# Pre-commit compatible targets that operate on specific files
+format-check-files:
+	$(CMD_PREFIX)black --check $(filter-out $@,$(MAKECMDGOALS))
+
+isort-check-files:
+	$(CMD_PREFIX)isort --check $(filter-out $@,$(MAKECMDGOALS))
+
 lint:
 	$(CMD_PREFIX)ruff check src/$(PACKAGE)
 
 lint-fix:
 	$(CMD_PREFIX)ruff check --fix src/$(PACKAGE)
 
+lint-files:
+	$(CMD_PREFIX)ruff check $(filter-out $@,$(MAKECMDGOALS))
+
 type-check:
 	$(CMD_PREFIX)mypy src/$(PACKAGE)
 
+type-check-files:
+	$(CMD_PREFIX)mypy $(filter-out $@,$(MAKECMDGOALS))
+
 security-check:
 	$(CMD_PREFIX)bandit -r src/$(PACKAGE)
+
+security-check-files:
+	$(CMD_PREFIX)bandit $(filter-out $@,$(MAKECMDGOALS))
 
 quality: format lint type-check security-check
 
@@ -78,3 +95,7 @@ clean:
 	find . -type d -name .pytest_cache -exec rm -rf {} +
 	find . -type d -name .ruff_cache -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete
+
+# This allows passing filenames as arguments to make targets
+%:
+	@:
