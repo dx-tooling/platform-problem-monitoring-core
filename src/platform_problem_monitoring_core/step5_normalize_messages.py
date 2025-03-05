@@ -3,14 +3,14 @@
 
 import argparse
 import json
-import sys
 import re
-from collections import defaultdict
-from typing import Dict, List, Any, Tuple
+import sys
+from pathlib import Path
+from typing import Any
 
 from drain3 import TemplateMiner
-from drain3.template_miner_config import TemplateMinerConfig
 from drain3.masking import MaskingInstruction
+from drain3.template_miner_config import TemplateMinerConfig
 
 from platform_problem_monitoring_core.utils import logger, save_json
 
@@ -309,6 +309,78 @@ def post_process_template(template: str) -> str:
     return template
 
 
+def _process_document(doc: dict, template_miner, pattern_doc_references: dict):
+    """
+    Process a single document to extract and normalize its message.
+    
+    Args:
+        doc: Document to process
+        template_miner: Configured template miner
+        pattern_doc_references: Dictionary to store document references for each pattern
+        
+    Returns:
+        True if processing was successful, False otherwise
+    """
+    index_name = doc.get("index", "unknown")
+    doc_id = doc.get("id", "unknown")
+    message = doc.get("message", "")
+    
+    if not message:
+        return False
+    
+    # Apply custom pre-processing to the message
+    processed_message = preprocess_log_line(message)
+    
+    # Add to template miner
+    result = template_miner.add_log_message(processed_message)
+    
+    # Store the document ID with its template
+    template_id = result["cluster_id"]
+    if template_id not in pattern_doc_references:
+        pattern_doc_references[template_id] = []
+    
+    # Add the doc ID and index to the lists, keeping only the 5 most recent
+    doc_reference = f"{index_name}:{doc_id}"
+    pattern_doc_references[template_id].append(doc_reference)
+    if len(pattern_doc_references[template_id]) > 5:
+        pattern_doc_references[template_id].pop(0)
+    
+    return True
+
+
+def _prepare_results(template_miner, pattern_doc_references: dict) -> list:
+    """
+    Prepare normalized results from template miner clusters.
+    
+    Args:
+        template_miner: Template miner with processed data
+        pattern_doc_references: Dictionary with document references for each pattern
+        
+    Returns:
+        List of normalized patterns with counts and sample references
+    """
+    results = []
+    for cluster in template_miner.drain.clusters:
+        # Post-process the template to make it more readable
+        template = cluster.get_template()
+        template = post_process_template(template)
+        
+        # Get the cluster ID
+        cluster_id = cluster.cluster_id
+        
+        # Create result entry
+        result = {
+            "pattern": template,
+            "count": cluster.size,
+            "sample_doc_references": pattern_doc_references.get(cluster_id, [])
+        }
+        results.append(result)
+    
+    # Sort results by count (descending)
+    results.sort(key=lambda x: x["count"], reverse=True)
+    return results
+
+
 def normalize_messages(fields_file: str, output_file: str) -> None:
     """
     Normalize messages and summarize them.
@@ -329,7 +401,7 @@ def normalize_messages(fields_file: str, output_file: str) -> None:
     
     try:
         # Process the input file
-        with open(fields_file, 'r') as f:
+        with Path(fields_file).open('r') as f:
             line_count = 0
             for line in f:
                 line = line.strip()
@@ -339,33 +411,10 @@ def normalize_messages(fields_file: str, output_file: str) -> None:
                 try:
                     # Parse the JSON line
                     doc = json.loads(line)
-                    index_name = doc.get("index", "unknown")
-                    doc_id = doc.get("id", "unknown")
-                    message = doc.get("message", "")
-                    
-                    if not message:
-                        continue
-                    
-                    # Apply custom pre-processing to the message
-                    processed_message = preprocess_log_line(message)
-                    
-                    # Add to template miner
-                    result = template_miner.add_log_message(processed_message)
-                    
-                    # Store the document ID with its template
-                    template_id = result["cluster_id"]
-                    if template_id not in pattern_doc_references:
-                        pattern_doc_references[template_id] = []
-                    
-                    # Add the doc ID and index to the lists, keeping only the 5 most recent
-                    doc_reference = f"{index_name}:{doc_id}"
-                    pattern_doc_references[template_id].append(doc_reference)
-                    if len(pattern_doc_references[template_id]) > 5:
-                        pattern_doc_references[template_id].pop(0)
-                    
-                    line_count += 1
-                    if line_count % 1000 == 0:
-                        logger.info(f"Processed {line_count} messages")
+                    if _process_document(doc, template_miner, pattern_doc_references):
+                        line_count += 1
+                        if line_count % 1000 == 0:
+                            logger.info(f"Processed {line_count} messages")
                 except json.JSONDecodeError:
                     logger.warning(f"Invalid JSON line: {line}")
                     continue
@@ -377,25 +426,7 @@ def normalize_messages(fields_file: str, output_file: str) -> None:
         logger.info(f"Found {len(template_miner.drain.clusters)} unique patterns")
         
         # Prepare results
-        results = []
-        for cluster in template_miner.drain.clusters:
-            # Post-process the template to make it more readable
-            template = cluster.get_template()
-            template = post_process_template(template)
-            
-            # Get the cluster ID
-            cluster_id = cluster.cluster_id
-            
-            # Create result entry
-            result = {
-                "pattern": template,
-                "count": cluster.size,
-                "sample_doc_references": pattern_doc_references.get(cluster_id, [])
-            }
-            results.append(result)
-        
-        # Sort results by count (descending)
-        results.sort(key=lambda x: x["count"], reverse=True)
+        results = _prepare_results(template_miner, pattern_doc_references)
         
         # Save results to output file
         save_json({"patterns": results}, output_file)

@@ -1,4 +1,18 @@
-.idea/
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries/
+.idea/shelf/
+.idea/usage.statistics.xml
+.idea/contentModel.xml
+.idea/dataSources/
+.idea/dataSources.local.xml
+.idea/httpRequests/
+.idea/caches/
+# Keep .idea/runConfigurations
+# Keep .idea/inspectionProfiles
+# Keep .idea/misc.xml
+# Keep .idea/modules.xml
+
 venv/
 platform_problem_monitoring_core.conf
 lucene_query.json
@@ -12,3 +26,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 references/
+
+# Cache directories
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/

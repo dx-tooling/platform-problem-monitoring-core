@@ -2,14 +2,14 @@
 """Generate email bodies for platform problem monitoring reports."""
 
 import argparse
-import sys
-import os
 import re
-from datetime import datetime, UTC
-from typing import Optional, List, Dict, Any, Tuple
+import sys
+from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
-from platform_problem_monitoring_core.utils import logger, load_json
+from platform_problem_monitoring_core.utils import load_json, logger
+
 
 # Define possible paths to the HTML template file
 def find_template_file() -> str:
@@ -22,14 +22,14 @@ def find_template_file() -> str:
     # List of possible relative paths to try
     possible_paths = [
         # Path if installed as a package (highest priority)
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "resources", "html_email_template.html")
+        Path(__file__).parent / "resources" / "html_email_template.html"
     ]
 
     # Try each path
     for path in possible_paths:
-        if os.path.exists(path):
+        if path.exists():
             logger.info(f"Found HTML template at: {path}")
-            return path
+            return str(path)
 
     # If we get here, we couldn't find the template
     error_msg = f"Could not find HTML template file. Tried the following paths: {possible_paths}"
@@ -50,7 +50,7 @@ def load_html_template() -> Dict[str, str]:
     logger.info(f"Loading HTML template from: {TEMPLATE_FILE_PATH}")
 
     try:
-        with open(TEMPLATE_FILE_PATH, "r") as f:
+        with Path(TEMPLATE_FILE_PATH).open("r") as f:
             template_content = f.read()
 
         # Extract templates using regex
@@ -232,10 +232,9 @@ def generate_increased_pattern_list_html(patterns: List[Dict[str, Any]], kibana_
 
     for i, pattern in enumerate(patterns, 1):
         current_count = pattern.get("current_count", 0)
-        previous_count = pattern.get("previous_count", 0)
         pattern_text = pattern.get("pattern", "")
-        absolute_change = current_count - previous_count
-        percent_change = round((absolute_change / previous_count) * 100, 1) if previous_count > 0 else 0
+        absolute_change = current_count - pattern.get("previous_count", 0)
+        percent_change = round((absolute_change / pattern.get("previous_count", 1)) * 100, 1) if pattern.get("previous_count", 1) > 0 else 0
 
         # Create a unique ID for each pattern
         pattern_id = f"increased-pattern-{i}"
@@ -283,10 +282,9 @@ def generate_decreased_pattern_list_html(patterns: List[Dict[str, Any]], kibana_
 
     for i, pattern in enumerate(patterns, 1):
         current_count = pattern.get("current_count", 0)
-        previous_count = pattern.get("previous_count", 0)
         pattern_text = pattern.get("pattern", "")
-        absolute_change = previous_count - current_count
-        percent_change = round((absolute_change / previous_count) * 100, 1) if previous_count > 0 else 0
+        absolute_change = pattern.get("previous_count", 0) - current_count
+        percent_change = round((absolute_change / pattern.get("previous_count", 1)) * 100, 1) if pattern.get("previous_count", 1) > 0 else 0
 
         # Create a unique ID for each pattern
         pattern_id = f"decreased-pattern-{i}"
@@ -376,10 +374,9 @@ def generate_increased_pattern_list_text(patterns: List[Dict[str, Any]]) -> str:
 
     for i, pattern in enumerate(patterns, 1):
         current_count = pattern.get("current_count", 0)
-        previous_count = pattern.get("previous_count", 0)
+        pattern_text = pattern.get("pattern", "")
         absolute_change = pattern.get("absolute_change", 0)
         percent_change = pattern.get("percent_change", 0)
-        pattern_text = pattern.get("pattern", "")
 
         text += f"{i}. [{current_count}] (+{absolute_change}, +{percent_change:.1f}%) {pattern_text}\n"
 
@@ -429,10 +426,9 @@ def generate_decreased_pattern_list_text(patterns: List[Dict[str, Any]]) -> str:
 
     for i, pattern in enumerate(patterns, 1):
         current_count = pattern.get("current_count", 0)
-        previous_count = pattern.get("previous_count", 0)
+        pattern_text = pattern.get("pattern", "")
         absolute_change = pattern.get("absolute_change", 0)
         percent_change = pattern.get("percent_change", 0)
-        pattern_text = pattern.get("pattern", "")
 
         text += f"{i}. [{current_count}] (-{absolute_change}, -{percent_change:.1f}%) {pattern_text}\n"
 
@@ -608,10 +604,10 @@ This is an automated report from the Platform Problem Monitoring system.
 """
 
     # Write the email bodies to the output files
-    with open(html_output, "w") as f:
+    with Path(html_output).open("w") as f:
         f.write(html)
 
-    with open(text_output, "w") as f:
+    with Path(text_output).open("w") as f:
         f.write(text)
 
     logger.info("Email bodies generated successfully")

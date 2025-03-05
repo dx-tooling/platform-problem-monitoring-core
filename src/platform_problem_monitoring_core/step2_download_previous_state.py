@@ -3,9 +3,9 @@
 
 import argparse
 import datetime
-import json
 import sys
-import os
+from pathlib import Path
+
 import boto3
 from botocore.exceptions import ClientError
 
@@ -43,7 +43,7 @@ def download_previous_state(
         # Set default to 24 hours ago
         now = datetime.datetime.now(datetime.UTC)
         yesterday = now - datetime.timedelta(days=1)
-        with open(date_time_file, 'w') as f:
+        with Path(date_time_file).open('w') as f:
             f.write(yesterday.isoformat())
         logger.info(f"Created fallback date time file at {date_time_file}")
     

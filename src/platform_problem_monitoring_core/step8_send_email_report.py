@@ -6,6 +6,7 @@ import smtplib
 import sys
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from pathlib import Path
 
 from platform_problem_monitoring_core.utils import logger
 
@@ -47,10 +48,10 @@ def send_email_report(
     
     try:
         # Read the email bodies
-        with open(html_file, "r") as f:
+        with Path(html_file).open("r") as f:
             html_body = f.read()
         
-        with open(text_file, "r") as f:
+        with Path(text_file).open("r") as f:
             text_body = f.read()
         
         # Create message

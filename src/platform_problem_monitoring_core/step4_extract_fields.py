@@ -4,9 +4,9 @@
 import argparse
 import json
 import sys
-from typing import Dict, List, Any
+from pathlib import Path
 
-from platform_problem_monitoring_core.utils import logger, load_json
+from platform_problem_monitoring_core.utils import load_json, logger
 
 
 def extract_fields(logstash_file: str, output_file: str) -> None:
@@ -27,7 +27,7 @@ def extract_fields(logstash_file: str, output_file: str) -> None:
         logger.info(f"Loaded {len(documents)} logstash documents")
         
         # Open output file for writing
-        with open(output_file, "w") as f:
+        with Path(output_file).open("w") as f:
             # Process each document
             processed_count = 0
             for doc in documents:

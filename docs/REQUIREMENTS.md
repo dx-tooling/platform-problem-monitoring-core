@@ -77,10 +77,7 @@ Some further assumptions:
 - The application is not a persitent process or daemon; it is launched, does its job, and afterwards exits
 - S3 is assumed to be reliably available; no local fallback mechanism is required for state storage
 - Storing credentials as plain text in configuration files is acceptable; no encryption is needed
-- If any step of the process fails, the entire process should fail immediately, and an email with detailed information 
-  about the encountered issue should be sent to the configured report receivers using the SMTP parameters provided in the 
-  configuration file. This error reporting functionality should be implemented in a dedicated send_error_email.py script,
-  separate from the regular email reporting in step8_send_email_report.py, to maintain clean separation of responsibilities.
+- If any step of the process fails, the entire process should fail immediately
 
 The tech stack for this application is defined as follows:
 

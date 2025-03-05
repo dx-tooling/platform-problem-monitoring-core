@@ -3,7 +3,8 @@
 
 import argparse
 import sys
-import os
+from pathlib import Path
+
 import boto3
 from botocore.exceptions import ClientError
 
@@ -29,11 +30,15 @@ def store_new_state(
     logger.info(f"Normalization results file: {norm_results_file}")
     
     # Check if files exist
-    if not os.path.exists(date_time_file):
-        raise FileNotFoundError(f"Date time file not found: {date_time_file}")
+    if not Path(date_time_file).exists():
+        error_msg = f"Date time file not found: {date_time_file}"
+        logger.error(error_msg)
+        raise FileNotFoundError(error_msg)
     
-    if not os.path.exists(norm_results_file):
-        raise FileNotFoundError(f"Normalization results file not found: {norm_results_file}")
+    if not Path(norm_results_file).exists():
+        error_msg = f"Normalization results file not found: {norm_results_file}"
+        logger.error(error_msg)
+        raise FileNotFoundError(error_msg)
     
     # Create S3 client
     s3_client = boto3.client('s3')

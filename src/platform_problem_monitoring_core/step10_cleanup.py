@@ -2,9 +2,9 @@
 """Clean up work environment."""
 
 import argparse
-import os
 import shutil
 import sys
+from pathlib import Path
 
 from platform_problem_monitoring_core.utils import logger
 
@@ -19,21 +19,26 @@ def cleanup_environment(work_dir: str) -> None:
     logger.info("Cleaning up work environment")
     logger.info(f"Removing temporary work directory: {work_dir}")
 
+    # Convert to Path object
+    work_path = Path(work_dir)
+
     # Check if the directory exists
-    if not os.path.exists(work_dir):
+    if not work_path.exists():
         logger.warning(f"Work directory does not exist: {work_dir}")
         return
 
     # Check if the path is a directory
-    if not os.path.isdir(work_dir):
-        logger.error(f"Path is not a directory: {work_dir}")
-        raise ValueError(f"Path is not a directory: {work_dir}")
+    if not work_path.is_dir():
+        error_msg = f"Path is not a directory: {work_dir}"
+        logger.error(error_msg)
+        raise ValueError(error_msg)
 
     # Verify that the directory looks like a temporary work directory
     # This is a safety check to avoid accidentally deleting important directories
-    if not os.path.basename(work_dir).startswith("platform_problem_monitoring_"):
-        logger.error(f"Directory does not appear to be a temporary work directory: {work_dir}")
-        raise ValueError(f"Directory does not appear to be a temporary work directory: {work_dir}")
+    if not work_path.name.startswith("platform_problem_monitoring_"):
+        error_msg = f"Directory does not appear to be a temporary work directory: {work_dir}"
+        logger.error(error_msg)
+        raise ValueError(error_msg)
 
     try:
         # Remove the directory and all its contents

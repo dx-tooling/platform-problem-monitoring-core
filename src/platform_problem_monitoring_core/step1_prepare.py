@@ -5,9 +5,9 @@ import argparse
 import os
 import sys
 import tempfile
-from typing import Optional
+from pathlib import Path
 
-from platform_problem_monitoring_core.utils import logger, ensure_dir_exists
+from platform_problem_monitoring_core.utils import ensure_dir_exists, logger
 
 
 def prepare_environment() -> str:
@@ -26,7 +26,8 @@ def prepare_environment() -> str:
     # Ensure the directory exists and is writable
     ensure_dir_exists(work_dir)
 
-    if not os.access(work_dir, os.W_OK):
+    work_path = Path(work_dir)
+    if not work_path.exists() or not os.access(work_dir, os.W_OK):
         logger.error(f"No write access to temporary directory: {work_dir}")
         sys.exit(1)
 
@@ -37,7 +38,8 @@ def prepare_environment() -> str:
 def main() -> None:
     """Execute the script when run directly."""
     parser = argparse.ArgumentParser(description="Prepare environment for a process run")
-    args = parser.parse_args()
+    # Parse arguments but don't assign to a variable since we don't use them
+    parser.parse_args()
 
     try:
         work_dir = prepare_environment()
