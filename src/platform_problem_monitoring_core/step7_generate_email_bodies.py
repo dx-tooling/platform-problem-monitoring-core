@@ -22,7 +22,9 @@ def find_template_file() -> str:
     # List of possible relative paths to try
     possible_paths = [
         # Path if installed as a package (highest priority)
-        Path(__file__).parent / "resources" / "html_email_template.html"
+        Path(__file__).parent
+        / "resources"
+        / "html_email_template.html"
     ]
 
     # Try each path
@@ -35,6 +37,7 @@ def find_template_file() -> str:
     error_msg = f"Could not find HTML template file. Tried the following paths: {possible_paths}"
     logger.error(error_msg)
     raise FileNotFoundError(error_msg)
+
 
 # Get the template file path
 TEMPLATE_FILE_PATH = find_template_file()
@@ -57,15 +60,17 @@ def load_html_template() -> Dict[str, str]:
         templates = {}
 
         # Extract CSS styles
-        css_match = re.search(r'<style>(.*?)</style>', template_content, re.DOTALL)
+        css_match = re.search(r"<style>(.*?)</style>", template_content, re.DOTALL)
         if css_match:
-            templates['css'] = css_match.group(1)
+            templates["css"] = css_match.group(1)
         else:
             logger.warning("No CSS styles found in the HTML template")
-            templates['css'] = ""
+            templates["css"] = ""
 
         # Extract all template sections
-        template_matches = re.finditer(r'<template id="([^"]+)">(.*?)</template>', template_content, re.DOTALL)
+        template_matches = re.finditer(
+            r'<template id="([^"]+)">(.*?)</template>', template_content, re.DOTALL
+        )
         template_count = 0
         for match in template_matches:
             template_id = match.group(1)
@@ -79,8 +84,12 @@ def load_html_template() -> Dict[str, str]:
             logger.info(f"Loaded {template_count} template sections")
 
         # Check for required templates
-        required_templates = ['document-template', 'pattern-item-template',
-                             'increased-pattern-item-template', 'decreased-pattern-item-template']
+        required_templates = [
+            "document-template",
+            "pattern-item-template",
+            "increased-pattern-item-template",
+            "decreased-pattern-item-template",
+        ]
         missing_templates = [t for t in required_templates if t not in templates]
 
         if missing_templates:
@@ -96,7 +105,12 @@ def load_html_template() -> Dict[str, str]:
         raise
 
 
-def generate_sample_links_html(pattern: Dict[str, Any], kibana_url: Optional[str] = None, kibana_deeplink_structure: Optional[str] = None, dark_mode: bool = False) -> str:
+def generate_sample_links_html(
+    pattern: Dict[str, Any],
+    kibana_url: Optional[str] = None,
+    kibana_deeplink_structure: Optional[str] = None,
+    dark_mode: bool = False,
+) -> str:
     """
     Generate HTML for sample document links.
 
@@ -118,8 +132,10 @@ def generate_sample_links_html(pattern: Dict[str, Any], kibana_url: Optional[str
         return ""
 
     templates = load_html_template()
-    sample_links_template = templates.get('sample-links-template', '')
-    sample_link_item_template = templates.get('dark-sample-link-item-template' if dark_mode else 'sample-link-item-template', '')
+    sample_links_template = templates.get("sample-links-template", "")
+    sample_link_item_template = templates.get(
+        "dark-sample-link-item-template" if dark_mode else "sample-link-item-template", ""
+    )
 
     sample_links_list = ""
 
@@ -138,7 +154,9 @@ def generate_sample_links_html(pattern: Dict[str, Any], kibana_url: Optional[str
             # Create a deep link to Kibana
             if kibana_deeplink_structure:
                 # Use the new configurable deeplink structure
-                kibana_link = kibana_deeplink_structure.replace("{{index}}", index).replace("{{id}}", doc_id)
+                kibana_link = kibana_deeplink_structure.replace("{{index}}", index).replace(
+                    "{{id}}", doc_id
+                )
             elif kibana_url:
                 # Fallback to the old method for backward compatibility
                 kibana_link = f"{kibana_url}/app/discover#/doc/logstash-*/{index}?id={doc_id}"
@@ -161,7 +179,11 @@ def generate_sample_links_html(pattern: Dict[str, Any], kibana_url: Optional[str
     return ""
 
 
-def generate_pattern_list_html(patterns: List[Dict[str, Any]], kibana_url: Optional[str] = None, kibana_deeplink_structure: Optional[str] = None) -> Tuple[str, str]:
+def generate_pattern_list_html(
+    patterns: List[Dict[str, Any]],
+    kibana_url: Optional[str] = None,
+    kibana_deeplink_structure: Optional[str] = None,
+) -> Tuple[str, str]:
     """
     Generate HTML for a list of patterns.
 
@@ -175,12 +197,12 @@ def generate_pattern_list_html(patterns: List[Dict[str, Any]], kibana_url: Optio
     """
     if not patterns:
         templates = load_html_template()
-        empty_template = templates.get('empty-pattern-list-template', '')
+        empty_template = templates.get("empty-pattern-list-template", "")
         light_html = empty_template.replace("{{MESSAGE}}", "No patterns found.")
         return light_html, light_html
 
     templates = load_html_template()
-    pattern_item_template = templates.get('pattern-item-template', '')
+    pattern_item_template = templates.get("pattern-item-template", "")
 
     light_html = "<div class='space-y-6'>"
 
@@ -192,7 +214,9 @@ def generate_pattern_list_html(patterns: List[Dict[str, Any]], kibana_url: Optio
         pattern_id = f"pattern-{i}"
 
         # Generate sample links
-        sample_links = generate_sample_links_html(pattern, kibana_url, kibana_deeplink_structure, dark_mode=False)
+        sample_links = generate_sample_links_html(
+            pattern, kibana_url, kibana_deeplink_structure, dark_mode=False
+        )
 
         # Replace placeholders in the template
         pattern_html = pattern_item_template.replace("{{INDEX}}", str(i))
@@ -207,7 +231,11 @@ def generate_pattern_list_html(patterns: List[Dict[str, Any]], kibana_url: Optio
     return light_html, light_html
 
 
-def generate_increased_pattern_list_html(patterns: List[Dict[str, Any]], kibana_url: Optional[str] = None, kibana_deeplink_structure: Optional[str] = None) -> Tuple[str, str]:
+def generate_increased_pattern_list_html(
+    patterns: List[Dict[str, Any]],
+    kibana_url: Optional[str] = None,
+    kibana_deeplink_structure: Optional[str] = None,
+) -> Tuple[str, str]:
     """
     Generate HTML for a list of increased patterns.
 
@@ -221,12 +249,12 @@ def generate_increased_pattern_list_html(patterns: List[Dict[str, Any]], kibana_
     """
     if not patterns:
         templates = load_html_template()
-        empty_template = templates.get('empty-pattern-list-template', '')
+        empty_template = templates.get("empty-pattern-list-template", "")
         light_html = empty_template.replace("{{MESSAGE}}", "No increased patterns found.")
         return light_html, light_html
 
     templates = load_html_template()
-    pattern_item_template = templates.get('increased-pattern-item-template', '')
+    pattern_item_template = templates.get("increased-pattern-item-template", "")
 
     light_html = "<div class='space-y-6'>"
 
@@ -234,13 +262,19 @@ def generate_increased_pattern_list_html(patterns: List[Dict[str, Any]], kibana_
         current_count = pattern.get("current_count", 0)
         pattern_text = pattern.get("pattern", "")
         absolute_change = current_count - pattern.get("previous_count", 0)
-        percent_change = round((absolute_change / pattern.get("previous_count", 1)) * 100, 1) if pattern.get("previous_count", 1) > 0 else 0
+        percent_change = (
+            round((absolute_change / pattern.get("previous_count", 1)) * 100, 1)
+            if pattern.get("previous_count", 1) > 0
+            else 0
+        )
 
         # Create a unique ID for each pattern
         pattern_id = f"increased-pattern-{i}"
 
         # Generate sample links
-        sample_links = generate_sample_links_html(pattern, kibana_url, kibana_deeplink_structure, dark_mode=False)
+        sample_links = generate_sample_links_html(
+            pattern, kibana_url, kibana_deeplink_structure, dark_mode=False
+        )
 
         # Replace placeholders in the template
         pattern_html = pattern_item_template.replace("{{INDEX}}", str(i))
@@ -257,7 +291,11 @@ def generate_increased_pattern_list_html(patterns: List[Dict[str, Any]], kibana_
     return light_html, light_html
 
 
-def generate_decreased_pattern_list_html(patterns: List[Dict[str, Any]], kibana_url: Optional[str] = None, kibana_deeplink_structure: Optional[str] = None) -> Tuple[str, str]:
+def generate_decreased_pattern_list_html(
+    patterns: List[Dict[str, Any]],
+    kibana_url: Optional[str] = None,
+    kibana_deeplink_structure: Optional[str] = None,
+) -> Tuple[str, str]:
     """
     Generate HTML for a list of decreased patterns.
 
@@ -271,12 +309,12 @@ def generate_decreased_pattern_list_html(patterns: List[Dict[str, Any]], kibana_
     """
     if not patterns:
         templates = load_html_template()
-        empty_template = templates.get('empty-pattern-list-template', '')
+        empty_template = templates.get("empty-pattern-list-template", "")
         light_html = empty_template.replace("{{MESSAGE}}", "No decreased patterns found.")
         return light_html, light_html
 
     templates = load_html_template()
-    pattern_item_template = templates.get('decreased-pattern-item-template', '')
+    pattern_item_template = templates.get("decreased-pattern-item-template", "")
 
     light_html = "<div class='space-y-6'>"
 
@@ -284,13 +322,19 @@ def generate_decreased_pattern_list_html(patterns: List[Dict[str, Any]], kibana_
         current_count = pattern.get("current_count", 0)
         pattern_text = pattern.get("pattern", "")
         absolute_change = pattern.get("previous_count", 0) - current_count
-        percent_change = round((absolute_change / pattern.get("previous_count", 1)) * 100, 1) if pattern.get("previous_count", 1) > 0 else 0
+        percent_change = (
+            round((absolute_change / pattern.get("previous_count", 1)) * 100, 1)
+            if pattern.get("previous_count", 1) > 0
+            else 0
+        )
 
         # Create a unique ID for each pattern
         pattern_id = f"decreased-pattern-{i}"
 
         # Generate sample links
-        sample_links = generate_sample_links_html(pattern, kibana_url, kibana_deeplink_structure, dark_mode=False)
+        sample_links = generate_sample_links_html(
+            pattern, kibana_url, kibana_deeplink_structure, dark_mode=False
+        )
 
         # Replace placeholders in the template
         pattern_html = pattern_item_template.replace("{{INDEX}}", str(i))
@@ -378,7 +422,9 @@ def generate_increased_pattern_list_text(patterns: List[Dict[str, Any]]) -> str:
         absolute_change = pattern.get("absolute_change", 0)
         percent_change = pattern.get("percent_change", 0)
 
-        text += f"{i}. [{current_count}] (+{absolute_change}, +{percent_change:.1f}%) {pattern_text}\n"
+        text += (
+            f"{i}. [{current_count}] (+{absolute_change}, +{percent_change:.1f}%) {pattern_text}\n"
+        )
 
         # Add sample document references if available
         if "sample_doc_references" in pattern and pattern["sample_doc_references"]:
@@ -430,7 +476,9 @@ def generate_decreased_pattern_list_text(patterns: List[Dict[str, Any]]) -> str:
         absolute_change = pattern.get("absolute_change", 0)
         percent_change = pattern.get("percent_change", 0)
 
-        text += f"{i}. [{current_count}] (-{absolute_change}, -{percent_change:.1f}%) {pattern_text}\n"
+        text += (
+            f"{i}. [{current_count}] (-{absolute_change}, -{percent_change:.1f}%) {pattern_text}\n"
+        )
 
         # Add sample document references if available
         if "sample_doc_references" in pattern and pattern["sample_doc_references"]:
@@ -497,7 +545,9 @@ def generate_email_bodies(
     norm_results = load_json(norm_results_file)
 
     # Get the top 25 patterns from the normalization results
-    top_patterns = sorted(norm_results.get("patterns", []), key=lambda x: x.get("count", 0), reverse=True)[:25]
+    top_patterns = sorted(
+        norm_results.get("patterns", []), key=lambda x: x.get("count", 0), reverse=True
+    )[:25]
 
     # Extract data from comparison results
     current_patterns_count = comparison.get("current_patterns_count", 0)
@@ -512,9 +562,9 @@ def generate_email_bodies(
 
     # Load HTML templates
     templates = load_html_template()
-    document_template = templates.get('document-template', '')
-    kibana_button_template = templates.get('kibana-button-template', '')
-    css_styles = templates.get('css', '')
+    document_template = templates.get("document-template", "")
+    kibana_button_template = templates.get("kibana-button-template", "")
+    css_styles = templates.get("css", "")
 
     # Generate Kibana button if URL is provided
     kibana_button = ""
@@ -522,11 +572,21 @@ def generate_email_bodies(
         kibana_button = kibana_button_template.replace("{{KIBANA_URL}}", kibana_url)
 
     # Generate HTML for pattern lists
-    new_patterns_html, new_patterns_dark_html = generate_pattern_list_html(new_patterns[:10], kibana_url, kibana_deeplink_structure)
-    disappeared_patterns_html, disappeared_patterns_dark_html = generate_pattern_list_html(disappeared_patterns[:10], kibana_url, kibana_deeplink_structure)
-    increased_patterns_html, increased_patterns_dark_html = generate_increased_pattern_list_html(increased_patterns[:10], kibana_url, kibana_deeplink_structure)
-    decreased_patterns_html, decreased_patterns_dark_html = generate_decreased_pattern_list_html(decreased_patterns[:10], kibana_url, kibana_deeplink_structure)
-    top_patterns_html, top_patterns_dark_html = generate_pattern_list_html(top_patterns[:25], kibana_url, kibana_deeplink_structure)
+    new_patterns_html, new_patterns_dark_html = generate_pattern_list_html(
+        new_patterns[:10], kibana_url, kibana_deeplink_structure
+    )
+    disappeared_patterns_html, disappeared_patterns_dark_html = generate_pattern_list_html(
+        disappeared_patterns[:10], kibana_url, kibana_deeplink_structure
+    )
+    increased_patterns_html, increased_patterns_dark_html = generate_increased_pattern_list_html(
+        increased_patterns[:10], kibana_url, kibana_deeplink_structure
+    )
+    decreased_patterns_html, decreased_patterns_dark_html = generate_decreased_pattern_list_html(
+        decreased_patterns[:10], kibana_url, kibana_deeplink_structure
+    )
+    top_patterns_html, top_patterns_dark_html = generate_pattern_list_html(
+        top_patterns[:25], kibana_url, kibana_deeplink_structure
+    )
 
     # Replace placeholders in the main template
     html = document_template
@@ -537,14 +597,14 @@ def generate_email_bodies(
     html = html.replace("{{NEW_PATTERNS_COUNT}}", str(len(new_patterns)))
     html = html.replace("{{DISAPPEARED_PATTERNS_COUNT}}", str(len(disappeared_patterns)))
     html = html.replace("{{KIBANA_BUTTON}}", kibana_button)
-    
+
     # Replace light mode pattern lists
     html = html.replace("{{NEW_PATTERNS_LIST}}", new_patterns_html)
     html = html.replace("{{DISAPPEARED_PATTERNS_LIST}}", disappeared_patterns_html)
     html = html.replace("{{INCREASED_PATTERNS_LIST}}", increased_patterns_html)
     html = html.replace("{{DECREASED_PATTERNS_LIST}}", decreased_patterns_html)
     html = html.replace("{{TOP_PATTERNS_LIST}}", top_patterns_html)
-    
+
     # Replace dark mode pattern lists
     html = html.replace("{{NEW_PATTERNS_LIST_DARK}}", new_patterns_dark_html)
     html = html.replace("{{DISAPPEARED_PATTERNS_LIST_DARK}}", disappeared_patterns_dark_html)
@@ -616,12 +676,21 @@ This is an automated report from the Platform Problem Monitoring system.
 def main() -> None:
     """Execute the script when run directly."""
     parser = argparse.ArgumentParser(description="Generate email bodies")
-    parser.add_argument("--comparison-file", required=True, help="Path to the comparison results file")
-    parser.add_argument("--norm-results-file", required=True, help="Path to the normalization results file")
+    parser.add_argument(
+        "--comparison-file", required=True, help="Path to the comparison results file"
+    )
+    parser.add_argument(
+        "--norm-results-file", required=True, help="Path to the normalization results file"
+    )
     parser.add_argument("--html-output", required=True, help="Path to store the HTML email body")
-    parser.add_argument("--text-output", required=True, help="Path to store the plaintext email body")
+    parser.add_argument(
+        "--text-output", required=True, help="Path to store the plaintext email body"
+    )
     parser.add_argument("--kibana-url", help="Kibana base URL for the 'View in Kibana' button")
-    parser.add_argument("--kibana-deeplink-structure", help="URL structure for individual Kibana document deeplinks with {{index}} and {{id}} placeholders")
+    parser.add_argument(
+        "--kibana-deeplink-structure",
+        help="URL structure for individual Kibana document deeplinks with {{index}} and {{id}} placeholders",
+    )
 
     args = parser.parse_args()
 

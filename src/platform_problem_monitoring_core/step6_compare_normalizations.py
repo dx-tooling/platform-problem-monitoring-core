@@ -11,23 +11,25 @@ from platform_problem_monitoring_core.utils import load_json, logger, save_json
 def _find_new_patterns(current_dict: dict, previous_dict: dict) -> list:
     """
     Find patterns that are in the current data but not in the previous data.
-    
+
     Args:
         current_dict: Dictionary of current patterns
         previous_dict: Dictionary of previous patterns
-        
+
     Returns:
         List of new patterns
     """
     new_patterns = []
     for pattern, data in current_dict.items():
         if pattern not in previous_dict:
-            new_patterns.append({
-                "pattern": pattern,
-                "count": data["count"],
-                "sample_doc_references": data.get("sample_doc_references", [])
-            })
-    
+            new_patterns.append(
+                {
+                    "pattern": pattern,
+                    "count": data["count"],
+                    "sample_doc_references": data.get("sample_doc_references", []),
+                }
+            )
+
     # Sort new patterns by count (descending)
     new_patterns.sort(key=lambda x: x["count"], reverse=True)
     return new_patterns
@@ -36,23 +38,25 @@ def _find_new_patterns(current_dict: dict, previous_dict: dict) -> list:
 def _find_disappeared_patterns(current_dict: dict, previous_dict: dict) -> list:
     """
     Find patterns that are in the previous data but not in the current data.
-    
+
     Args:
         current_dict: Dictionary of current patterns
         previous_dict: Dictionary of previous patterns
-        
+
     Returns:
         List of disappeared patterns
     """
     disappeared_patterns = []
     for pattern, data in previous_dict.items():
         if pattern not in current_dict:
-            disappeared_patterns.append({
-                "pattern": pattern,
-                "count": data["count"],
-                "sample_doc_references": data.get("sample_doc_references", [])
-            })
-    
+            disappeared_patterns.append(
+                {
+                    "pattern": pattern,
+                    "count": data["count"],
+                    "sample_doc_references": data.get("sample_doc_references", []),
+                }
+            )
+
     # Sort disappeared patterns by count (descending)
     disappeared_patterns.sort(key=lambda x: x["count"], reverse=True)
     return disappeared_patterns
@@ -61,11 +65,11 @@ def _find_disappeared_patterns(current_dict: dict, previous_dict: dict) -> list:
 def _find_increased_patterns(current_dict: dict, previous_dict: dict) -> list:
     """
     Find patterns whose count has increased from previous to current.
-    
+
     Args:
         current_dict: Dictionary of current patterns
         previous_dict: Dictionary of previous patterns
-        
+
     Returns:
         List of patterns with increased counts
     """
@@ -74,18 +78,20 @@ def _find_increased_patterns(current_dict: dict, previous_dict: dict) -> list:
         if pattern in previous_dict:
             current_count = current_data["count"]
             previous_count = previous_dict[pattern]["count"]
-            
+
             if current_count > previous_count:
                 percent_increase = ((current_count - previous_count) / previous_count) * 100
-                increased_patterns.append({
-                    "pattern": pattern,
-                    "current_count": current_count,
-                    "previous_count": previous_count,
-                    "absolute_change": current_count - previous_count,
-                    "percent_change": percent_increase,
-                    "sample_doc_references": current_data.get("sample_doc_references", [])
-                })
-    
+                increased_patterns.append(
+                    {
+                        "pattern": pattern,
+                        "current_count": current_count,
+                        "previous_count": previous_count,
+                        "absolute_change": current_count - previous_count,
+                        "percent_change": percent_increase,
+                        "sample_doc_references": current_data.get("sample_doc_references", []),
+                    }
+                )
+
     # Sort increased patterns by percent change (descending)
     increased_patterns.sort(key=lambda x: x["percent_change"], reverse=True)
     return increased_patterns
@@ -94,11 +100,11 @@ def _find_increased_patterns(current_dict: dict, previous_dict: dict) -> list:
 def _find_decreased_patterns(current_dict: dict, previous_dict: dict) -> list:
     """
     Find patterns whose count has decreased from previous to current.
-    
+
     Args:
         current_dict: Dictionary of current patterns
         previous_dict: Dictionary of previous patterns
-        
+
     Returns:
         List of patterns with decreased counts
     """
@@ -107,18 +113,20 @@ def _find_decreased_patterns(current_dict: dict, previous_dict: dict) -> list:
         if pattern in previous_dict:
             current_count = current_data["count"]
             previous_count = previous_dict[pattern]["count"]
-            
+
             if current_count < previous_count:
                 percent_decrease = ((previous_count - current_count) / previous_count) * 100
-                decreased_patterns.append({
-                    "pattern": pattern,
-                    "current_count": current_count,
-                    "previous_count": previous_count,
-                    "absolute_change": previous_count - current_count,
-                    "percent_change": percent_decrease,
-                    "sample_doc_references": current_data.get("sample_doc_references", [])
-                })
-    
+                decreased_patterns.append(
+                    {
+                        "pattern": pattern,
+                        "current_count": current_count,
+                        "previous_count": previous_count,
+                        "absolute_change": previous_count - current_count,
+                        "percent_change": percent_decrease,
+                        "sample_doc_references": current_data.get("sample_doc_references", []),
+                    }
+                )
+
     # Sort decreased patterns by percent change (descending)
     decreased_patterns.sort(key=lambda x: x["percent_change"], reverse=True)
     return decreased_patterns
@@ -127,7 +135,7 @@ def _find_decreased_patterns(current_dict: dict, previous_dict: dict) -> list:
 def compare_normalizations(current_file: str, previous_file: str, output_file: str) -> None:
     """
     Compare normalization results between current and previous runs.
-    
+
     Args:
         current_file: Path to the current normalization results file
         previous_file: Path to the previous normalization results file
@@ -137,39 +145,39 @@ def compare_normalizations(current_file: str, previous_file: str, output_file: s
     logger.info(f"Current file: {current_file}")
     logger.info(f"Previous file: {previous_file}")
     logger.info(f"Output file: {output_file}")
-    
+
     try:
         # Load current and previous normalization results
         current_data = load_json(current_file)
         previous_data = load_json(previous_file)
-        
+
         # Extract patterns from the loaded data
         current_patterns = current_data.get("patterns", [])
         previous_patterns = previous_data.get("patterns", [])
-        
+
         logger.info(f"Current patterns: {len(current_patterns)}")
         logger.info(f"Previous patterns: {len(previous_patterns)}")
-        
+
         # Create dictionaries for easier comparison
         current_dict = {pattern["pattern"]: pattern for pattern in current_patterns}
         previous_dict = {pattern["pattern"]: pattern for pattern in previous_patterns}
-        
+
         # Find new patterns (in current but not in previous)
         new_patterns = _find_new_patterns(current_dict, previous_dict)
         logger.info(f"New patterns: {len(new_patterns)}")
-        
+
         # Find disappeared patterns (in previous but not in current)
         disappeared_patterns = _find_disappeared_patterns(current_dict, previous_dict)
         logger.info(f"Disappeared patterns: {len(disappeared_patterns)}")
-        
+
         # Find patterns with increased counts
         increased_patterns = _find_increased_patterns(current_dict, previous_dict)
         logger.info(f"Increased patterns: {len(increased_patterns)}")
-        
+
         # Find patterns with decreased counts
         decreased_patterns = _find_decreased_patterns(current_dict, previous_dict)
         logger.info(f"Decreased patterns: {len(decreased_patterns)}")
-        
+
         # Prepare comparison results
         comparison_results = {
             "current_patterns_count": len(current_patterns),
@@ -177,13 +185,13 @@ def compare_normalizations(current_file: str, previous_file: str, output_file: s
             "new_patterns": new_patterns,
             "disappeared_patterns": disappeared_patterns,
             "increased_patterns": increased_patterns,
-            "decreased_patterns": decreased_patterns
+            "decreased_patterns": decreased_patterns,
         }
-        
+
         # Save comparison results
         save_json(comparison_results, output_file)
         logger.info(f"Comparison results saved to {output_file}")
-    
+
     except FileNotFoundError as e:
         logger.error(f"File not found: {e}")
         raise
@@ -204,12 +212,10 @@ def main() -> None:
     parser.add_argument(
         "--previous-file", required=True, help="Path to the previous normalization results file"
     )
-    parser.add_argument(
-        "--output-file", required=True, help="Path to store the comparison results"
-    )
-    
+    parser.add_argument("--output-file", required=True, help="Path to store the comparison results")
+
     args = parser.parse_args()
-    
+
     try:
         compare_normalizations(args.current_file, args.previous_file, args.output_file)
     except Exception as e:

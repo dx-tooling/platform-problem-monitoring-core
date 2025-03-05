@@ -54,10 +54,12 @@ def cleanup_environment(work_dir: str) -> None:
 def main() -> None:
     """Execute the script when run directly."""
     parser = argparse.ArgumentParser(description="Clean up work environment")
-    parser.add_argument("--work-dir", required=True, help="Path to the temporary work folder to remove")
-    
+    parser.add_argument(
+        "--work-dir", required=True, help="Path to the temporary work folder to remove"
+    )
+
     args = parser.parse_args()
-    
+
     try:
         cleanup_environment(args.work_dir)
         sys.exit(0)

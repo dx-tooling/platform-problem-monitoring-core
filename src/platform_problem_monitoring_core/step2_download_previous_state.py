@@ -18,7 +18,7 @@ def download_previous_state(
 ) -> None:
     """
     Download previous state from S3.
-    
+
     Args:
         s3_bucket: S3 bucket name
         s3_folder: S3 folder name
@@ -28,10 +28,10 @@ def download_previous_state(
     logger.info("Downloading previous state")
     logger.info(f"S3 bucket: {s3_bucket}")
     logger.info(f"S3 folder: {s3_folder}")
-    
+
     # Create S3 client
-    s3_client = boto3.client('s3')
-    
+    s3_client = boto3.client("s3")
+
     # Download date time file
     date_time_key = f"{s3_folder}/current_date_time.txt"
     try:
@@ -44,10 +44,10 @@ def download_previous_state(
         # Set default to 24 hours ago
         now = datetime.datetime.now(timezone.utc)
         yesterday = now - datetime.timedelta(days=1)
-        with Path(date_time_file).open('w') as f:
+        with Path(date_time_file).open("w") as f:
             f.write(yesterday.isoformat())
         logger.info(f"Created fallback date time file at {date_time_file}")
-    
+
     # Download normalization results file
     norm_results_key = f"{s3_folder}/norm_results.json"
     try:
@@ -60,34 +60,29 @@ def download_previous_state(
         # Create empty normalization results file
         save_json({}, norm_results_file)
         logger.info(f"Created empty normalization results file at {norm_results_file}")
-    
+
     logger.info("Previous state download completed")
 
 
 def main() -> None:
     """Parse command line arguments and download previous state."""
     parser = argparse.ArgumentParser(description="Download previous state from S3")
-    parser.add_argument(
-        "--s3-bucket", required=True, help="S3 bucket name"
-    )
-    parser.add_argument(
-        "--s3-folder", required=True, help="S3 folder name"
-    )
+    parser.add_argument("--s3-bucket", required=True, help="S3 bucket name")
+    parser.add_argument("--s3-folder", required=True, help="S3 folder name")
     parser.add_argument(
         "--date-time-file", required=True, help="Path to store the start date and time"
     )
     parser.add_argument(
-        "--norm-results-file", required=True, help="Path to store the previous normalization results"
+        "--norm-results-file",
+        required=True,
+        help="Path to store the previous normalization results",
     )
-    
+
     args = parser.parse_args()
-    
+
     try:
         download_previous_state(
-            args.s3_bucket,
-            args.s3_folder,
-            args.date_time_file,
-            args.norm_results_file
+            args.s3_bucket, args.s3_folder, args.date_time_file, args.norm_results_file
         )
     except Exception as e:
         logger.error(f"Error downloading previous state: {e}")

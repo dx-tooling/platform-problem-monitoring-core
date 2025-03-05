@@ -24,7 +24,7 @@ def send_email_report(
 ) -> None:
     """
     Send email report.
-    
+
     Args:
         html_file: Path to the HTML email body file
         text_file: Path to the plaintext email body file
@@ -45,34 +45,34 @@ def send_email_report(
     logger.info(f"SMTP user: {smtp_user}")
     logger.info(f"Sender: {sender}")
     logger.info(f"Receiver: {receiver}")
-    
+
     try:
         # Read the email bodies
         with Path(html_file).open("r") as f:
             html_body = f.read()
-        
+
         with Path(text_file).open("r") as f:
             text_body = f.read()
-        
+
         # Create message
         msg = MIMEMultipart("alternative")
         msg["Subject"] = subject
         msg["From"] = sender
         msg["To"] = receiver
-        
+
         # Attach parts
         msg.attach(MIMEText(text_body, "plain"))
         msg.attach(MIMEText(html_body, "html"))
-        
+
         logger.info(f"Connecting to SMTP server {smtp_host}:{smtp_port}")
-        
+
         # Send the email
         server = smtplib.SMTP(smtp_host, smtp_port)
         server.starttls()
         server.login(smtp_user, smtp_pass)
         server.sendmail(sender, receiver, msg.as_string())
         server.quit()
-        
+
         logger.info("Email report sent successfully")
     except FileNotFoundError as e:
         logger.error(f"Email body file not found: {str(e)}")
@@ -97,9 +97,9 @@ def main() -> None:
     parser.add_argument("--smtp-pass", required=True, help="SMTP password")
     parser.add_argument("--sender", required=True, help="Sender email address")
     parser.add_argument("--receiver", required=True, help="Receiver email address")
-    
+
     args = parser.parse_args()
-    
+
     try:
         send_email_report(
             args.html_file,

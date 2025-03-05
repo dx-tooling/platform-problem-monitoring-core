@@ -16,7 +16,7 @@ def store_new_state(
 ) -> None:
     """
     Store new state to S3.
-    
+
     Args:
         s3_bucket: S3 bucket name
         s3_folder: S3 folder name
@@ -28,21 +28,21 @@ def store_new_state(
     logger.info(f"S3 folder: {s3_folder}")
     logger.info(f"Date time file: {date_time_file}")
     logger.info(f"Normalization results file: {norm_results_file}")
-    
+
     # Check if files exist
     if not Path(date_time_file).exists():
         error_msg = f"Date time file not found: {date_time_file}"
         logger.error(error_msg)
         raise FileNotFoundError(error_msg)
-    
+
     if not Path(norm_results_file).exists():
         error_msg = f"Normalization results file not found: {norm_results_file}"
         logger.error(error_msg)
         raise FileNotFoundError(error_msg)
-    
+
     # Create S3 client
-    s3_client = boto3.client('s3')
-    
+    s3_client = boto3.client("s3")
+
     # Upload date time file
     date_time_key = f"{s3_folder}/current_date_time.txt"
     try:
@@ -52,7 +52,7 @@ def store_new_state(
     except ClientError as e:
         logger.error(f"Failed to upload date time file: {e}")
         raise
-    
+
     # Upload normalization results file
     norm_results_key = f"{s3_folder}/norm_results.json"
     try:
@@ -62,35 +62,28 @@ def store_new_state(
     except ClientError as e:
         logger.error(f"Failed to upload normalization results: {e}")
         raise
-    
+
     logger.info("New state stored successfully")
 
 
 def main() -> None:
     """Parse command line arguments and store new state."""
     parser = argparse.ArgumentParser(description="Store new state to S3")
-    parser.add_argument(
-        "--s3-bucket", required=True, help="S3 bucket name"
-    )
-    parser.add_argument(
-        "--s3-folder", required=True, help="S3 folder name"
-    )
+    parser.add_argument("--s3-bucket", required=True, help="S3 bucket name")
+    parser.add_argument("--s3-folder", required=True, help="S3 folder name")
     parser.add_argument(
         "--date-time-file", required=True, help="Path to the date and time file to upload"
     )
     parser.add_argument(
-        "--norm-results-file", required=True, help="Path to the normalization results file to upload"
+        "--norm-results-file",
+        required=True,
+        help="Path to the normalization results file to upload",
     )
-    
+
     args = parser.parse_args()
-    
+
     try:
-        store_new_state(
-            args.s3_bucket,
-            args.s3_folder,
-            args.date_time_file,
-            args.norm_results_file
-        )
+        store_new_state(args.s3_bucket, args.s3_folder, args.date_time_file, args.norm_results_file)
     except Exception as e:
         logger.error(f"Error storing new state: {e}")
         sys.exit(1)
