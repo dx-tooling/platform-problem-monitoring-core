@@ -2,13 +2,257 @@
 """Generate email bodies for platform problem monitoring reports."""
 
 import argparse
+import json
 import re
 import sys
+import urllib.parse
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from platform_problem_monitoring_core.utils import load_json, logger
+
+
+def json_to_kibana_url_params(json_obj: Any) -> str:
+    """
+    Convert a JSON object to a Kibana-compatible URL parameter string (RISON format).
+
+    Kibana uses a simplified format for URL parameters that's different from standard JSON.
+    This function converts a Python object to this format.
+
+    Args:
+        json_obj: The Python object to convert
+
+    Returns:
+        A string in Kibana's URL parameter format (RISON)
+    """
+    if isinstance(json_obj, dict):
+        parts = []
+        for key, value in json_obj.items():
+            parts.append(f"{key}:{json_to_kibana_url_params(value)}")
+        return "(" + ",".join(parts) + ")"
+    elif isinstance(json_obj, list):
+        parts = []
+        for item in json_obj:
+            parts.append(json_to_kibana_url_params(item))
+        return "!(" + ",".join(parts) + ")"
+    elif isinstance(json_obj, bool):
+        return "!t" if json_obj else "!f"
+    elif isinstance(json_obj, (int, float)):
+        return str(json_obj)
+    elif isinstance(json_obj, str):
+        # Escape special characters in strings
+        escaped = json_obj.replace("'", "\\'")
+        return f"'{escaped}'"
+    elif json_obj is None:
+        return "!n"
+    else:
+        return str(json_obj)
+
+
+def elasticsearch_query_to_lucene(query_data: Dict[str, Any]) -> str:
+    """
+    Convert an Elasticsearch JSON query to Lucene query syntax.
+
+    Args:
+        query_data: Elasticsearch query in JSON format
+
+    Returns:
+        Lucene query string
+    """
+    # Extract the query part from the query_data structure
+    if "query" in query_data:
+        return _process_query_node(query_data["query"])
+    return _process_query_node(query_data)
+
+
+def _process_query_node(node: Any) -> str:
+    """
+    Process a node in the Elasticsearch query and convert it to Lucene syntax.
+
+    Args:
+        node: A node in the Elasticsearch query
+
+    Returns:
+        Lucene query string for this node
+    """
+    if not isinstance(node, dict):
+        return str(node)
+
+    # Define a mapping of query types to their processing functions
+    query_processors = {
+        "bool": lambda n: _process_bool_query(n["bool"]),
+        "term": lambda n: _process_term_query(n["term"]),
+        "terms": lambda n: _process_terms_query(n["terms"]),
+        "match": lambda n: _process_match_query(n["match"]),
+        "range": lambda n: _process_range_query(n["range"]),
+        "wildcard": lambda n: _process_wildcard_query(n["wildcard"]),
+        "exists": lambda n: _process_exists_query(n["exists"]),
+        "query_string": lambda n: _process_query_string(n["query_string"]),
+    }
+
+    # Process the node based on its query type
+    for query_type, processor in query_processors.items():
+        if query_type in node:
+            return processor(node)
+
+    # If we don't recognize the query type, return an empty string
+    return ""
+
+
+def _process_query_string(query_string: Dict[str, Any]) -> str:
+    """
+    Process a query_string query and convert it to Lucene syntax.
+
+    Args:
+        query_string: The query_string part of an Elasticsearch query
+
+    Returns:
+        Lucene query string
+    """
+    query = query_string.get("query")
+    if query is None:
+        return ""
+    return str(query)
+
+
+def _process_bool_query(bool_query: Dict[str, Any]) -> str:
+    """Process a bool query and convert it to Lucene syntax."""
+    parts = []
+
+    # Process each clause type using helper functions
+    if "must" in bool_query:
+        must_part = _process_bool_clause(bool_query["must"], "AND")
+        if must_part:
+            parts.append(f"({must_part})")
+
+    if "should" in bool_query:
+        should_part = _process_bool_clause(bool_query["should"], "OR")
+        if should_part:
+            parts.append(f"({should_part})")
+
+    if "must_not" in bool_query:
+        must_not_part = _process_bool_clause(bool_query["must_not"], "OR")
+        if must_not_part:
+            parts.append(f"(NOT ({must_not_part}))")
+
+    return " AND ".join(parts)
+
+
+def _process_bool_clause(clauses: Any, join_operator: str) -> str:
+    """
+    Process a boolean clause (must, should, must_not) and join the results.
+
+    Args:
+        clauses: The clauses to process (can be a list or a single clause)
+        join_operator: The operator to join multiple clauses with ("AND" or "OR")
+
+    Returns:
+        A string representation of the processed clauses
+    """
+    if isinstance(clauses, list):
+        parts = [_process_query_node(clause) for clause in clauses]
+        # Remove empty parts
+        parts = [part for part in parts if part]
+        if parts:
+            return f" {join_operator} ".join(parts)
+        return ""
+    else:
+        return _process_query_node(clauses) or ""
+
+
+def _process_term_query(term_query: Dict[str, Any]) -> str:
+    """Process a term query and convert it to Lucene syntax."""
+    if not term_query:
+        return ""
+
+    field = list(term_query.keys())[0]
+    value = term_query[field].get("value", term_query[field])
+
+    # Handle string values
+    if isinstance(value, str):
+        # Escape special characters and wrap in quotes
+        value = f'"{value}"'
+
+    return f"{field}:{value}"
+
+
+def _process_terms_query(terms_query: Dict[str, Any]) -> str:
+    """Process a terms query and convert it to Lucene syntax."""
+    if not terms_query:
+        return ""
+
+    field = list(terms_query.keys())[0]
+    values = terms_query[field]
+
+    if not values:
+        return ""
+
+    # Format each value and join with OR
+    formatted_values = []
+    for value in values:
+        if isinstance(value, str):
+            formatted_values.append(f'{field}:"{value}"')
+        else:
+            formatted_values.append(f"{field}:{value}")
+
+    return f"({' OR '.join(formatted_values)})"
+
+
+def _process_match_query(match_query: Dict[str, Any]) -> str:
+    """Process a match query and convert it to Lucene syntax."""
+    if not match_query:
+        return ""
+
+    field = list(match_query.keys())[0]
+    value = match_query[field].get("query", match_query[field])
+
+    if isinstance(value, str):
+        # Escape special characters and wrap in quotes
+        value = f'"{value}"'
+
+    return f"{field}:{value}"
+
+
+def _process_range_query(range_query: Dict[str, Any]) -> str:
+    """Process a range query and convert it to Lucene syntax."""
+    if not range_query:
+        return ""
+
+    field = list(range_query.keys())[0]
+    conditions = range_query[field]
+
+    parts = []
+    if "gt" in conditions:
+        parts.append(f"{field}:>{conditions['gt']}")
+    if "gte" in conditions:
+        parts.append(f"{field}:>={conditions['gte']}")
+    if "lt" in conditions:
+        parts.append(f"{field}:<{conditions['lt']}")
+    if "lte" in conditions:
+        parts.append(f"{field}:<={conditions['lte']}")
+
+    return f"({' AND '.join(parts)})"
+
+
+def _process_wildcard_query(wildcard_query: Dict[str, Any]) -> str:
+    """Process a wildcard query and convert it to Lucene syntax."""
+    if not wildcard_query:
+        return ""
+
+    field = list(wildcard_query.keys())[0]
+    value = wildcard_query[field].get("value", wildcard_query[field])
+
+    return f"{field}:{value}"
+
+
+def _process_exists_query(exists_query: Dict[str, Any]) -> str:
+    """Process an exists query and convert it to Lucene syntax."""
+    field = exists_query.get("field", "")
+    if not field:
+        return ""
+
+    return f"_exists_:{field}"
 
 
 # Define possible paths to the HTML template file
@@ -509,35 +753,170 @@ def get_count(pattern: Dict[str, Any]) -> int:
     return 0 if count is None else int(count)
 
 
-def generate_email_bodies(
-    comparison_file: str,
-    norm_results_file: str,
-    html_output: str,
-    text_output: str,
-    kibana_url: Optional[str] = None,
-    kibana_deeplink_structure: Optional[str] = None,
-) -> None:
+def _parse_start_date_time(start_date_time_file: str) -> str:
     """
-    Generate HTML and plaintext email bodies.
+    Parse the start date time from a file and format it for Kibana.
+
+    Args:
+        start_date_time_file: Path to the file containing the start date time
+
+    Returns:
+        Formatted start date time for Kibana
+    """
+    with Path(start_date_time_file).open("r") as f:
+        start_date_time_raw = f.read().strip()
+
+    try:
+        # Try to parse the datetime
+        dt = datetime.fromisoformat(start_date_time_raw.replace("Z", "+00:00"))
+        # Format it in the way Kibana expects
+        return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+    except ValueError:
+        # If parsing fails, use a default format
+        logger.warning(f"Could not parse start date time: {start_date_time_raw}, using default format")
+        return start_date_time_raw
+
+
+def _extract_lucene_query(elasticsearch_query_file: str) -> str:
+    """
+    Extract a Lucene query from an Elasticsearch query file.
+
+    Args:
+        elasticsearch_query_file: Path to the Elasticsearch query file
+
+    Returns:
+        Lucene query string
+    """
+    # Get the Lucene query directly from the file
+    with Path(elasticsearch_query_file).open("r") as f:
+        query_data = json.load(f)
+
+    # Extract the query parts we need
+    lucene_parts = []
+
+    # Process should clauses (OR conditions)
+    should_part = _extract_should_clauses(query_data)
+    if should_part:
+        lucene_parts.append(should_part)
+
+    # Process must_not clauses (NOT conditions)
+    must_not_part = _extract_must_not_clauses(query_data)
+    if must_not_part:
+        lucene_parts.append(must_not_part)
+
+    # Combine all parts with AND
+    lucene_query = " AND ".join(lucene_parts)
+    logger.info(f"Generated Lucene query: {lucene_query}")
+
+    return lucene_query
+
+
+def _extract_should_clauses(query_data: Dict[str, Any]) -> str:
+    """
+    Extract 'should' clauses from an Elasticsearch query.
+
+    Args:
+        query_data: Elasticsearch query data
+
+    Returns:
+        Lucene query string for 'should' clauses
+    """
+    if "query" in query_data and "bool" in query_data["query"] and "should" in query_data["query"]["bool"]:
+        should_clauses = query_data["query"]["bool"]["should"]
+        should_parts = []
+
+        for clause in should_clauses:
+            if "match" in clause:
+                for field, value in clause["match"].items():
+                    should_parts.append(f'{field}:"{value}"')
+
+        if should_parts:
+            return f"({' OR '.join(should_parts)})"
+
+    return ""
+
+
+def _extract_must_not_clauses(query_data: Dict[str, Any]) -> str:
+    """
+    Extract 'must_not' clauses from an Elasticsearch query.
+
+    Args:
+        query_data: Elasticsearch query data
+
+    Returns:
+        Lucene query string for 'must_not' clauses
+    """
+    if "query" in query_data and "bool" in query_data["query"] and "must_not" in query_data["query"]["bool"]:
+        must_not_clauses = query_data["query"]["bool"]["must_not"]
+        must_not_parts = []
+
+        for clause in must_not_clauses:
+            if "match" in clause:
+                for field, value in clause["match"].items():
+                    must_not_parts.append(f'{field}:"{value}"')
+            elif "term" in clause:
+                for field, value in clause["term"].items():
+                    must_not_parts.append(f'{field}:"{value}"')
+
+        if must_not_parts:
+            return f"(NOT {' AND NOT '.join(must_not_parts)})"
+
+    return ""
+
+
+def _create_enhanced_kibana_url(
+    kibana_url: str,
+    elasticsearch_query_file: str,
+    start_date_time_file: str,
+) -> str:
+    """
+    Create an enhanced Kibana URL with query and timeframe.
+
+    Args:
+        kibana_url: Base Kibana URL
+        elasticsearch_query_file: Path to the Elasticsearch query file
+        start_date_time_file: Path to the file containing the start date time
+
+    Returns:
+        Enhanced Kibana URL with query and timeframe
+    """
+    try:
+        # Parse the start date time
+        start_date_time = _parse_start_date_time(start_date_time_file)
+
+        # Extract the Lucene query
+        lucene_query = _extract_lucene_query(elasticsearch_query_file)
+
+        # URL encode the Lucene query
+        encoded_query = urllib.parse.quote(lucene_query)
+
+        # Create the Kibana URL directly using the format from the working URL
+        enhanced_kibana_url = (
+            f"{kibana_url}#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),"
+            f"time:(from:'{start_date_time}',to:now))&"
+            f"_a=(columns:!(_source),filters:!(),index:'logstash-*',interval:auto,"
+            f"query:(language:lucene,query:'{encoded_query}'),sort:!())"
+        )
+
+        logger.info(f"Created enhanced Kibana URL with query and timeframe: {enhanced_kibana_url}")
+        return enhanced_kibana_url
+    except Exception as e:
+        logger.warning(f"Failed to create enhanced Kibana URL: {str(e)}")
+        logger.exception(e)  # Log the full exception for debugging
+        return kibana_url
+
+
+def _prepare_email_data(comparison_file: str, norm_results_file: str) -> Dict[str, Any]:
+    """
+    Prepare data for email generation.
 
     Args:
         comparison_file: Path to the comparison results file
         norm_results_file: Path to the normalization results file
-        html_output: Path to store the HTML email body
-        text_output: Path to store the plaintext email body
-        kibana_url: Kibana base URL for the "View in Kibana" button (optional)
-        kibana_deeplink_structure: URL structure for individual Kibana document deeplinks (optional)
-    """
-    logger.info("Generating email bodies")
-    logger.info(f"Comparison file: {comparison_file}")
-    logger.info(f"Normalization results file: {norm_results_file}")
-    logger.info(f"HTML output: {html_output}")
-    logger.info(f"Text output: {text_output}")
-    if kibana_url:
-        logger.info(f"Kibana URL: {kibana_url}")
-    if kibana_deeplink_structure:
-        logger.info(f"Kibana deeplink structure: {kibana_deeplink_structure}")
 
+    Returns:
+        Dictionary with data for email generation
+    """
     # Load the comparison results
     comparison = load_json(comparison_file)
 
@@ -558,43 +937,76 @@ def generate_email_bodies(
     # Generate timestamp
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
-    # Load HTML templates
-    templates = load_html_template()
+    return {
+        "top_patterns": top_patterns,
+        "current_patterns_count": current_patterns_count,
+        "previous_patterns_count": previous_patterns_count,
+        "new_patterns": new_patterns,
+        "disappeared_patterns": disappeared_patterns,
+        "increased_patterns": increased_patterns,
+        "decreased_patterns": decreased_patterns,
+        "timestamp": timestamp,
+    }
+
+
+def _generate_html_content(
+    data: Dict[str, Any],
+    templates: Dict[str, str],
+    kibana_url: Optional[str] = None,
+    kibana_deeplink_structure: Optional[str] = None,
+    enhanced_kibana_url: Optional[str] = None,
+) -> str:
+    """
+    Generate HTML content for the email.
+
+    Args:
+        data: Data for email generation
+        templates: HTML templates
+        kibana_url: Kibana base URL
+        kibana_deeplink_structure: URL structure for Kibana deeplinks
+        enhanced_kibana_url: Enhanced Kibana URL with query and timeframe
+
+    Returns:
+        HTML content for the email
+    """
     document_template = templates.get("document-template", "")
     kibana_button_template = templates.get("kibana-button-template", "")
     css_styles = templates.get("css", "")
 
     # Generate Kibana button if URL is provided
     kibana_button = ""
-    if kibana_url:
-        kibana_button = kibana_button_template.replace("{{KIBANA_URL}}", kibana_url)
+    if enhanced_kibana_url:
+        kibana_button = kibana_button_template.replace("{{KIBANA_URL}}", enhanced_kibana_url)
 
     # Generate HTML for pattern lists
     new_patterns_html, new_patterns_dark_html = generate_pattern_list_html(
-        new_patterns[:10], kibana_url, kibana_deeplink_structure
+        data["new_patterns"][:10], kibana_url, kibana_deeplink_structure
     )
     disappeared_patterns_html, disappeared_patterns_dark_html = generate_pattern_list_html(
-        disappeared_patterns[:10], kibana_url, kibana_deeplink_structure
+        data["disappeared_patterns"][:10], kibana_url, kibana_deeplink_structure
     )
     increased_patterns_html, increased_patterns_dark_html = generate_increased_pattern_list_html(
-        increased_patterns[:10], kibana_url, kibana_deeplink_structure
+        data["increased_patterns"][:10], kibana_url, kibana_deeplink_structure
     )
     decreased_patterns_html, decreased_patterns_dark_html = generate_decreased_pattern_list_html(
-        decreased_patterns[:10], kibana_url, kibana_deeplink_structure
+        data["decreased_patterns"][:10], kibana_url, kibana_deeplink_structure
     )
     top_patterns_html, top_patterns_dark_html = generate_pattern_list_html(
-        top_patterns[:25], kibana_url, kibana_deeplink_structure
+        data["top_patterns"][:25], kibana_url, kibana_deeplink_structure
     )
 
     # Replace placeholders in the main template
     html = document_template
     html = html.replace("{{CSS_STYLES}}", f"<style>{css_styles}</style>")
-    html = html.replace("{{TIMESTAMP}}", timestamp)
-    html = html.replace("{{CURRENT_PATTERNS_COUNT}}", str(current_patterns_count))
-    html = html.replace("{{PREVIOUS_PATTERNS_COUNT}}", str(previous_patterns_count))
-    html = html.replace("{{NEW_PATTERNS_COUNT}}", str(len(new_patterns)))
-    html = html.replace("{{DISAPPEARED_PATTERNS_COUNT}}", str(len(disappeared_patterns)))
+    html = html.replace("{{TIMESTAMP}}", data["timestamp"])
+    html = html.replace("{{CURRENT_PATTERNS_COUNT}}", str(data["current_patterns_count"]))
+    html = html.replace("{{PREVIOUS_PATTERNS_COUNT}}", str(data["previous_patterns_count"]))
+    html = html.replace("{{NEW_PATTERNS_COUNT}}", str(len(data["new_patterns"])))
+    html = html.replace("{{DISAPPEARED_PATTERNS_COUNT}}", str(len(data["disappeared_patterns"])))
     html = html.replace("{{KIBANA_BUTTON}}", kibana_button)
+
+    # Ensure all instances of {{KIBANA_URL}} are replaced
+    html = html.replace("{{KIBANA_URL}}", enhanced_kibana_url or kibana_url or "")
 
     # Replace light mode pattern lists
     html = html.replace("{{NEW_PATTERNS_LIST}}", new_patterns_html)
@@ -610,56 +1022,122 @@ def generate_email_bodies(
     html = html.replace("{{DECREASED_PATTERNS_LIST_DARK}}", decreased_patterns_dark_html)
     html = html.replace("{{TOP_PATTERNS_LIST_DARK}}", top_patterns_dark_html)
 
-    # Generate plaintext email body
-    text = f"""
-Platform Problem Monitoring Report
+    return html
+
+
+def _generate_text_content(data: Dict[str, Any]) -> str:
+    """
+    Generate plaintext content for the email.
+
+    Args:
+        data: Data for email generation
+
+    Returns:
+        Plaintext content for the email
+    """
+    return f"""
+PLATFORM PROBLEM MONITORING REPORT
 =================================
+Generated: {data["timestamp"]}
 
-Report generated at: {timestamp}
+SUMMARY
+-------
+Current problem patterns: {data["current_patterns_count"]}
+Previous problem patterns: {data["previous_patterns_count"]}
+New problem patterns: {len(data["new_patterns"])}
+Disappeared problem patterns: {len(data["disappeared_patterns"])}
 
-SUMMARY:
-- Current Patterns: {current_patterns_count}
-- Previous Patterns: {previous_patterns_count}
-- New Patterns: {len(new_patterns)}
-- Disappeared Patterns: {len(disappeared_patterns)}
+NEW PROBLEM PATTERNS
+===================
+These patterns have appeared since the last report.
 
-{f'View in Kibana: {kibana_url}' if kibana_url else ''}
+{generate_pattern_list_text(data["new_patterns"][:10])}
 
-SUMMARY OF CHANGES IN PROBLEM PATTERNS
-=====================================
+DISAPPEARED PROBLEM PATTERNS
+==========================
+These patterns were present in the previous report but are no longer occurring.
 
-TOP 10 NEW PROBLEM PATTERNS
----------------------------
-These patterns appeared in the new summary but were not present in the previous one.
+{generate_pattern_list_text(data["disappeared_patterns"][:10])}
 
-{generate_pattern_list_text(new_patterns[:10])}
-
-TOP 10 DISAPPEARED PROBLEM PATTERNS
-----------------------------------
-These patterns were present in the previous summary but are not in the current one.
-
-{generate_pattern_list_text(disappeared_patterns[:10])}
-
-TOP 10 INCREASED PROBLEM PATTERNS
---------------------------------
+INCREASED PROBLEM PATTERNS
+========================
 These patterns have increased in occurrence count since the last report.
 
-{generate_increased_pattern_list_text(increased_patterns[:10])}
+{generate_increased_pattern_list_text(data["increased_patterns"][:10])}
 
-TOP 10 DECREASED PROBLEM PATTERNS
---------------------------------
+DECREASED PROBLEM PATTERNS
+========================
 These patterns have decreased in occurrence count since the last report.
 
-{generate_decreased_pattern_list_text(decreased_patterns[:10])}
+{generate_decreased_pattern_list_text(data["decreased_patterns"][:10])}
 
 TOP 25 CURRENT PROBLEM PATTERNS
 ==============================
 The most frequent problem patterns in the current report.
 
-{generate_pattern_list_text(top_patterns)}
+{generate_pattern_list_text(data["top_patterns"])}
 
 This is an automated report from the Platform Problem Monitoring system.
 """
+
+
+def generate_email_bodies(
+    comparison_file: str,
+    norm_results_file: str,
+    html_output: str,
+    text_output: str,
+    kibana_url: Optional[str] = None,
+    kibana_deeplink_structure: Optional[str] = None,
+    elasticsearch_query_file: Optional[str] = None,
+    start_date_time_file: Optional[str] = None,
+) -> None:
+    """
+    Generate HTML and plaintext email bodies.
+
+    Args:
+        comparison_file: Path to the comparison results file
+        norm_results_file: Path to the normalization results file
+        html_output: Path to store the HTML email body
+        text_output: Path to store the plaintext email body
+        kibana_url: Kibana base URL for the "View in Kibana" button (optional)
+        kibana_deeplink_structure: URL structure for individual Kibana document deeplinks (optional)
+        elasticsearch_query_file: Path to the Elasticsearch Lucene query file (optional)
+        start_date_time_file: Path to the file containing the start date time (optional)
+    """
+    logger.info("Generating email bodies")
+    logger.info(f"Comparison file: {comparison_file}")
+    logger.info(f"Normalization results file: {norm_results_file}")
+    logger.info(f"HTML output: {html_output}")
+    logger.info(f"Text output: {text_output}")
+    if kibana_url:
+        logger.info(f"Kibana URL: {kibana_url}")
+    if kibana_deeplink_structure:
+        logger.info(f"Kibana deeplink structure: {kibana_deeplink_structure}")
+    if elasticsearch_query_file:
+        logger.info(f"Elasticsearch query file: {elasticsearch_query_file}")
+    if start_date_time_file:
+        logger.info(f"Start date time file: {start_date_time_file}")
+
+    # Prepare data for email generation
+    data = _prepare_email_data(comparison_file, norm_results_file)
+
+    # Load HTML templates
+    templates = load_html_template()
+
+    # Create enhanced Kibana URL if possible
+    enhanced_kibana_url = kibana_url
+    if (
+        kibana_url
+        and elasticsearch_query_file
+        and start_date_time_file
+        and Path(elasticsearch_query_file).exists()
+        and Path(start_date_time_file).exists()
+    ):
+        enhanced_kibana_url = _create_enhanced_kibana_url(kibana_url, elasticsearch_query_file, start_date_time_file)
+
+    # Generate HTML and text content
+    html = _generate_html_content(data, templates, kibana_url, kibana_deeplink_structure, enhanced_kibana_url)
+    text = _generate_text_content(data)
 
     # Write the email bodies to the output files
     with Path(html_output).open("w") as f:
@@ -683,6 +1161,8 @@ def main() -> None:
         "--kibana-deeplink-structure",
         help="URL structure for individual Kibana document deeplinks with {{index}} and {{id}} placeholders",
     )
+    parser.add_argument("--elasticsearch-query-file", help="Path to the Elasticsearch Lucene query file")
+    parser.add_argument("--start-date-time-file", help="Path to the file containing the start date time")
 
     args = parser.parse_args()
 
@@ -694,6 +1174,8 @@ def main() -> None:
             args.text_output,
             args.kibana_url,
             args.kibana_deeplink_structure,
+            args.elasticsearch_query_file,
+            args.start_date_time_file,
         )
         sys.exit(0)
     except Exception as e:

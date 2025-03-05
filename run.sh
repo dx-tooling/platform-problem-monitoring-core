@@ -163,7 +163,9 @@ python -m platform_problem_monitoring_core.step7_generate_email_bodies \
     --html-output "$HTML_EMAIL_BODY_FILE" \
     --text-output "$TEXT_EMAIL_BODY_FILE" \
     ${KIBANA_DISCOVER_BASE_URL:+--kibana-url "$KIBANA_DISCOVER_BASE_URL"} \
-    ${KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE:+--kibana-deeplink-structure "$KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE"}
+    ${KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE:+--kibana-deeplink-structure "$KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE"} \
+    ${ELASTICSEARCH_LUCENE_QUERY_FILE_PATH:+--elasticsearch-query-file "$ELASTICSEARCH_LUCENE_QUERY_FILE_PATH"} \
+    ${START_DATE_TIME_FILE:+--start-date-time-file "$START_DATE_TIME_FILE"}
 if [ $? -ne 0 ]; then
     echo "Error: Failed to generate email bodies"
     exit 1
