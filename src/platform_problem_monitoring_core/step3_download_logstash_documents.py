@@ -114,7 +114,7 @@ def _verify_elasticsearch_connection(elasticsearch_url: str) -> None:
         Exception: If the server is not available
     """
     # Do a simple request first to verify the server is available
-    response = requests.get(elasticsearch_url)
+    response = requests.get(elasticsearch_url, timeout=30)
     if response.status_code != 200:
         error_msg = f"Failed to connect to Elasticsearch: HTTP {response.status_code}"
         logger.error(error_msg)
@@ -147,7 +147,7 @@ def _download_documents_with_pagination(elasticsearch_url: str, query_data: dict
     search_params = {"scroll": scroll_timeout, "size": page_size}
 
     search_response = requests.post(
-        search_url, params=search_params, headers=headers, json=query_data  # type: ignore
+        search_url, params=search_params, headers=headers, json=query_data, timeout=30  # type: ignore
     )
 
     if search_response.status_code != 200:
@@ -179,7 +179,9 @@ def _download_documents_with_pagination(elasticsearch_url: str, query_data: dict
             scroll_url = f"{elasticsearch_url.rstrip('/')}/_search/scroll"
             scroll_data = {"scroll": scroll_timeout, "scroll_id": scroll_id}
 
-            scroll_response = requests.post(scroll_url, headers=headers, json=scroll_data)
+            scroll_response = requests.post(
+                scroll_url, headers=headers, json=scroll_data, timeout=30
+            )
 
             if scroll_response.status_code != 200:
                 logger.error(
@@ -204,7 +206,9 @@ def _download_documents_with_pagination(elasticsearch_url: str, query_data: dict
                 clear_scroll_url = f"{elasticsearch_url.rstrip('/')}/_search/scroll"
                 clear_scroll_data = {"scroll_id": [scroll_id]}
 
-                requests.delete(clear_scroll_url, headers=headers, json=clear_scroll_data)
+                requests.delete(
+                    clear_scroll_url, headers=headers, json=clear_scroll_data, timeout=30
+                )
             except Exception as e:
                 logger.warning(f"Failed to clear scroll context: {str(e)}")
 

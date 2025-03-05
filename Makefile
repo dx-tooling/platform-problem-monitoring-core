@@ -1,4 +1,4 @@
-.PHONY: install format lint lint-fix type-check security-check quality venv clean help activate-venv
+.PHONY: install format format-check lint lint-fix type-check security-check quality ci-quality venv clean help activate-venv
 
 PYTHON = python3
 PACKAGE = platform_problem_monitoring_core
@@ -9,11 +9,13 @@ help:
 	@echo "  make install        Install package and development dependencies"
 	@echo "  make activate-venv  Instructions to activate the virtual environment"
 	@echo "  make format         Format code with black and isort"
+	@echo "  make format-check   Check if code is properly formatted without modifying files"
 	@echo "  make lint           Run linters (ruff)"
 	@echo "  make lint-fix       Run linters and auto-fix issues where possible"
 	@echo "  make type-check     Run mypy type checking"
 	@echo "  make security-check Run bandit security checks"
-	@echo "  make quality        Run all code quality checks"
+	@echo "  make quality        Run all code quality checks (with formatting)"
+	@echo "  make ci-quality     Run all code quality checks (without modifying files)"
 	@echo "  make clean          Remove build artifacts and cache directories"
 	@echo "  make help           Show this help message"
 
@@ -37,6 +39,10 @@ format:
 	$(VENV_BIN)/black src/$(PACKAGE)
 	$(VENV_BIN)/isort src/$(PACKAGE)
 
+format-check:
+	$(VENV_BIN)/black --check src/$(PACKAGE)
+	$(VENV_BIN)/isort --check src/$(PACKAGE)
+
 lint:
 	$(VENV_BIN)/ruff check src/$(PACKAGE)
 
@@ -50,6 +56,8 @@ security-check:
 	$(VENV_BIN)/bandit -r src/$(PACKAGE)
 
 quality: format lint type-check security-check
+
+ci-quality: format-check lint type-check security-check
 
 clean:
 	rm -rf build/
