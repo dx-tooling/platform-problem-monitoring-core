@@ -2,7 +2,7 @@
 
 ## Runbook
 
-    python3 -m platform_problem_monitoring_core.step3_download_logstash_documents \
+    python3 -m platform_problem_monitoring_core.step5_download_logstash_documents \
         --elasticsearch-url "http://127.0.0.1:9201" \
         --query-file "/Users/manuel/git/github/dx-tooling/platform-problem-monitoring-core/src/lucene_query.json" \
         --start-date-time-file "/tmp/latest-date-time.txt" \

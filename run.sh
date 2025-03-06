@@ -66,6 +66,8 @@ NORM_RESULTS_FILE=""
 COMPARISON_RESULTS_FILE=""
 HTML_EMAIL_BODY_FILE=""
 TEXT_EMAIL_BODY_FILE=""
+HOURLY_DATA_FILE=""
+TREND_CHART_FILE=""
 
 echo "Starting Platform Problem Monitoring process..."
 
@@ -93,6 +95,8 @@ NORM_RESULTS_FILE="$WORK_DIR/norm_results.json"
 COMPARISON_RESULTS_FILE="$WORK_DIR/comparison_results.json"
 HTML_EMAIL_BODY_FILE="$WORK_DIR/email_body.html"
 TEXT_EMAIL_BODY_FILE="$WORK_DIR/email_body.txt"
+HOURLY_DATA_FILE="$WORK_DIR/hourly_problem_numbers.json"
+TREND_CHART_FILE="$WORK_DIR/trend_chart.png"
 
 # Step 2: Download previous state
 echo "Step 2: Downloading previous state..."
@@ -107,9 +111,33 @@ if [ $? -ne 0 ]; then
 fi
 echo "Previous state downloaded successfully"
 
-# Step 3: Download logstash documents
-echo "Step 3: Downloading logstash documents..."
-python -m platform_problem_monitoring_core.step3_download_logstash_documents \
+# Step 3: Retrieve hourly problem numbers
+echo "Step 3: Retrieving hourly problem numbers..."
+python -m platform_problem_monitoring_core.step3_retrieve_hourly_problem_numbers \
+    --elasticsearch-url "$ELASTICSEARCH_SERVER_BASE_URL" \
+    --query-file "$ELASTICSEARCH_LUCENE_QUERY_FILE_PATH" \
+    --hours-back 24 \
+    --output-file "$HOURLY_DATA_FILE"
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to retrieve hourly problem numbers"
+    exit 1
+fi
+echo "Hourly problem numbers retrieved successfully"
+
+# Step 4: Generate trend chart
+echo "Step 4: Generating trend chart..."
+python -m platform_problem_monitoring_core.step4_generate_trend_chart \
+    --hourly-data-file "$HOURLY_DATA_FILE" \
+    --output-file "$TREND_CHART_FILE"
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to generate trend chart"
+    exit 1
+fi
+echo "Trend chart generated successfully"
+
+# Step 5: Download logstash documents
+echo "Step 5: Downloading logstash documents..."
+python -m platform_problem_monitoring_core.step5_download_logstash_documents \
     --elasticsearch-url "$ELASTICSEARCH_SERVER_BASE_URL" \
     --query-file "$ELASTICSEARCH_LUCENE_QUERY_FILE_PATH" \
     --start-date-time-file "$START_DATE_TIME_FILE" \
@@ -121,9 +149,9 @@ if [ $? -ne 0 ]; then
 fi
 echo "Logstash documents downloaded successfully"
 
-# Step 4: Extract fields from logstash documents
-echo "Step 4: Extracting fields from logstash documents..."
-python -m platform_problem_monitoring_core.step4_extract_fields \
+# Step 6: Extract fields from logstash documents
+echo "Step 6: Extracting fields from logstash documents..."
+python -m platform_problem_monitoring_core.step6_extract_fields \
     --logstash-file "$LOGSTASH_DOCUMENTS_FILE" \
     --output-file "$EXTRACTED_FIELDS_FILE"
 if [ $? -ne 0 ]; then
@@ -132,9 +160,9 @@ if [ $? -ne 0 ]; then
 fi
 echo "Fields extracted successfully"
 
-# Step 5: Normalize messages
-echo "Step 5: Normalizing messages..."
-python -m platform_problem_monitoring_core.step5_normalize_messages \
+# Step 7: Normalize messages
+echo "Step 7: Normalizing messages..."
+python -m platform_problem_monitoring_core.step7_normalize_messages \
     --fields-file "$EXTRACTED_FIELDS_FILE" \
     --output-file "$NORM_RESULTS_FILE"
 if [ $? -ne 0 ]; then
@@ -143,9 +171,9 @@ if [ $? -ne 0 ]; then
 fi
 echo "Messages normalized successfully"
 
-# Step 6: Compare normalizations
-echo "Step 6: Comparing normalization results..."
-python -m platform_problem_monitoring_core.step6_compare_normalizations \
+# Step 8: Compare normalizations
+echo "Step 8: Comparing normalization results..."
+python -m platform_problem_monitoring_core.step8_compare_normalizations \
     --current-file "$NORM_RESULTS_FILE" \
     --previous-file "$NORM_RESULTS_PREV_FILE" \
     --output-file "$COMPARISON_RESULTS_FILE"
@@ -155,13 +183,14 @@ if [ $? -ne 0 ]; then
 fi
 echo "Normalization results compared successfully"
 
-# Step 7: Generate email bodies
-echo "Step 7: Generating email bodies..."
-python -m platform_problem_monitoring_core.step7_generate_email_bodies \
+# Step 9: Generate email bodies
+echo "Step 9: Generating email bodies..."
+python -m platform_problem_monitoring_core.step9_generate_email_bodies \
     --comparison-file "$COMPARISON_RESULTS_FILE" \
     --norm-results-file "$NORM_RESULTS_FILE" \
     --html-output "$HTML_EMAIL_BODY_FILE" \
     --text-output "$TEXT_EMAIL_BODY_FILE" \
+    --trend-chart-file "$TREND_CHART_FILE" \
     ${KIBANA_DISCOVER_BASE_URL:+--kibana-url "$KIBANA_DISCOVER_BASE_URL"} \
     ${KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE:+--kibana-deeplink-structure "$KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE"} \
     ${ELASTICSEARCH_LUCENE_QUERY_FILE_PATH:+--elasticsearch-query-file "$ELASTICSEARCH_LUCENE_QUERY_FILE_PATH"} \
@@ -172,10 +201,10 @@ if [ $? -ne 0 ]; then
 fi
 echo "Email bodies generated successfully"
 
-# Step 8: Send email report
-echo "Step 8: Sending email report..."
+# Step 10: Send email report
+echo "Step 10: Sending email report..."
 EMAIL_SUBJECT="Platform Problem Monitoring Report $(date +"%Y-%m-%d")"
-python -m platform_problem_monitoring_core.step8_send_email_report \
+python -m platform_problem_monitoring_core.step10_send_email_report \
     --html-file "$HTML_EMAIL_BODY_FILE" \
     --text-file "$TEXT_EMAIL_BODY_FILE" \
     --subject "$EMAIL_SUBJECT" \
@@ -191,9 +220,9 @@ if [ $? -ne 0 ]; then
 fi
 echo "Email report sent successfully"
 
-# Step 9: Store new state
-echo "Step 9: Storing new state..."
-python -m platform_problem_monitoring_core.step9_store_new_state \
+# Step 11: Store new state
+echo "Step 11: Storing new state..."
+python -m platform_problem_monitoring_core.step11_store_new_state \
     --s3-bucket "$REMOTE_STATE_S3_BUCKET_NAME" \
     --s3-folder "$REMOTE_STATE_S3_FOLDER_NAME" \
     --date-time-file "$CURRENT_DATE_TIME_FILE" \
@@ -204,7 +233,10 @@ if [ $? -ne 0 ]; then
 fi
 echo "New state stored successfully"
 
-echo "Steps 1-9 completed successfully"
+# No step 12 (cleanup) for now because it helps with debugging
+# when the work folder files are available
+
+echo "Steps 1-11 completed successfully"
 echo "Work directory: $WORK_DIR"
 echo "Downloaded documents: $LOGSTASH_DOCUMENTS_FILE"
 echo "Extracted fields: $EXTRACTED_FIELDS_FILE"
@@ -212,7 +244,5 @@ echo "Normalization results: $NORM_RESULTS_FILE"
 echo "Comparison results: $COMPARISON_RESULTS_FILE"
 echo "Email bodies: $HTML_EMAIL_BODY_FILE, $TEXT_EMAIL_BODY_FILE"
 echo "Email report sent to: $SMTP_RECEIVER_ADDRESS"
-
-# The script would continue with step 10 in a complete implementation
 
 exit 0

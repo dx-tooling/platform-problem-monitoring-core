@@ -16,8 +16,10 @@ On a high level, the software solution works as follows:
 
 - Logstash messages are downloaded from an Elasticsearch server.
 - The downloaded messages are normalized and summarized, to allow for generalizations like "message 'error for
-  user <UUID>: wrong password' occured 10 times"
-- A detailed email report with these generalizations, and their deviations compared to a previous run, is sent out.
+  user <UUID>: wrong password' occured 10 times"; additionally, a trend chart is generated that shows how the general
+  number of problems developed over the past few hours
+- A detailed email report about these generalizations and their deviations compared to a previous run, as well as the
+  trend chart, is sent out.
 
 The motivation for this solution is to allow software engineering teams that already have a working ELK (Elasticsearch,
 logstash, Kibana) stack in place, and are thus already collecting relevant information from their own platform (of
@@ -25,24 +27,26 @@ systems and software applications), to periodically determine the overall health
 the need to actively take steps for this kind of assessment.
 
 Receiving, in regular intervals, an email that carries the aforementioned kind of information ("what kinds of problem
-patterns exist in the logs, and how have these developed since the previous email"), and therefore an email that only
-needs to be quickly "scanned" upon receival, fullfills this requirement.
+patterns exist in the logs, and how have these developed since the previous email, and what is the general trend"), and
+therefore an email that only needs to be quickly "scanned" upon receival, fullfills this requirement.
 
 ## Mid-level: Process and work mechanisms
 
 Whenever triggered, be it manually or through a task system like cron, the software application will:
 
-1. download all "problem-related" (errors, exceptions, warnings, etc.) logstash documents from the Elasticsearch
-   server (of an ELK stack setup) that have been created since the software application last ran,
-2. extract the message field from all documents, plus some additional fields,
-3. "normalize" these messages by replacing dynamic message parts like timestamps, uuids, numbers etc.,
-4. "summarize" these messages by treating identical "normalized" messages as one message "pattern" and counting the
+1. Query the number of "problem-related" (errors, exceptions, warnings, etc.) logstash documents per hour for the past
+   few hours, and generate the trend chart from these numbers
+2. download all "problem-related" logstash documents from the Elasticsearch server (of an ELK stack setup) that have
+   been created since the software application last ran,
+3. extract the message field from all documents, plus some additional fields,
+4. "normalize" these messages by replacing dynamic message parts like timestamps, uuids, numbers etc.,
+5. "summarize" these messages by treating identical "normalized" messages as one message "pattern" and counting the
    number of message occurences per pattern
-5. compare this summary with the one from the previous run, by asking questions like: which patterns are new?, which
+6. compare this summary with the one from the previous run, by asking questions like: which patterns are new?, which
    ones increased or decreased in numbers?, which ones disappeared?, and compile a summary comparison from this,
-6. generate, from the summary comparison data and from the latest messages summary, a report in form of a well-designed
-   HTML email that visualizes the "problem status quo" of the platform that feeds into the ELK stack, with a special
-   emphasis on showing how the problems evolved since the previous run of the software application.
+7. generate, from the summary comparison data, the latest messages summary, and the trend chart, a report in form of a
+   well-designed HTML email that visualizes the "problem status quo" of the platform that feeds into the ELK stack, with
+   a special emphasis on showing how the problems evolved since the previous run of the software application.
 
 ## Mid-level: General architecture, tech stack, technological contraints
 
@@ -95,22 +99,24 @@ inputs are available.
 
 These are the steps that as a whole form the complete process end-to-end:
 
-1. Prepare environment for a process run
-2. Download previous run state
-3. Download logstash documents
-4. Extract relevant fields from the logstash documents
-5. Normalize messages
-6. Generate normalization results comparison
-7. Generate report email HTML body
-8. Send email report
-9. Store new run state
-10. Clean up work environment
+1.  Prepare environment for a process run
+2.  Download previous run state
+3.  Retrieve number of "problem" logstash documents per hour
+4.  Generate hourly "problem" volume trend chart
+5.  Download "problem" logstash documents
+6.  Extract relevant fields from the logstash documents
+7.  Normalize messages
+8.  Generate normalization results comparison
+9.  Generate report email HTML body
+10.  Send email report
+11. Store new run state
+12. Clean up work environment
 
 Each of these steps is a Python 3 script that can execute its operation in isolation when given correct inputs.
 
 The different step scripts do not include or call each other.
 
-However, any functionality that is worth sharing between these scripts, will be implemented in a shared library which
+However, any functionality that is worth sharing between these scripts will be implemented in a shared library, which
 the different step scripts will use as needed.
 
 ## Performance considerations
@@ -149,7 +155,7 @@ Main operations & side effects, and Outputs:
         - creation of a temporary work folder on the local file system
     - Outputs:
         - the path to the temporary work folder - step2_download_previous_state.py
-2. Download previous run state - file step1_prepare.py
+2. Download previous run state - file step2_download_previous_state.py
     - Inputs:
         - the name of the S3 bucket used for state persistence
         - the name of the S3 subfolder where state is stored
@@ -159,7 +165,30 @@ Main operations & side effects, and Outputs:
     - Main operations & side effects:
         - stored state is downloaded into the local temporary work folder
     - Outputs: none (besides exit code and progress, success, and error messages)
-3. Download logstash documents - file step3_download_logstash_documents.py
+3. Retrieve number of "problem" logstash documents per hour - file step3_retrieve_hourly_problem_numbers.py
+    - Inputs:
+        - the number of hours to go back in time from "now" to retrieve the amount of "problem" messages for
+        - the HTTP base URL of an Elasticsearch server
+        - the path to a JSON file that holds the Lucene query definition that defines how to find "problem-related"
+          logstash messages
+        - the file path to use for storing the hourly number of "problem" messages retrieved
+    - Main operations & side effects:
+        - for every 60-minute timeframe that goes back in time from "now" to "now minus 60 minutes" etc., use the Lucene
+          query and the Elasticsearch server base url to determine how many logstash messages that match the Lucene
+          query for the given timeframe exist on the server; write these numbers into an appropriately formatted JSON
+          for use in step 4
+    - Outputs: none (besides exit code and progress, success, and error messages)
+4. Generate trend bar chart for the number of "problem" logstash documents per hour - file step4_generate_trend_chart.py
+    - Inputs:
+        - the path to a JSON file that holds the hourly number of "problem" messages
+        - the file path to use for storing the generated trend bar chart
+    - Main operations & side effects:
+        - generate a bar graph in PNG format that has, on its x-axis, one bar for each "number of 'problem' messages"
+          entry from the input file, properly going into the positive y-axis direction according to its number of
+          "problem" messages; the bars go from the oldest entry (left-most) to the "now" entry (right-most); the general
+          look&feel of the chart must match the email report generated in step 9
+    - Outputs: none (besides exit code and progress, success, and error messages)
+5. Download logstash documents - file step5_download_logstash_documents.py
     - Inputs:
         - the date and time from which to start downloading messages
         - the HTTP base URL of an Elasticsearch server
@@ -173,7 +202,7 @@ Main operations & side effects, and Outputs:
         - the date and time of this download is stored into a new file at the provided date and time file path
         - pagination and streaming techniques must be used to handle potentially millions of documents
     - Outputs: none (besides exit code and progress, success, and error messages)
-4. Extract relevant fields from the logstash documents - file step4_extract_fields.py
+6. Extract relevant fields from the logstash documents - file step6_extract_fields.py
     - Inputs:
         - the path to a logstash message documents JSON file
         - the file path to use for storing the extracted fields
@@ -181,7 +210,7 @@ Main operations & side effects, and Outputs:
         - from each logstash document in the provided file, the Elasticsearch index name, the Elasticsearch document id,
           and the logstash message field is extracted and written into a single like of the target file
     - Outputs: none (besides exit code and progress, success, and error messages)
-5. Normalize messages - file step5_normalize_messages.py
+7. Normalize messages - file step7_normalize_messages.py
     - Inputs:
         - the path to a extracted logstash fields file
         - the local file path to use for storing the normalization results
@@ -192,7 +221,7 @@ Main operations & side effects, and Outputs:
           represent examples of messages matching this normalized message
         - The normalization approach should follow the patterns established in the proof-of-concept implementation
     - Outputs: none (besides exit code and progress, success, and error messages)
-6. Generate normalization results comparison - file step6_compare_normalizations.py
+8. Generate normalization results comparison - file step8_compare_normalizations.py
     - Inputs:
         - the path to a normalization results file (with the "new" normalization results)
         - the path to a normalization results file (with the "previous" normalization results)
@@ -211,7 +240,7 @@ Main operations & side effects, and Outputs:
               result (for new and disappeared normalized message) or descending by the amount of percentual change (for
               increased and decreased normalization results)
     - Outputs: none (besides exit code and progress, success, and error messages)
-7. Generate report email HTML body - file step7_generate_email_bodies.py
+9. Generate report email HTML body - file step9_generate_email_bodies.py
     - Inputs:
         - the path to a normalized messages comparison results file
         - the path to a normalization results file
@@ -232,7 +261,7 @@ Main operations & side effects, and Outputs:
         - The email design should be compatible with a wide range of email clients
         - Both HTML and plaintext versions of the email must be created
     - Outputs: none (besides exit code and progress, success, and error messages)
-8. Send email report - step8_send_email_report.py
+10. Send email report - step10_send_email_report.py
     - Inputs:
         - the path to an HTML version of the email message body
         - the path to a plaintext version of the resulting email message body
@@ -246,7 +275,7 @@ Main operations & side effects, and Outputs:
     - Main operations & side effects:
         - sends off the email based on the inputs
     - Outputs: none (besides exit code and progress, success, and error messages)
-9. Store new run state - step9_store_new_state.py
+11. Store new run state - step11_store_new_state.py
     - Inputs:
         - the name of the S3 bucket used for state persistence
         - the name of the S3 subfolder where state is stored
@@ -255,7 +284,7 @@ Main operations & side effects, and Outputs:
     - Main operations & side effects:
         - local state is uploaded to the remote S3 location
     - Outputs: none (besides exit code and progress, success, and error messages)
-10. Clean up work environment - step10_cleanup.py
+12. Clean up work environment - step12_cleanup.py
     - Inputs:
         - the path to a local folder
     - Main operations & side effects:
@@ -291,8 +320,8 @@ files are of course located within the temporary work folder created in step 1).
 The resulting Python and Bash code must be clean, well documented, with concise and comprehensible naming.
 
 Parameters for scripts that take more than one parameter must always be name-based, not position-based, (that is,
-`step5_normalize_messages.py --logstash-fields-file=foo.txt --results-file=bar.txt`, not
-`step5_normalize_messages.py foo.txt bar.txt`).
+`step7_normalize_messages.py --logstash-fields-file=foo.txt --results-file=bar.txt`, not
+`step7_normalize_messages.py foo.txt bar.txt`).
 
 
 ## Code quality requirements and practices
