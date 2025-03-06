@@ -455,7 +455,7 @@ class TestStep9GenerateEmailBodies:
         html_content = _generate_html_content(data, templates, kibana_url)
 
         assert "Platform Problem Monitoring Report" in html_content
-        assert "NEW PROBLEM PATTERNS" in html_content
+        assert "new problem patterns" in html_content
         assert sample_pattern["pattern"] in html_content
 
     def test_generate_text_content(self, sample_pattern: Dict[str, Any]) -> None:
@@ -513,10 +513,10 @@ class TestStep9GenerateEmailBodies:
             with html_output.open("r") as f:
                 html_content = f.read()
                 assert "Platform Problem Monitoring Report" in html_content
-                assert "NEW PROBLEM PATTERNS" in html_content
-                assert "INCREASED PROBLEM PATTERNS" in html_content
-                assert "DECREASED PROBLEM PATTERNS" in html_content
-                assert "DISAPPEARED PROBLEM PATTERNS" in html_content
+                assert "new problem patterns" in html_content
+                assert "increased problem patterns" in html_content
+                assert "decreased problem patterns" in html_content
+                assert "disappeared problem patterns" in html_content
                 assert "View in Kibana" in html_content
                 assert kibana_url in html_content
 
