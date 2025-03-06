@@ -393,29 +393,31 @@ def generate_sample_links_html(
             doc_id = doc_ref.get("id", "") if isinstance(doc_ref, dict) else ""
 
         if index and doc_id:
+            # Truncate very long IDs for URL length safety
+            if len(doc_id) > 100:
+                doc_id = doc_id[:100]
+
             # Create a deep link to Kibana
             if kibana_deeplink_structure:
                 # Use the new configurable deeplink structure
                 kibana_link = kibana_deeplink_structure.replace("{{index}}", index).replace("{{id}}", doc_id)
             elif kibana_url:
-                # Fallback to the old method for backward compatibility
-                kibana_link = f"{kibana_url}/app/discover#/doc/logstash-*/{index}?id={doc_id}"
+                # Fall back to old style if no deeplink structure but kibana_url is provided
+                kibana_link = f"{kibana_url}/app/discover#/doc/{index}/{doc_id}?_g=()"
             else:
+                # No valid link can be created
                 continue
 
-            # Add comma if not the last item
-            comma = ", " if j < len(pattern["sample_doc_references"][:5]) else ""
-
+            # Add the link to the list
             link_html = sample_link_item_template.replace("{{KIBANA_LINK}}", kibana_link)
             link_html = link_html.replace("{{INDEX}}", str(j))
-            link_html = link_html.replace("{{COMMA}}", comma)
-
+            link_html = link_html.replace(
+                "{{COMMA}}", ", " if j < min(5, len(pattern["sample_doc_references"])) else ""
+            )
             sample_links_list += link_html
 
     if sample_links_list:
-        result = sample_links_template.replace("{{SAMPLE_LINKS_LIST}}", sample_links_list)
-        return result
-
+        return sample_links_template.replace("{{SAMPLE_LINKS_LIST}}", sample_links_list)
     return ""
 
 
@@ -450,6 +452,10 @@ def generate_pattern_list_html(
         count = pattern.get("count", 0)
         pattern_text = pattern.get("pattern", "")
 
+        # Ensure pattern text doesn't have excessively long lines
+        # This helps prevent SMTP line length issues and improves rendering
+        pattern_text = _safe_html_encode(pattern_text)
+
         # Create a unique ID for each pattern
         pattern_id = f"pattern-{i}"
 
@@ -469,17 +475,44 @@ def generate_pattern_list_html(
     return light_html, light_html
 
 
+def _safe_html_encode(text: str) -> str:
+    """
+    Safely encode text for HTML, adding word breaks for very long words.
+
+    Args:
+        text: Text to encode
+
+    Returns:
+        HTML-safe text with word breaks for long content
+    """
+    # Replace HTML entities
+    text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+    # Split very long words with zero-width spaces to allow breaking in HTML
+    words = text.split()
+    for i, word in enumerate(words):
+        # If word is longer than 80 chars, add zero-width spaces every 80 chars
+        if len(word) > 80:
+            # Insert zero-width space (&#8203;) every 80 chars
+            chars = list(word)
+            for j in range(80, len(chars), 80):
+                chars.insert(j, "&#8203;")
+            words[i] = "".join(chars)
+
+    return " ".join(words)
+
+
 def generate_increased_pattern_list_html(
     patterns: List[Dict[str, Any]],
     kibana_url: Optional[str] = None,
     kibana_deeplink_structure: Optional[str] = None,
 ) -> Tuple[str, str]:
     """
-    Generate HTML for a list of increased patterns.
+    Generate HTML for a list of patterns that have increased in occurrence.
 
     Args:
         patterns: List of patterns to display
-        kibana_url: Optional Kibana base URL for deep links
+        kibana_url: Optional Kibana base URL for deep links (used for backward compatibility)
         kibana_deeplink_structure: Optional URL structure for Kibana document deeplinks
 
     Returns:
@@ -492,19 +525,21 @@ def generate_increased_pattern_list_html(
         return light_html, light_html
 
     templates = load_html_template()
-    pattern_item_template = templates.get("increased-pattern-item-template", "")
+    increased_pattern_item_template = templates.get("increased-pattern-item-template", "")
 
     light_html = "<div class='space-y-6'>"
 
     for i, pattern in enumerate(patterns, 1):
         current_count = pattern.get("current_count", 0)
+        previous_count = pattern.get("previous_count", 0)
         pattern_text = pattern.get("pattern", "")
-        absolute_change = current_count - pattern.get("previous_count", 0)
-        percent_change = (
-            round((absolute_change / pattern.get("previous_count", 1)) * 100, 1)
-            if pattern.get("previous_count", 1) > 0
-            else 0
-        )
+
+        # Ensure pattern text doesn't have excessively long lines
+        pattern_text = _safe_html_encode(pattern_text)
+
+        # Calculate absolute and percentage change
+        absolute_change = current_count - previous_count
+        percent_change = round((absolute_change / previous_count) * 100) if previous_count > 0 else 0
 
         # Create a unique ID for each pattern
         pattern_id = f"increased-pattern-{i}"
@@ -513,7 +548,7 @@ def generate_increased_pattern_list_html(
         sample_links = generate_sample_links_html(pattern, kibana_url, kibana_deeplink_structure, dark_mode=False)
 
         # Replace placeholders in the template
-        pattern_html = pattern_item_template.replace("{{INDEX}}", str(i))
+        pattern_html = increased_pattern_item_template.replace("{{INDEX}}", str(i))
         pattern_html = pattern_html.replace("{{CURRENT_COUNT}}", str(current_count))
         pattern_html = pattern_html.replace("{{ABSOLUTE_CHANGE}}", str(absolute_change))
         pattern_html = pattern_html.replace("{{PERCENT_CHANGE}}", str(percent_change))
@@ -533,11 +568,11 @@ def generate_decreased_pattern_list_html(
     kibana_deeplink_structure: Optional[str] = None,
 ) -> Tuple[str, str]:
     """
-    Generate HTML for a list of decreased patterns.
+    Generate HTML for a list of patterns that have decreased in occurrence.
 
     Args:
         patterns: List of patterns to display
-        kibana_url: Optional Kibana base URL for deep links
+        kibana_url: Optional Kibana base URL for deep links (used for backward compatibility)
         kibana_deeplink_structure: Optional URL structure for Kibana document deeplinks
 
     Returns:
@@ -550,19 +585,21 @@ def generate_decreased_pattern_list_html(
         return light_html, light_html
 
     templates = load_html_template()
-    pattern_item_template = templates.get("decreased-pattern-item-template", "")
+    decreased_pattern_item_template = templates.get("decreased-pattern-item-template", "")
 
     light_html = "<div class='space-y-6'>"
 
     for i, pattern in enumerate(patterns, 1):
         current_count = pattern.get("current_count", 0)
+        previous_count = pattern.get("previous_count", 0)
         pattern_text = pattern.get("pattern", "")
-        absolute_change = pattern.get("previous_count", 0) - current_count
-        percent_change = (
-            round((absolute_change / pattern.get("previous_count", 1)) * 100, 1)
-            if pattern.get("previous_count", 1) > 0
-            else 0
-        )
+
+        # Ensure pattern text doesn't have excessively long lines
+        pattern_text = _safe_html_encode(pattern_text)
+
+        # Calculate absolute and percentage change
+        absolute_change = previous_count - current_count
+        percent_change = round((absolute_change / previous_count) * 100) if previous_count > 0 else 0
 
         # Create a unique ID for each pattern
         pattern_id = f"decreased-pattern-{i}"
@@ -571,7 +608,7 @@ def generate_decreased_pattern_list_html(
         sample_links = generate_sample_links_html(pattern, kibana_url, kibana_deeplink_structure, dark_mode=False)
 
         # Replace placeholders in the template
-        pattern_html = pattern_item_template.replace("{{INDEX}}", str(i))
+        pattern_html = decreased_pattern_item_template.replace("{{INDEX}}", str(i))
         pattern_html = pattern_html.replace("{{CURRENT_COUNT}}", str(current_count))
         pattern_html = pattern_html.replace("{{ABSOLUTE_CHANGE}}", str(absolute_change))
         pattern_html = pattern_html.replace("{{PERCENT_CHANGE}}", str(percent_change))
