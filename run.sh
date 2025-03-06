@@ -116,7 +116,7 @@ echo "Step 3: Retrieving hourly problem numbers..."
 python -m platform_problem_monitoring_core.step3_retrieve_hourly_problem_numbers \
     --elasticsearch-url "$ELASTICSEARCH_SERVER_BASE_URL" \
     --query-file "$ELASTICSEARCH_LUCENE_QUERY_FILE_PATH" \
-    --hours-back 24 \
+    --hours-back "${TREND_HOURS_BACK:-24}" \
     --output-file "$HOURLY_DATA_FILE"
 if [ $? -ne 0 ]; then
     echo "Error: Failed to retrieve hourly problem numbers"
@@ -191,6 +191,7 @@ python -m platform_problem_monitoring_core.step9_generate_email_bodies \
     --html-output "$HTML_EMAIL_BODY_FILE" \
     --text-output "$TEXT_EMAIL_BODY_FILE" \
     --trend-chart-file "$TREND_CHART_FILE" \
+    --hours-back "${TREND_HOURS_BACK:-24}" \
     ${KIBANA_DISCOVER_BASE_URL:+--kibana-url "$KIBANA_DISCOVER_BASE_URL"} \
     ${KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE:+--kibana-deeplink-structure "$KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE"} \
     ${ELASTICSEARCH_LUCENE_QUERY_FILE_PATH:+--elasticsearch-query-file "$ELASTICSEARCH_LUCENE_QUERY_FILE_PATH"} \

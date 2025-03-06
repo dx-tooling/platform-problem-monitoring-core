@@ -1088,6 +1088,7 @@ def generate_email_bodies(
     html_output: str,
     text_output: str,
     trend_chart_file: Optional[str] = None,
+    trend_hours_back: int = 24,
     kibana_url: Optional[str] = None,
     kibana_deeplink_structure: Optional[str] = None,
     elasticsearch_query_file: Optional[str] = None,
@@ -1102,6 +1103,7 @@ def generate_email_bodies(
         html_output: Path to store the HTML email body
         text_output: Path to store the plaintext email body
         trend_chart_file: Path to the trend chart image file (optional)
+        trend_hours_back: Number of hours to look back for problem trends (default: 24)
         kibana_url: Kibana base URL for the "View in Kibana" button (optional)
         kibana_deeplink_structure: URL structure for individual Kibana document deeplinks (optional)
         elasticsearch_query_file: Path to the Elasticsearch Lucene query file (optional)
@@ -1112,6 +1114,7 @@ def generate_email_bodies(
     logger.info(f"Normalization results file: {norm_results_file}")
     logger.info(f"HTML output: {html_output}")
     logger.info(f"Text output: {text_output}")
+    logger.info(f"Hours back: {trend_hours_back}")
     if trend_chart_file:
         logger.info(f"Trend chart file: {trend_chart_file}")
     if kibana_url:
@@ -1142,6 +1145,9 @@ def generate_email_bodies(
 
     # Generate HTML and text content
     html = _generate_html_content(data, templates, kibana_url, kibana_deeplink_structure, enhanced_kibana_url)
+
+    # Replace hours back placeholder
+    html = html.replace("{{TREND_HOURS_BACK}}", str(trend_hours_back))
 
     # Embed trend chart if available
     if trend_chart_file and Path(trend_chart_file).exists():
@@ -1176,6 +1182,7 @@ def main() -> None:
     parser.add_argument("--html-output", required=True, help="Path to store the HTML email body")
     parser.add_argument("--text-output", required=True, help="Path to store the plaintext email body")
     parser.add_argument("--trend-chart-file", help="Path to the trend chart image file")
+    parser.add_argument("--hours-back", type=int, default=24, help="Number of hours to look back for problem trends")
     parser.add_argument("--kibana-url", help="Kibana base URL for the 'View in Kibana' button")
     parser.add_argument(
         "--kibana-deeplink-structure",
@@ -1193,6 +1200,7 @@ def main() -> None:
             args.html_output,
             args.text_output,
             args.trend_chart_file,
+            args.hours_back,
             args.kibana_url,
             args.kibana_deeplink_structure,
             args.elasticsearch_query_file,

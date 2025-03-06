@@ -13,3 +13,6 @@ SMTP_SERVER_USERNAME=""
 SMTP_SERVER_PASSWORD=""
 SMTP_SENDER_ADDRESS=""
 SMTP_RECEIVER_ADDRESS=""
+
+# Number of hours to look back for problem trends
+TREND_HOURS_BACK="24"
