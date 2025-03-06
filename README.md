@@ -20,8 +20,6 @@ Platform Problem Monitoring Core helps platform engineers and system administrat
 - **Tracking changes over time** — Compares current issues with previous runs to show what's new, increasing, or decreasing
 - **Delivering digestible reports** — Sends clear, well-formatted email reports with Kibana links to examples
 
-![Example of email report - illustration only](docs/images/report-example.png)
-
 ## Is This Tool Right For You?
 
 This tool is ideal if:
@@ -33,7 +31,7 @@ This tool is ideal if:
 
 ## Prerequisites
 
-- **Python 3.8+** installed on the host system
+- **Python 3.9+** installed on the host system
 - **Network access** to:
   - Your Elasticsearch server
   - An AWS S3 bucket (for state storage between runs)

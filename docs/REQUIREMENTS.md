@@ -334,7 +334,7 @@ following quality assurance practices and tools must be employed:
 
 - All code must pass automated quality checks before being committed to the repository
 - A pre-commit hook system must be in place to automatically check code before commits
-- Continuous Integration (CI) must run quality checks on multiple Python versions (3.8-3.13)
+- Continuous Integration (CI) must run quality checks on multiple Python versions (3.9-3.13)
 - A comprehensive Makefile must be provided to streamline development tasks
 
 

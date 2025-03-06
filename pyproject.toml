@@ -10,7 +10,7 @@ authors = [
     {name = "Platform Team"}
 ]
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = {text = "Proprietary"}
 dependencies = [
     "boto3>=1.28.0",
@@ -44,7 +44,7 @@ package-dir = {"" = "src"}
 
 [tool.black]
 line-length = 120
-target-version = ['py39']
+target-version = ["py39", "py310", "py311", "py312", "py313"]
 
 [tool.mypy]
 python_version = "3.9"
@@ -105,7 +105,7 @@ exclude_lines = [
 [tool.ruff]
 # General configuration
 line-length = 120
-target-version = "py38"
+target-version = "py39"
 
 [tool.ruff.lint]
 # Enable pycodestyle (E), Pyflakes (F), McCabe complexity (C90), isort (I),
