@@ -540,7 +540,7 @@ def generate_increased_pattern_list_html(
 
         # Calculate absolute and percentage change
         absolute_change = current_count - previous_count
-        percent_change = round((absolute_change / previous_count) * 100) if previous_count > 0 else 0
+        percent_change = round((absolute_change / previous_count) * 100, 1) if previous_count > 0 else 0
 
         # Create a unique ID for each pattern
         pattern_id = f"increased-pattern-{i}"
@@ -600,7 +600,7 @@ def generate_decreased_pattern_list_html(
 
         # Calculate absolute and percentage change
         absolute_change = previous_count - current_count
-        percent_change = round((absolute_change / previous_count) * 100) if previous_count > 0 else 0
+        percent_change = round((absolute_change / previous_count) * 100, 1) if previous_count > 0 else 0
 
         # Create a unique ID for each pattern
         pattern_id = f"decreased-pattern-{i}"

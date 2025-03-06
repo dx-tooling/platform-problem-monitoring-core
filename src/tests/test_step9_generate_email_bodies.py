@@ -497,8 +497,10 @@ class TestStep9GenerateEmailBodies:
                 current_normalization_path,
                 str(html_output),
                 str(text_output),
-                kibana_url,
-                24,
+                None,  # trend_chart_file
+                24,  # trend_hours_back
+                kibana_url,  # kibana_url
+                None,  # kibana_deeplink_structure
                 elasticsearch_query_path,
                 start_date_time_path,
             )
