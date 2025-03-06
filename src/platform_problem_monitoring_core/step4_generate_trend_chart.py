@@ -50,16 +50,30 @@ def _format_x_axis_labels(ax: plt.Axes, timestamps: List[datetime]) -> None:
     ax.xaxis.set_major_locator(mdates.HourLocator(interval=2))
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
 
-    # Rotate labels for better readability
-    plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
+    # Rotate labels for better readability but provide more space
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor", fontsize=9)
 
-    # Add date labels directly to the main x-axis
-    ax.set_xticks([timestamps[0], timestamps[-1]])
-    ax.set_xticklabels([t.strftime("%Y-%m-%d %H:%M") for t in [timestamps[0], timestamps[-1]]], fontsize=8)
+    # Add extra space at the bottom to prevent labels from being cut off
+    plt.gcf().subplots_adjust(bottom=0.15)
+
+    # Add date labels directly to the main x-axis with more padding
+    # Place them at the beginning, middle and end for better orientation
+    if len(timestamps) >= 3:
+        middle_idx = len(timestamps) // 2
+        ax.set_xticks([timestamps[0], timestamps[middle_idx], timestamps[-1]])
+        ax.set_xticklabels(
+            [t.strftime("%Y-%m-%d %H:%M") for t in [timestamps[0], timestamps[middle_idx], timestamps[-1]]], fontsize=8
+        )
+    else:
+        ax.set_xticks([timestamps[0], timestamps[-1]])
+        ax.set_xticklabels([t.strftime("%Y-%m-%d %H:%M") for t in [timestamps[0], timestamps[-1]]], fontsize=8)
 
     # Remove all spines from the axis
     for spine in ax.spines.values():
         spine.set_visible(False)
+
+    # Add a bit more padding at the bottom
+    ax.tick_params(axis="x", which="major", pad=8)
 
 
 def generate_trend_chart(hourly_data_file: str, output_image_file: str) -> None:
@@ -83,15 +97,24 @@ def generate_trend_chart(hourly_data_file: str, output_image_file: str) -> None:
         sns.set_style("whitegrid")
         sns.set_context("notebook", font_scale=1.1)
 
-        # Create the figure and axis
-        fig, ax = plt.subplots(figsize=(10, 4))
+        # Create the figure and axis with white background - slightly larger size for more padding
+        fig, ax = plt.subplots(figsize=(11, 5))
+        fig.patch.set_facecolor("white")  # White background for the figure
+        ax.patch.set_facecolor("white")  # White background for the axis
+
+        # Add padding around the plot area
+        plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.15)
 
         # Plot the bars
         bars = ax.bar(timestamps, counts, width=0.02, color=sns.color_palette("deep")[0], alpha=0.7)
 
         # Customize the plot
         ax.set_title(" ", pad=20, fontsize=12, fontweight="bold")
-        ax.set_ylabel("Number of Problems", fontsize=10)
+        ax.set_ylabel("Number of Problems", fontsize=10, labelpad=10)  # Add padding to y-label
+
+        # Add more space at the bottom and top of the y-axis
+        y_min, y_max = ax.get_ylim()
+        ax.set_ylim(0, y_max * 1.15)  # Add 15% more space at the top
 
         # Only show horizontal grid lines
         ax.grid(True, axis="y", linestyle="--", alpha=0.7)
@@ -100,16 +123,25 @@ def generate_trend_chart(hourly_data_file: str, output_image_file: str) -> None:
         # Format x-axis
         _format_x_axis_labels(ax, timestamps)
 
-        # Add value labels on top of bars
+        # Add value labels on top of bars with more space
         for bar in bars:
             height = bar.get_height()
-            ax.text(bar.get_x() + bar.get_width() / 2.0, height, f"{int(height)}", ha="center", va="bottom", fontsize=8)
+            ax.text(
+                bar.get_x() + bar.get_width() / 2.0,
+                height + (y_max * 0.02),
+                f"{int(height)}",
+                ha="center",
+                va="bottom",
+                fontsize=9,
+            )
 
-        # Adjust layout to prevent label cutoff
-        plt.tight_layout()
+        # Use tight_layout with padding parameter for more breathing space
+        plt.tight_layout(pad=1.5)
 
-        # Save the chart
-        plt.savefig(output_image_file, dpi=300, bbox_inches="tight")
+        # Save the chart with a white background
+        plt.savefig(
+            output_image_file, dpi=300, bbox_inches="tight", facecolor="white", pad_inches=0.25
+        )  # Add extra padding around the entire figure
         logger.info(f"Chart saved to {output_image_file}")
 
         # Close the figure to free memory
