@@ -181,20 +181,6 @@ To run the tool periodically, set up a cron job:
 
 ## Advanced Configuration
 
-### Customizing Email Reports
-
-You can customize the appearance of email reports by modifying the HTML template:
-
-```bash
-cp src/platform_problem_monitoring_core/templates/email_template.html.dist my_custom_template.html
-```
-
-Then update your configuration to use the custom template:
-
-```
-EMAIL_HTML_TEMPLATE_PATH="/path/to/my_custom_template.html"
-```
-
 ### Configuring AWS Credentials
 
 The tool uses boto3's default credential resolution. You can:
