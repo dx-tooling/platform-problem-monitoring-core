@@ -30,7 +30,9 @@ Main sections:
 
     /* Dark mode support for email clients that support it */
     @media (prefers-color-scheme: dark) {
-        body, html {
+
+        body,
+        html {
             background-color: #111827 !important;
             color: #f7fafc !important;
         }
@@ -66,6 +68,8 @@ Main sections:
             background-color: #2d3748 !important;
             border-color: #4a5568 !important;
             color: #e2e8f0 !important;
+            max-width: 100% !important;
+            overflow-wrap: break-word !important;
         }
 
         .badge {
@@ -414,6 +418,15 @@ Main sections:
 
     .pattern-text {
         flex: 1;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        -ms-word-break: break-all;
+        word-break: break-all;
+        word-break: break-word;
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
     }
 
     pre {
@@ -427,6 +440,7 @@ Main sections:
         font-size: 13px;
         white-space: pre-wrap;
         word-break: break-word;
+        max-width: 100%;
     }
 
     .sample-links {
@@ -470,287 +484,316 @@ Main sections:
         align-items: flex-start;
     }
 
-    .space-y-6 > * + * {
+    .space-y-6>*+* {
         margin-top: 24px;
     }
 </style>
 
 <!-- Main Document Template -->
 <template id="document-template">
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="light dark">
-    <title>Platform Problem Monitoring Report</title>
-    {{CSS_STYLES}}
-    <style>
-        /* Force dark mode for testing */
-        @media (prefers-color-scheme: dark) {
-            .dark-mode {
-                display: block !important;
-            }
-            .light-mode {
-                display: none !important;
-            }
-        }
+    <!DOCTYPE html>
+    <html>
 
-        @media (prefers-color-scheme: light) {
-            .dark-mode {
-                display: none !important;
-            }
-            .light-mode {
-                display: block !important;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Light Mode Version -->
-    <div class="light-mode">
-        <div class="container">
-            <div class="card">
-                <h1>Platform Problem Monitoring Report</h1>
-                <p class="text-sm">Report generated at: {{TIMESTAMP}}</p>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="color-scheme" content="light dark">
+        <title>Platform Problem Monitoring Report</title>
+        {{CSS_STYLES}}
+        <style>
+            /* Force dark mode for testing */
+            @media (prefers-color-scheme: dark) {
+                .dark-mode {
+                    display: block !important;
+                }
 
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value">{{CURRENT_PATTERNS_COUNT}}</div>
-                        <div class="stat-label">Current Patterns</div>
+                .light-mode {
+                    display: none !important;
+                }
+            }
+
+            @media (prefers-color-scheme: light) {
+                .dark-mode {
+                    display: none !important;
+                }
+
+                .light-mode {
+                    display: block !important;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <!-- Light Mode Version -->
+        <div class="light-mode">
+            <div class="container">
+                <div class="card">
+                    <h1>Platform Problem Monitoring Report</h1>
+                    <p class="text-sm">Report generated at: {{TIMESTAMP}}</p>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">{{CURRENT_PATTERNS_COUNT}}</div>
+                            <div class="stat-label">Current Patterns</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">{{PREVIOUS_PATTERNS_COUNT}}</div>
+                            <div class="stat-label">Previous Patterns</div>
+                        </div>
+                        <div class="stat-card new-problems">
+                            <div class="stat-value new-problems">{{NEW_PATTERNS_COUNT}}</div>
+                            <div class="stat-label">New Patterns</div>
+                        </div>
+                        <div class="stat-card disappeared-problems">
+                            <div class="stat-value disappeared-problems">{{DISAPPEARED_PATTERNS_COUNT}}</div>
+                            <div class="stat-label">Disappeared</div>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-value">{{PREVIOUS_PATTERNS_COUNT}}</div>
-                        <div class="stat-label">Previous Patterns</div>
-                    </div>
-                    <div class="stat-card new-problems">
-                        <div class="stat-value new-problems">{{NEW_PATTERNS_COUNT}}</div>
-                        <div class="stat-label">New Patterns</div>
-                    </div>
-                    <div class="stat-card disappeared-problems">
-                        <div class="stat-value disappeared-problems">{{DISAPPEARED_PATTERNS_COUNT}}</div>
-                        <div class="stat-label">Disappeared</div>
-                    </div>
+
+                    {{KIBANA_BUTTON}}
                 </div>
 
-                {{KIBANA_BUTTON}}
-            </div>
+                <div class="card">
+                    <h2>SUMMARY OF CHANGES IN PROBLEM PATTERNS</h2>
+                    <p class="text-sm text-gray-500">Generated on {{TIMESTAMP}}</p>
 
-            <div class="card">
-                <h2>SUMMARY OF CHANGES IN PROBLEM PATTERNS</h2>
-                <p class="text-sm text-gray-500">Generated on {{TIMESTAMP}}</p>
+                    <h3 class="section-title new-problems">TOP 10 NEW PROBLEM PATTERNS</h3>
+                    <p class="text-sm text-gray-500">These patterns appeared in the new summary but were not present in
+                        the previous one.</p>
+                    {{NEW_PATTERNS_LIST}}
 
-                <h3 class="section-title new-problems">TOP 10 NEW PROBLEM PATTERNS</h3>
-                <p class="text-sm text-gray-500">These patterns appeared in the new summary but were not present in the previous one.</p>
-                {{NEW_PATTERNS_LIST}}
+                    <h3 class="section-title increased-problems">TOP 10 INCREASED PROBLEM PATTERNS</h3>
+                    <p class="text-sm text-gray-500">These patterns have increased in occurrence count since the last
+                        report.</p>
+                    {{INCREASED_PATTERNS_LIST}}
 
-                <h3 class="section-title increased-problems">TOP 10 INCREASED PROBLEM PATTERNS</h3>
-                <p class="text-sm text-gray-500">These patterns have increased in occurrence count since the last report.</p>
-                {{INCREASED_PATTERNS_LIST}}
+                    <h3 class="section-title decreased-problems">TOP 10 DECREASED PROBLEM PATTERNS</h3>
+                    <p class="text-sm text-gray-500">These patterns have decreased in occurrence count since the last
+                        report.</p>
+                    {{DECREASED_PATTERNS_LIST}}
 
-                <h3 class="section-title decreased-problems">TOP 10 DECREASED PROBLEM PATTERNS</h3>
-                <p class="text-sm text-gray-500">These patterns have decreased in occurrence count since the last report.</p>
-                {{DECREASED_PATTERNS_LIST}}
+                    <h3 class="section-title disappeared-problems">TOP 10 DISAPPEARED PROBLEM PATTERNS</h3>
+                    <p class="text-sm text-gray-500">These patterns were present in the previous summary but are not in
+                        the current one.</p>
+                    {{DISAPPEARED_PATTERNS_LIST}}
+                </div>
 
-                <h3 class="section-title disappeared-problems">TOP 10 DISAPPEARED PROBLEM PATTERNS</h3>
-                <p class="text-sm text-gray-500">These patterns were present in the previous summary but are not in the current one.</p>
-                {{DISAPPEARED_PATTERNS_LIST}}
-            </div>
+                <div class="card">
+                    <h2>TOP 25 CURRENT PROBLEM PATTERNS</h2>
+                    <p class="text-sm text-gray-500">The most frequent problem patterns in the current report.</p>
+                    {{TOP_PATTERNS_LIST}}
+                </div>
 
-            <div class="card">
-                <h2>TOP 25 CURRENT PROBLEM PATTERNS</h2>
-                <p class="text-sm text-gray-500">The most frequent problem patterns in the current report.</p>
-                {{TOP_PATTERNS_LIST}}
-            </div>
-
-            <div style="text-align: center; margin-top: 20px; color: #718096; font-size: 12px;">
-                <p>This is an automated report from the Platform Problem Monitoring system.</p>
+                <div style="text-align: center; margin-top: 20px; color: #718096; font-size: 12px;">
+                    <p>This is an automated report from the Platform Problem Monitoring system.</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Dark Mode Version -->
-    <div class="dark-mode" style="display: none; background-color: #111827; color: #f7fafc;">
-        <div class="container" style="background-color: #111827; max-width: 800px; margin: 0 auto;">
-            <div class="card" style="background-color: #1f2937; border-radius: 8px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3); padding: 24px; margin-bottom: 24px; border: 1px solid #374151;">
-                <h1 style="font-size: 24px; font-weight: 700; margin-top: 0; margin-bottom: 16px; color: #90cdf4;">Platform Problem Monitoring Report</h1>
-                <p class="text-sm" style="font-size: 14px; color: #e2e8f0;">Report generated at: {{TIMESTAMP}}</p>
+        <!-- Dark Mode Version -->
+        <div class="dark-mode" style="display: none; background-color: #111827; color: #f7fafc;">
+            <div class="container" style="background-color: #111827; max-width: 800px; margin: 0 auto;">
+                <div class="card"
+                    style="background-color: #1f2937; border-radius: 8px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3); padding: 24px; margin-bottom: 24px; border: 1px solid #374151;">
+                    <h1 style="font-size: 24px; font-weight: 700; margin-top: 0; margin-bottom: 16px; color: #90cdf4;">
+                        Platform Problem Monitoring Report</h1>
+                    <p class="text-sm" style="font-size: 14px; color: #e2e8f0;">Report generated at: {{TIMESTAMP}}</p>
 
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value">{{CURRENT_PATTERNS_COUNT}}</div>
-                        <div class="stat-label">Current Patterns</div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">{{CURRENT_PATTERNS_COUNT}}</div>
+                            <div class="stat-label">Current Patterns</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">{{PREVIOUS_PATTERNS_COUNT}}</div>
+                            <div class="stat-label">Previous Patterns</div>
+                        </div>
+                        <div class="stat-card new-problems">
+                            <div class="stat-value new-problems">{{NEW_PATTERNS_COUNT}}</div>
+                            <div class="stat-label">New Patterns</div>
+                        </div>
+                        <div class="stat-card disappeared-problems">
+                            <div class="stat-value disappeared-problems">{{DISAPPEARED_PATTERNS_COUNT}}</div>
+                            <div class="stat-label">Disappeared</div>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-value">{{PREVIOUS_PATTERNS_COUNT}}</div>
-                        <div class="stat-label">Previous Patterns</div>
-                    </div>
-                    <div class="stat-card new-problems">
-                        <div class="stat-value new-problems">{{NEW_PATTERNS_COUNT}}</div>
-                        <div class="stat-label">New Patterns</div>
-                    </div>
-                    <div class="stat-card disappeared-problems">
-                        <div class="stat-value disappeared-problems">{{DISAPPEARED_PATTERNS_COUNT}}</div>
-                        <div class="stat-label">Disappeared</div>
+
+                    <div style="text-align: center; margin: 20px 0;">
+                        <a href="{{KIBANA_URL}}" class="button">View in Kibana</a>
                     </div>
                 </div>
 
-                <div style="text-align: center; margin: 20px 0;">
-                    <a href="{{KIBANA_URL}}" class="button">View in Kibana</a>
+                <div class="card"
+                    style="background-color: #1f2937; border-radius: 8px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3); padding: 24px; margin-bottom: 24px; border: 1px solid #374151;">
+                    <h2 style="font-size: 20px; font-weight: 600; margin-top: 0; margin-bottom: 16px; color: #63b3ed;">
+                        SUMMARY OF CHANGES IN PROBLEM PATTERNS</h2>
+                    <p class="text-sm text-gray-500" style="font-size: 14px; color: #a0aec0;">Generated on {{TIMESTAMP}}
+                    </p>
+
+                    <h3 class="section-title"
+                        style="font-size: 18px; font-weight: 600; margin-top: 24px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #4a5568; color: #90cdf4;">
+                        TOP 10 NEW PROBLEM PATTERNS</h3>
+                    <p class="text-sm text-gray-500" style="font-size: 14px; color: #a0aec0;">These patterns appeared in
+                        the new summary but were not present in the previous one.</p>
+                    {{NEW_PATTERNS_LIST_DARK}}
+
+                    <h3 class="section-title"
+                        style="font-size: 18px; font-weight: 600; margin-top: 24px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #4a5568; color: #90cdf4;">
+                        TOP 10 INCREASED PROBLEM PATTERNS</h3>
+                    <p class="text-sm text-gray-500" style="font-size: 14px; color: #a0aec0;">These patterns have
+                        increased in occurrence count since the last report.</p>
+                    {{INCREASED_PATTERNS_LIST_DARK}}
+
+                    <h3 class="section-title"
+                        style="font-size: 18px; font-weight: 600; margin-top: 24px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #4a5568; color: #90cdf4;">
+                        TOP 10 DECREASED PROBLEM PATTERNS</h3>
+                    <p class="text-sm text-gray-500" style="font-size: 14px; color: #a0aec0;">These patterns have
+                        decreased in occurrence count since the last report.</p>
+                    {{DECREASED_PATTERNS_LIST_DARK}}
+
+                    <h3 class="section-title"
+                        style="font-size: 18px; font-weight: 600; margin-top: 24px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #4a5568; color: #90cdf4;">
+                        TOP 10 DISAPPEARED PROBLEM PATTERNS</h3>
+                    <p class="text-sm text-gray-500" style="font-size: 14px; color: #a0aec0;">These patterns were
+                        present in the previous summary but are not in the current one.</p>
+                    {{DISAPPEARED_PATTERNS_LIST_DARK}}
                 </div>
-            </div>
 
-            <div class="card" style="background-color: #1f2937; border-radius: 8px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3); padding: 24px; margin-bottom: 24px; border: 1px solid #374151;">
-                <h2 style="font-size: 20px; font-weight: 600; margin-top: 0; margin-bottom: 16px; color: #63b3ed;">SUMMARY OF CHANGES IN PROBLEM PATTERNS</h2>
-                <p class="text-sm text-gray-500" style="font-size: 14px; color: #a0aec0;">Generated on {{TIMESTAMP}}</p>
+                <div class="card"
+                    style="background-color: #1f2937; border-radius: 8px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3); padding: 24px; margin-bottom: 24px; border: 1px solid #374151;">
+                    <h2 style="font-size: 20px; font-weight: 600; margin-top: 0; margin-bottom: 16px; color: #63b3ed;">
+                        TOP 25 CURRENT PROBLEM PATTERNS</h2>
+                    <p class="text-sm text-gray-500" style="font-size: 14px; color: #a0aec0;">The most frequent problem
+                        patterns in the current report.</p>
+                    {{TOP_PATTERNS_LIST_DARK}}
+                </div>
 
-                <h3 class="section-title" style="font-size: 18px; font-weight: 600; margin-top: 24px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #4a5568; color: #90cdf4;">TOP 10 NEW PROBLEM PATTERNS</h3>
-                <p class="text-sm text-gray-500" style="font-size: 14px; color: #a0aec0;">These patterns appeared in the new summary but were not present in the previous one.</p>
-                {{NEW_PATTERNS_LIST_DARK}}
-
-                <h3 class="section-title" style="font-size: 18px; font-weight: 600; margin-top: 24px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #4a5568; color: #90cdf4;">TOP 10 INCREASED PROBLEM PATTERNS</h3>
-                <p class="text-sm text-gray-500" style="font-size: 14px; color: #a0aec0;">These patterns have increased in occurrence count since the last report.</p>
-                {{INCREASED_PATTERNS_LIST_DARK}}
-
-                <h3 class="section-title" style="font-size: 18px; font-weight: 600; margin-top: 24px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #4a5568; color: #90cdf4;">TOP 10 DECREASED PROBLEM PATTERNS</h3>
-                <p class="text-sm text-gray-500" style="font-size: 14px; color: #a0aec0;">These patterns have decreased in occurrence count since the last report.</p>
-                {{DECREASED_PATTERNS_LIST_DARK}}
-
-                <h3 class="section-title" style="font-size: 18px; font-weight: 600; margin-top: 24px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #4a5568; color: #90cdf4;">TOP 10 DISAPPEARED PROBLEM PATTERNS</h3>
-                <p class="text-sm text-gray-500" style="font-size: 14px; color: #a0aec0;">These patterns were present in the previous summary but are not in the current one.</p>
-                {{DISAPPEARED_PATTERNS_LIST_DARK}}
-            </div>
-
-            <div class="card" style="background-color: #1f2937; border-radius: 8px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3); padding: 24px; margin-bottom: 24px; border: 1px solid #374151;">
-                <h2 style="font-size: 20px; font-weight: 600; margin-top: 0; margin-bottom: 16px; color: #63b3ed;">TOP 25 CURRENT PROBLEM PATTERNS</h2>
-                <p class="text-sm text-gray-500" style="font-size: 14px; color: #a0aec0;">The most frequent problem patterns in the current report.</p>
-                {{TOP_PATTERNS_LIST_DARK}}
-            </div>
-
-            <div style="text-align: center; margin-top: 20px; color: #a0aec0; font-size: 12px;">
-                <p>This is an automated report from the Platform Problem Monitoring system.</p>
+                <div style="text-align: center; margin-top: 20px; color: #a0aec0; font-size: 12px;">
+                    <p>This is an automated report from the Platform Problem Monitoring system.</p>
+                </div>
             </div>
         </div>
-    </div>
-</body>
-</html>
+    </body>
+
+    </html>
 </template>
 
 <!-- Kibana Button Template -->
 <template id="kibana-button-template">
-<div style="text-align: center; margin: 20px 0;">
-    <a href="{{KIBANA_URL}}" class="button">View in Kibana</a>
-</div>
+    <div style="text-align: center; margin: 20px 0;">
+        <a href="{{KIBANA_URL}}" class="button">View in Kibana</a>
+    </div>
 </template>
 
 <!-- Pattern Item Template -->
 <template id="pattern-item-template">
-<div class="pattern-item">
-    <div class="flex items-start">
-        <div class="pattern-number">{{INDEX}}.</div>
-        <div class="pattern-count">{{COUNT}}</div>
-        <div class="pattern-text">
-            <pre id="{{PATTERN_ID}}">{{PATTERN_TEXT}}</pre>
+    <div class="pattern-item">
+        <div class="flex items-start">
+            <div class="pattern-number">{{INDEX}}.</div>
+            <div class="pattern-count">{{COUNT}}</div>
+            <div class="pattern-text">
+                <pre id="{{PATTERN_ID}}">{{PATTERN_TEXT}}</pre>
+            </div>
         </div>
+        {{SAMPLE_LINKS}}
     </div>
-    {{SAMPLE_LINKS}}
-</div>
 </template>
 
 <!-- Pattern Item Template for New Patterns -->
 <template id="new-pattern-item-template">
-<div class="pattern-item new-pattern">
-    <div class="flex items-start">
-        <div class="pattern-number">{{INDEX}}.</div>
-        <div class="pattern-count">{{COUNT}}</div>
-        <div class="pattern-text">
-            <pre id="{{PATTERN_ID}}">{{PATTERN_TEXT}}</pre>
+    <div class="pattern-item new-pattern">
+        <div class="flex items-start">
+            <div class="pattern-number">{{INDEX}}.</div>
+            <div class="pattern-count">{{COUNT}}</div>
+            <div class="pattern-text">
+                <pre id="{{PATTERN_ID}}">{{PATTERN_TEXT}}</pre>
+            </div>
         </div>
+        {{SAMPLE_LINKS}}
     </div>
-    {{SAMPLE_LINKS}}
-</div>
 </template>
 
 <!-- Pattern Item Template for Disappeared Patterns -->
 <template id="disappeared-pattern-item-template">
-<div class="pattern-item disappeared-pattern">
-    <div class="flex items-start">
-        <div class="pattern-number">{{INDEX}}.</div>
-        <div class="pattern-count">{{COUNT}}</div>
-        <div class="pattern-text">
-            <pre id="{{PATTERN_ID}}">{{PATTERN_TEXT}}</pre>
+    <div class="pattern-item disappeared-pattern">
+        <div class="flex items-start">
+            <div class="pattern-number">{{INDEX}}.</div>
+            <div class="pattern-count">{{COUNT}}</div>
+            <div class="pattern-text">
+                <pre id="{{PATTERN_ID}}">{{PATTERN_TEXT}}</pre>
+            </div>
         </div>
+        {{SAMPLE_LINKS}}
     </div>
-    {{SAMPLE_LINKS}}
-</div>
 </template>
 
 <!-- Increased Pattern Item Template -->
 <template id="increased-pattern-item-template">
-<div class="pattern-item increased-pattern">
-    <div class="flex items-start">
-        <div class="pattern-number">{{INDEX}}.</div>
-        <div class="pattern-count increased">
-            {{CURRENT_COUNT}}
-            <span class="change-indicator">
-                (+{{ABSOLUTE_CHANGE}}, +{{PERCENT_CHANGE}}%)
-            </span>
+    <div class="pattern-item increased-pattern">
+        <div class="flex items-start">
+            <div class="pattern-number">{{INDEX}}.</div>
+            <div class="pattern-count increased">
+                {{CURRENT_COUNT}}
+                <span class="change-indicator">
+                    (+{{ABSOLUTE_CHANGE}}, +{{PERCENT_CHANGE}}%)
+                </span>
+            </div>
+            <div class="pattern-text">
+                <pre id="{{PATTERN_ID}}">{{PATTERN_TEXT}}</pre>
+            </div>
         </div>
-        <div class="pattern-text">
-            <pre id="{{PATTERN_ID}}">{{PATTERN_TEXT}}</pre>
-        </div>
+        {{SAMPLE_LINKS}}
     </div>
-    {{SAMPLE_LINKS}}
-</div>
 </template>
 
 <!-- Decreased Pattern Item Template -->
 <template id="decreased-pattern-item-template">
-<div class="pattern-item decreased-pattern">
-    <div class="flex items-start">
-        <div class="pattern-number">{{INDEX}}.</div>
-        <div class="pattern-count decreased">
-            {{CURRENT_COUNT}}
-            <span class="change-indicator">
-                (-{{ABSOLUTE_CHANGE}}, -{{PERCENT_CHANGE}}%)
-            </span>
+    <div class="pattern-item decreased-pattern">
+        <div class="flex items-start">
+            <div class="pattern-number">{{INDEX}}.</div>
+            <div class="pattern-count decreased">
+                {{CURRENT_COUNT}}
+                <span class="change-indicator">
+                    (-{{ABSOLUTE_CHANGE}}, -{{PERCENT_CHANGE}}%)
+                </span>
+            </div>
+            <div class="pattern-text">
+                <pre id="{{PATTERN_ID}}">{{PATTERN_TEXT}}</pre>
+            </div>
         </div>
-        <div class="pattern-text">
-            <pre id="{{PATTERN_ID}}">{{PATTERN_TEXT}}</pre>
-        </div>
+        {{SAMPLE_LINKS}}
     </div>
-    {{SAMPLE_LINKS}}
-</div>
 </template>
 
 <!-- Dark Mode Sample Link Item Template -->
 <template id="dark-sample-link-item-template">
-<a href="{{KIBANA_LINK}}" style="color: #63b3ed; text-decoration: none;">Sample {{INDEX}}</a>{{COMMA}}
+    <a href="{{KIBANA_LINK}}" style="color: #63b3ed; text-decoration: none;">Sample {{INDEX}}</a>{{COMMA}}
 </template>
 
 <!-- Sample Links Container Template -->
 <template id="sample-links-template">
-<div class="sample-links">
-    {{SAMPLE_LINKS_LIST}}
-</div>
+    <div class="sample-links">
+        {{SAMPLE_LINKS_LIST}}
+    </div>
 </template>
 
 <!-- Sample Link Item Template -->
 <template id="sample-link-item-template">
-<a href="{{KIBANA_LINK}}" style="color: #3182ce; text-decoration: none;">Sample {{INDEX}}</a>{{COMMA}}
+    <a href="{{KIBANA_LINK}}" style="color: #3182ce; text-decoration: none;">Sample {{INDEX}}</a>{{COMMA}}
 </template>
 
 <!-- Dark Mode Sample Link Item Template -->
 <template id="dark-sample-link-item-template">
-<a href="{{KIBANA_LINK}}" style="color: #63b3ed; text-decoration: none;">Sample {{INDEX}}</a>{{COMMA}}
+    <a href="{{KIBANA_LINK}}" style="color: #63b3ed; text-decoration: none;">Sample {{INDEX}}</a>{{COMMA}}
 </template>
 
 <!-- Empty Pattern List Template -->
 <template id="empty-pattern-list-template">
-<p class="text-gray-500 dark:text-dark-200">{{MESSAGE}}</p>
+    <p class="text-gray-500 dark:text-dark-200">{{MESSAGE}}</p>
 </template>
 
 <!-- Dark Mode Empty Pattern List Template -->
 <template id="dark-empty-pattern-list-template">
-<p style="color: #a0aec0;">{{MESSAGE}}</p>
+    <p style="color: #a0aec0;">{{MESSAGE}}</p>
 </template>
