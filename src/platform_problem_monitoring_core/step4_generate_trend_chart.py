@@ -55,19 +55,12 @@ def _format_x_axis_labels(ax: plt.Axes, timestamps: List[datetime]) -> None:
     # Rotate labels for better readability
     plt.setp(ax.get_xticklabels(), rotation=45, ha='right')
 
-    # Add a second x-axis for the date
-    ax2 = ax.twiny()
-    ax2.set_xlim(ax.get_xlim())
-    ax2.set_xticks([timestamps[0], timestamps[-1]])
-    ax2.set_xticklabels([t.strftime('%Y-%m-%d') for t in [timestamps[0], timestamps[-1]]])
+    # Add date labels directly to the main x-axis
+    ax.set_xticks([timestamps[0], timestamps[-1]])
+    ax.set_xticklabels([t.strftime('%Y-%m-%d %H:%M') for t in [timestamps[0], timestamps[-1]]], fontsize=8)
 
-    # Remove tick marks and adjust label size
-    ax2.tick_params(axis='x', labelsize=8, length=0)
-
-    # Remove all spines from both axes
+    # Remove all spines from the axis
     for spine in ax.spines.values():
-        spine.set_visible(False)
-    for spine in ax2.spines.values():
         spine.set_visible(False)
 
 

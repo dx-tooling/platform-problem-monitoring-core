@@ -629,7 +629,7 @@ def generate_pattern_list_text(patterns: List[Dict[str, Any]]) -> str:
                     if index and doc_id:
                         sample_refs.append(f"Sample {j} ({index}/{doc_id})")
 
-            text += ", ".join(sample_refs) + "\n"
+            text += " · ".join(sample_refs) + "\n"
 
         text += "\n"
 
@@ -681,7 +681,7 @@ def generate_increased_pattern_list_text(patterns: List[Dict[str, Any]]) -> str:
                     if index and doc_id:
                         sample_refs.append(f"Sample {j} ({index}/{doc_id})")
 
-            text += ", ".join(sample_refs) + "\n"
+            text += " · ".join(sample_refs) + "\n"
 
         text += "\n"
 
@@ -733,7 +733,7 @@ def generate_decreased_pattern_list_text(patterns: List[Dict[str, Any]]) -> str:
                     if index and doc_id:
                         sample_refs.append(f"Sample {j} ({index}/{doc_id})")
 
-            text += ", ".join(sample_refs) + "\n"
+            text += " · ".join(sample_refs) + "\n"
 
         text += "\n"
 
@@ -1146,11 +1146,11 @@ def generate_email_bodies(
     # Embed trend chart if available
     if trend_chart_file and Path(trend_chart_file).exists():
         try:
-            with Path(trend_chart_file).open('rb') as img_file:
-                encoded_image = base64.b64encode(img_file.read()).decode('utf-8')
+            with Path(trend_chart_file).open("rb") as img_file:
+                encoded_image = base64.b64encode(img_file.read()).decode("utf-8")
                 html = html.replace(
-                    '<!--TREND_CHART_PLACEHOLDER-->',
-                    f'<img src="data:image/png;base64,{encoded_image}" alt="Problem Messages Trend" style="max-width:100%; height:auto;">'
+                    "<!--TREND_CHART_PLACEHOLDER-->",
+                    f'<img src="data:image/png;base64,{encoded_image}" alt="Problem Messages Trend" style="max-width:100%; height:auto;">',
                 )
                 logger.info("Trend chart embedded in HTML")
         except Exception as e:
