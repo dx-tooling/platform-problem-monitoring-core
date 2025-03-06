@@ -1,6 +1,6 @@
 .PHONY: install format format-check lint lint-fix type-check security-check quality ci-quality venv clean help activate-venv
 .PHONY: format-check-files isort-check-files lint-files type-check-files security-check-files
-.PHONY: test test-verbose test-coverage test-file
+.PHONY: test test-verbose test-coverage test-file update-deps
 
 PYTHON = python3
 PACKAGE = platform_problem_monitoring_core
@@ -32,6 +32,7 @@ help:
 	@echo "  make test-verbose   Run tests with verbose output"
 	@echo "  make test-coverage  Run tests with coverage report"
 	@echo "  make test-file      Run tests for a specific file (usage: make test-file file=path/to/test_file.py)"
+	@echo "  make update-deps    Update all dependencies to their latest semver-compatible versions"
 	@echo "  make clean          Remove build artifacts and cache directories"
 	@echo "  make help           Show this help message"
 
@@ -91,6 +92,11 @@ security-check-files:
 		$(CMD_PREFIX)bandit $(filter-out $@,$(MAKECMDGOALS)); \
 	fi
 
+# Dependency management
+update-deps:
+	$(CMD_PREFIX)pip install --upgrade -e ".[dev]"
+	@echo "Dependencies updated to their latest semver-compatible versions"
+
 # Test targets
 test:
 	$(CMD_PREFIX)pytest src/tests
@@ -119,6 +125,7 @@ clean:
 	find . -type f -name "*.pyc" -delete
 	rm -f .coverage
 	rm -f coverage.xml
+	rm -f venv
 
 # This allows passing filenames as arguments to make targets
 %:
