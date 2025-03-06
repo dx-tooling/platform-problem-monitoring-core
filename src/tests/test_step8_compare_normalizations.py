@@ -167,9 +167,11 @@ class TestStep8CompareNormalizations:
     ) -> None:
         """Test compare_normalizations with sample data."""
         # Create temporary files for input and output
-        with tempfile.NamedTemporaryFile(mode="w+", delete=False) as current_file, tempfile.NamedTemporaryFile(
-            mode="w+", delete=False
-        ) as previous_file, tempfile.NamedTemporaryFile(mode="w+", delete=False) as output_file:
+        with (
+            tempfile.NamedTemporaryFile(mode="w+", delete=False) as current_file,
+            tempfile.NamedTemporaryFile(mode="w+", delete=False) as previous_file,
+            tempfile.NamedTemporaryFile(mode="w+", delete=False) as output_file,
+        ):
 
             # Write sample data to input files
             json.dump(sample_current_data, current_file)
@@ -285,9 +287,11 @@ class TestStep8CompareNormalizations:
     def test_compare_normalizations_with_invalid_json(self) -> None:
         """Test compare_normalizations with invalid JSON input."""
         # Create temporary files for input and output
-        with tempfile.NamedTemporaryFile(mode="w+", delete=False) as current_file, tempfile.NamedTemporaryFile(
-            mode="w+", delete=False
-        ) as previous_file, tempfile.NamedTemporaryFile(mode="w+", delete=False) as output_file:
+        with (
+            tempfile.NamedTemporaryFile(mode="w+", delete=False) as current_file,
+            tempfile.NamedTemporaryFile(mode="w+", delete=False) as previous_file,
+            tempfile.NamedTemporaryFile(mode="w+", delete=False) as output_file,
+        ):
 
             # Write invalid JSON to input file
             current_file.write("{invalid json")

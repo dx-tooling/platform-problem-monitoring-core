@@ -37,9 +37,10 @@ class TestStep6ExtractFields:
     def test_extract_fields_with_sample_data(self, sample_logstash_data: List[Dict[str, Any]]) -> None:
         """Test extract_fields with a small sample of data."""
         # Create temporary files for input and output
-        with tempfile.NamedTemporaryFile(mode="w+", delete=False) as input_file, tempfile.NamedTemporaryFile(
-            mode="w+", delete=False
-        ) as output_file:
+        with (
+            tempfile.NamedTemporaryFile(mode="w+", delete=False) as input_file,
+            tempfile.NamedTemporaryFile(mode="w+", delete=False) as output_file,
+        ):
 
             # Write sample data to input file
             json.dump(sample_logstash_data, input_file)
@@ -125,9 +126,10 @@ class TestStep6ExtractFields:
     def test_extract_fields_with_invalid_json(self) -> None:
         """Test extract_fields with invalid JSON input."""
         # Create temporary files for input and output
-        with tempfile.NamedTemporaryFile(mode="w+", delete=False) as input_file, tempfile.NamedTemporaryFile(
-            mode="w+", delete=False
-        ) as output_file:
+        with (
+            tempfile.NamedTemporaryFile(mode="w+", delete=False) as input_file,
+            tempfile.NamedTemporaryFile(mode="w+", delete=False) as output_file,
+        ):
 
             # Write invalid JSON to input file
             input_file.write("{invalid json")

@@ -46,9 +46,10 @@ class TestStep7NormalizeMessages:
     def test_normalize_messages_with_sample_data(self, sample_extracted_data: List[Dict[str, Any]]) -> None:
         """Test normalize_messages with a small sample of data."""
         # Create temporary files for input and output
-        with tempfile.NamedTemporaryFile(mode="w+", delete=False) as input_file, tempfile.NamedTemporaryFile(
-            mode="w+", delete=False
-        ) as output_file:
+        with (
+            tempfile.NamedTemporaryFile(mode="w+", delete=False) as input_file,
+            tempfile.NamedTemporaryFile(mode="w+", delete=False) as output_file,
+        ):
 
             # Write sample data to input file (one JSON object per line)
             for doc in sample_extracted_data:
@@ -147,9 +148,10 @@ class TestStep7NormalizeMessages:
     def test_normalize_messages_with_invalid_json(self) -> None:
         """Test normalize_messages with invalid JSON input."""
         # Create temporary files for input and output
-        with tempfile.NamedTemporaryFile(mode="w+", delete=False) as input_file, tempfile.NamedTemporaryFile(
-            mode="w+", delete=False
-        ) as output_file:
+        with (
+            tempfile.NamedTemporaryFile(mode="w+", delete=False) as input_file,
+            tempfile.NamedTemporaryFile(mode="w+", delete=False) as output_file,
+        ):
 
             # Write invalid JSON to input file
             input_file.write("{invalid json")
