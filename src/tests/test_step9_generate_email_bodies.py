@@ -41,7 +41,7 @@ from platform_problem_monitoring_core.step9_generate_email_bodies import (
 )
 
 
-class TestStep7GenerateEmailBodies:
+class TestStep9GenerateEmailBodies:
     """Test suite for the generate_email_bodies module."""
 
     @pytest.fixture
@@ -498,7 +498,7 @@ class TestStep7GenerateEmailBodies:
                 str(html_output),
                 str(text_output),
                 kibana_url,
-                None,
+                24,
                 elasticsearch_query_path,
                 start_date_time_path,
             )

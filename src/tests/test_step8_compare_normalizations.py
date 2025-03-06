@@ -19,7 +19,7 @@ from platform_problem_monitoring_core.step8_compare_normalizations import (
 )
 
 
-class TestCompareNormalizations:
+class TestStep8CompareNormalizations:
     """Test suite for the compare_normalizations module."""
 
     @pytest.fixture

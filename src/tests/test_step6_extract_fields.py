@@ -11,7 +11,7 @@ import pytest
 from platform_problem_monitoring_core.step6_extract_fields import extract_fields
 
 
-class TestExtractFields:
+class TestStep6ExtractFields:
     """Tests for the extract_fields function."""
 
     @pytest.fixture

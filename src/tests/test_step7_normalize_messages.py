@@ -11,7 +11,7 @@ import pytest
 from platform_problem_monitoring_core.step7_normalize_messages import normalize_messages
 
 
-class TestNormalizeMessages:
+class TestStep7NormalizeMessages:
     """Tests for the normalize_messages function."""
 
     @pytest.fixture
