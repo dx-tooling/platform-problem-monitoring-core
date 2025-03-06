@@ -6,7 +6,6 @@ import datetime
 import json
 import sys
 from datetime import timezone
-from pathlib import Path
 from typing import Dict, List
 
 import requests
@@ -30,10 +29,7 @@ def _generate_hour_ranges(hours_back: int) -> List[Dict[str, str]]:
     for i in range(hours_back - 1, -1, -1):  # Go from oldest to newest
         end_time = now - datetime.timedelta(hours=i)
         start_time = end_time - datetime.timedelta(hours=1)
-        ranges.append({
-            "start": start_time.isoformat(),
-            "end": end_time.isoformat()
-        })
+        ranges.append({"start": start_time.isoformat(), "end": end_time.isoformat()})
 
     return ranges
 
@@ -56,9 +52,7 @@ def _add_time_range_to_query(query_data: dict, start_time: str, end_time: str) -
                 query_data["query"]["bool"]["filter"] = []
 
             # Add time range filter
-            query_data["query"]["bool"]["filter"].append(
-                {"range": {"@timestamp": {"gte": start_time, "lt": end_time}}}
-            )
+            query_data["query"]["bool"]["filter"].append({"range": {"@timestamp": {"gte": start_time, "lt": end_time}}})
         else:
             # If there's no bool query, create one
             original_query = query_data["query"]
@@ -70,19 +64,12 @@ def _add_time_range_to_query(query_data: dict, start_time: str, end_time: str) -
             }
     else:
         # If there's no query at all, create a simple one
-        query_data["query"] = {
-            "bool": {"filter": [{"range": {"@timestamp": {"gte": start_time, "lt": end_time}}}]}
-        }
+        query_data["query"] = {"bool": {"filter": [{"range": {"@timestamp": {"gte": start_time, "lt": end_time}}}]}}
 
     return query_data
 
 
-def _query_elasticsearch_for_hour(
-    elasticsearch_url: str,
-    query_data: dict,
-    start_time: str,
-    end_time: str
-) -> int:
+def _query_elasticsearch_for_hour(elasticsearch_url: str, query_data: dict, start_time: str, end_time: str) -> int:
     """
     Query Elasticsearch for the number of documents in a specific hour.
 
@@ -109,19 +96,15 @@ def _query_elasticsearch_for_hour(
 
         # Extract the count from the response
         result = response.json()
-        return result.get("count", 0)
+        count: int = result.get("count", 0)
+        return count
 
     except requests.exceptions.RequestException as e:
         logger.error(f"Error querying Elasticsearch: {str(e)}")
         raise
 
 
-def retrieve_hourly_problem_numbers(
-    elasticsearch_url: str,
-    query_file: str,
-    hours_back: int,
-    output_file: str
-) -> None:
+def retrieve_hourly_problem_numbers(elasticsearch_url: str, query_file: str, hours_back: int, output_file: str) -> None:
     """
     Retrieve number of problem logstash documents per hour.
 
@@ -154,11 +137,7 @@ def retrieve_hourly_problem_numbers(
 
             try:
                 count = _query_elasticsearch_for_hour(elasticsearch_url, query_data, start_time, end_time)
-                results.append({
-                    "start_time": start_time,
-                    "end_time": end_time,
-                    "count": count
-                })
+                results.append({"start_time": start_time, "end_time": end_time, "count": count})
                 logger.info(f"Hour {start_time} to {end_time}: {count} documents")
             except Exception as e:
                 logger.error(f"Error querying hour range {start_time} to {end_time}: {str(e)}")
@@ -190,12 +169,7 @@ def main() -> None:
     args = parser.parse_args()
 
     try:
-        retrieve_hourly_problem_numbers(
-            args.elasticsearch_url,
-            args.query_file,
-            args.hours_back,
-            args.output_file
-        )
+        retrieve_hourly_problem_numbers(args.elasticsearch_url, args.query_file, args.hours_back, args.output_file)
         sys.exit(0)
     except Exception as e:
         logger.error(f"Error retrieving hourly problem numbers: {str(e)}")

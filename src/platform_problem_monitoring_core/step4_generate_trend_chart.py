@@ -2,17 +2,15 @@
 """Generate trend bar chart for problem logstash documents per hour."""
 
 import argparse
-import base64
-import io
 import sys
 from datetime import datetime
-from pathlib import Path
 from typing import List, Tuple
 
 import matplotlib
-matplotlib.use('Agg')  # Non-interactive backend
-import matplotlib.pyplot as plt
+
+matplotlib.use("Agg")  # Non-interactive backend
 import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
 import seaborn as sns
 
 from platform_problem_monitoring_core.utils import load_json, logger
@@ -50,14 +48,14 @@ def _format_x_axis_labels(ax: plt.Axes, timestamps: List[datetime]) -> None:
     """
     # Set major ticks at hour intervals
     ax.xaxis.set_major_locator(mdates.HourLocator(interval=2))
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
 
     # Rotate labels for better readability
-    plt.setp(ax.get_xticklabels(), rotation=45, ha='right')
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
 
     # Add date labels directly to the main x-axis
     ax.set_xticks([timestamps[0], timestamps[-1]])
-    ax.set_xticklabels([t.strftime('%Y-%m-%d %H:%M') for t in [timestamps[0], timestamps[-1]]], fontsize=8)
+    ax.set_xticklabels([t.strftime("%Y-%m-%d %H:%M") for t in [timestamps[0], timestamps[-1]]], fontsize=8)
 
     # Remove all spines from the axis
     for spine in ax.spines.values():
@@ -92,12 +90,12 @@ def generate_trend_chart(hourly_data_file: str, output_image_file: str) -> None:
         bars = ax.bar(timestamps, counts, width=0.02, color=sns.color_palette("deep")[0], alpha=0.7)
 
         # Customize the plot
-        ax.set_title('Problem Messages Trend', pad=20, fontsize=12, fontweight='bold')
-        ax.set_ylabel('Number of Problems', fontsize=10)
+        ax.set_title("Problem Messages Trend", pad=20, fontsize=12, fontweight="bold")
+        ax.set_ylabel("Number of Problems", fontsize=10)
 
         # Only show horizontal grid lines
-        ax.grid(True, axis='y', linestyle='--', alpha=0.7)
-        ax.grid(False, axis='x')
+        ax.grid(True, axis="y", linestyle="--", alpha=0.7)
+        ax.grid(False, axis="x")
 
         # Format x-axis
         _format_x_axis_labels(ax, timestamps)
@@ -105,15 +103,13 @@ def generate_trend_chart(hourly_data_file: str, output_image_file: str) -> None:
         # Add value labels on top of bars
         for bar in bars:
             height = bar.get_height()
-            ax.text(bar.get_x() + bar.get_width()/2., height,
-                   f'{int(height)}',
-                   ha='center', va='bottom', fontsize=8)
+            ax.text(bar.get_x() + bar.get_width() / 2.0, height, f"{int(height)}", ha="center", va="bottom", fontsize=8)
 
         # Adjust layout to prevent label cutoff
         plt.tight_layout()
 
         # Save the chart
-        plt.savefig(output_image_file, dpi=300, bbox_inches='tight')
+        plt.savefig(output_image_file, dpi=300, bbox_inches="tight")
         logger.info(f"Chart saved to {output_image_file}")
 
         # Close the figure to free memory

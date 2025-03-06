@@ -71,6 +71,8 @@ the code picks elements as needed. Linting this file makes no sense as it is gua
             background-color: #2d3748 !important;
             border-color: #4a5568 !important;
             color: #e2e8f0 !important;
+            max-width: 100% !important;
+            overflow-wrap: break-word !important;
         }
 
         .badge {
@@ -419,6 +421,15 @@ the code picks elements as needed. Linting this file makes no sense as it is gua
 
     .pattern-text {
         flex: 1;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        -ms-word-break: break-all;
+        word-break: break-all;
+        word-break: break-word;
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
     }
 
     pre {
@@ -432,6 +443,7 @@ the code picks elements as needed. Linting this file makes no sense as it is gua
         font-size: 13px;
         white-space: pre-wrap;
         word-break: break-word;
+        max-width: 100%;
     }
 
     .sample-links {

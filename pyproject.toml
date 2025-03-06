@@ -35,6 +35,7 @@ dev = [
     "bandit>=1.7.5",
     "types-requests>=2.0.0",
     "types-boto3>=1.0.0",
+    "types-seaborn>=0.12.0",
 ]
 
 [tool.setuptools]

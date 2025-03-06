@@ -4,11 +4,36 @@
 import argparse
 import smtplib
 import sys
+import textwrap
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from pathlib import Path
 
 from platform_problem_monitoring_core.utils import logger
+
+
+def wrap_long_lines(content: str, max_line_length: int = 998) -> str:
+    """
+    Wrap long lines in content to ensure they don't exceed max_line_length.
+
+    Args:
+        content: The content to wrap
+        max_line_length: Maximum length for each line (default 998, as per RFC)
+
+    Returns:
+        Content with lines wrapped to max_line_length
+    """
+    wrapped_lines = []
+    for line in content.splitlines():
+        # If the line is longer than max_line_length, wrap it
+        if len(line) > max_line_length:
+            # Use textwrap to break the line, preserving HTML structure
+            wrapped_line = textwrap.fill(line, width=max_line_length, break_long_words=False, replace_whitespace=False)
+            wrapped_lines.append(wrapped_line)
+        else:
+            wrapped_lines.append(line)
+
+    return "\n".join(wrapped_lines)
 
 
 def send_email_report(
@@ -53,6 +78,11 @@ def send_email_report(
 
         with Path(text_file).open("r") as f:
             text_body = f.read()
+
+        # Wrap long lines to avoid SMTP line length limits (RFC 5322 says 998 characters max)
+        # Use a more conservative 7900 characters to be safe with different SMTP servers
+        html_body = wrap_long_lines(html_body, max_line_length=7900)
+        text_body = wrap_long_lines(text_body, max_line_length=7900)
 
         # Create message
         msg = MIMEMultipart("alternative")
