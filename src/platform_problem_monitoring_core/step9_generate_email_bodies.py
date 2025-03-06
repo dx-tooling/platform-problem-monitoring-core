@@ -2,6 +2,7 @@
 """Generate email bodies for platform problem monitoring reports."""
 
 import argparse
+import base64
 import json
 import re
 import sys
@@ -665,7 +666,7 @@ def generate_pattern_list_text(patterns: List[Dict[str, Any]]) -> str:
                     if index and doc_id:
                         sample_refs.append(f"Sample {j} ({index}/{doc_id})")
 
-            text += ", ".join(sample_refs) + "\n"
+            text += " · ".join(sample_refs) + "\n"
 
         text += "\n"
 
@@ -717,7 +718,7 @@ def generate_increased_pattern_list_text(patterns: List[Dict[str, Any]]) -> str:
                     if index and doc_id:
                         sample_refs.append(f"Sample {j} ({index}/{doc_id})")
 
-            text += ", ".join(sample_refs) + "\n"
+            text += " · ".join(sample_refs) + "\n"
 
         text += "\n"
 
@@ -769,7 +770,7 @@ def generate_decreased_pattern_list_text(patterns: List[Dict[str, Any]]) -> str:
                     if index and doc_id:
                         sample_refs.append(f"Sample {j} ({index}/{doc_id})")
 
-            text += ", ".join(sample_refs) + "\n"
+            text += " · ".join(sample_refs) + "\n"
 
         text += "\n"
 
@@ -1123,6 +1124,8 @@ def generate_email_bodies(
     norm_results_file: str,
     html_output: str,
     text_output: str,
+    trend_chart_file: Optional[str] = None,
+    trend_hours_back: int = 24,
     kibana_url: Optional[str] = None,
     kibana_deeplink_structure: Optional[str] = None,
     elasticsearch_query_file: Optional[str] = None,
@@ -1136,6 +1139,8 @@ def generate_email_bodies(
         norm_results_file: Path to the normalization results file
         html_output: Path to store the HTML email body
         text_output: Path to store the plaintext email body
+        trend_chart_file: Path to the trend chart image file (optional)
+        trend_hours_back: Number of hours to look back for problem trends (default: 24)
         kibana_url: Kibana base URL for the "View in Kibana" button (optional)
         kibana_deeplink_structure: URL structure for individual Kibana document deeplinks (optional)
         elasticsearch_query_file: Path to the Elasticsearch Lucene query file (optional)
@@ -1146,6 +1151,9 @@ def generate_email_bodies(
     logger.info(f"Normalization results file: {norm_results_file}")
     logger.info(f"HTML output: {html_output}")
     logger.info(f"Text output: {text_output}")
+    logger.info(f"Hours back: {trend_hours_back}")
+    if trend_chart_file:
+        logger.info(f"Trend chart file: {trend_chart_file}")
     if kibana_url:
         logger.info(f"Kibana URL: {kibana_url}")
     if kibana_deeplink_structure:
@@ -1174,6 +1182,24 @@ def generate_email_bodies(
 
     # Generate HTML and text content
     html = _generate_html_content(data, templates, kibana_url, kibana_deeplink_structure, enhanced_kibana_url)
+
+    # Replace hours back placeholder
+    html = html.replace("{{TREND_HOURS_BACK}}", str(trend_hours_back))
+
+    # Embed trend chart if available
+    if trend_chart_file and Path(trend_chart_file).exists():
+        try:
+            with Path(trend_chart_file).open("rb") as img_file:
+                encoded_image = base64.b64encode(img_file.read()).decode("utf-8")
+                html = html.replace(
+                    "<!--TREND_CHART_PLACEHOLDER-->",
+                    f'<img src="data:image/png;base64,{encoded_image}"'
+                    f' alt="Problem Messages Trend" style="max-width:100%; height:auto;">',
+                )
+                logger.info("Trend chart embedded in HTML")
+        except Exception as e:
+            logger.warning(f"Failed to embed trend chart: {str(e)}")
+
     text = _generate_text_content(data)
 
     # Write the email bodies to the output files
@@ -1193,6 +1219,8 @@ def main() -> None:
     parser.add_argument("--norm-results-file", required=True, help="Path to the normalization results file")
     parser.add_argument("--html-output", required=True, help="Path to store the HTML email body")
     parser.add_argument("--text-output", required=True, help="Path to store the plaintext email body")
+    parser.add_argument("--trend-chart-file", help="Path to the trend chart image file")
+    parser.add_argument("--hours-back", type=int, default=24, help="Number of hours to look back for problem trends")
     parser.add_argument("--kibana-url", help="Kibana base URL for the 'View in Kibana' button")
     parser.add_argument(
         "--kibana-deeplink-structure",
@@ -1209,6 +1237,8 @@ def main() -> None:
             args.norm_results_file,
             args.html_output,
             args.text_output,
+            args.trend_chart_file,
+            args.hours_back,
             args.kibana_url,
             args.kibana_deeplink_structure,
             args.elasticsearch_query_file,

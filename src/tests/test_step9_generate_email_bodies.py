@@ -1,4 +1,4 @@
-"""Tests for the step7_generate_email_bodies module."""
+"""Tests for the step9_generate_email_bodies module."""
 
 import tempfile
 from pathlib import Path
@@ -6,7 +6,7 @@ from typing import Any, Dict
 
 import pytest
 
-from platform_problem_monitoring_core.step7_generate_email_bodies import (
+from platform_problem_monitoring_core.step9_generate_email_bodies import (
     _create_enhanced_kibana_url,
     _extract_lucene_query,
     _extract_must_not_clauses,

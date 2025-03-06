@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unit tests for step5_normalize_messages.py."""
+"""Unit tests for step7_normalize_messages.py."""
 
 import json
 import tempfile
@@ -8,7 +8,7 @@ from typing import Any, Dict, List
 
 import pytest
 
-from platform_problem_monitoring_core.step5_normalize_messages import normalize_messages
+from platform_problem_monitoring_core.step7_normalize_messages import normalize_messages
 
 
 class TestNormalizeMessages:

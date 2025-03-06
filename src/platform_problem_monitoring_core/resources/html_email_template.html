@@ -14,6 +14,9 @@ Main sections:
 - Pattern Lists: Templates for different pattern lists
 - Footer: The bottom section with additional information
 
+Note that this is not and cannot be a valid HTML file; it's just a template from which
+the code picks elements as needed. Linting this file makes no sense as it is guaranteed to fail.
+
 -->
 
 <!-- CSS Styles -->
@@ -551,6 +554,15 @@ Main sections:
                         </div>
                     </div>
 
+                    <div class="card">
+                        <h2>Problem Messages Trend</h2>
+                        <p class="text-sm text-gray-500">Number of problem messages per hour over the past
+                            {{TREND_HOURS_BACK}} hours.</p>
+                        <div class="chart-container" style="margin: 20px 0;">
+                            <!--TREND_CHART_PLACEHOLDER-->
+                        </div>
+                    </div>
+
                     {{KIBANA_BUTTON}}
                 </div>
 
@@ -616,6 +628,15 @@ Main sections:
                         <div class="stat-card disappeared-problems">
                             <div class="stat-value disappeared-problems">{{DISAPPEARED_PATTERNS_COUNT}}</div>
                             <div class="stat-label">Disappeared</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2>Problem Messages Trend</h2>
+                        <p class="text-sm text-gray-500">Number of problem messages per hour over the past
+                            {{TREND_HOURS_BACK}} hours.</p>
+                        <div class="chart-container" style="margin: 20px 0;">
+                            <!--TREND_CHART_PLACEHOLDER-->
                         </div>
                     </div>
 

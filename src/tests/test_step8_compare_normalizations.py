@@ -8,7 +8,7 @@ from typing import Any, Dict
 
 import pytest
 
-from platform_problem_monitoring_core.step6_compare_normalizations import (
+from platform_problem_monitoring_core.step8_compare_normalizations import (
     PatternDict,
     _find_decreased_patterns,
     _find_disappeared_patterns,

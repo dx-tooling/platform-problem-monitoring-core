@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unit tests for step4_extract_fields.py."""
+"""Unit tests for step6_extract_fields.py."""
 
 import json
 import tempfile
@@ -8,7 +8,7 @@ from typing import Any, Dict, List
 
 import pytest
 
-from platform_problem_monitoring_core.step4_extract_fields import extract_fields
+from platform_problem_monitoring_core.step6_extract_fields import extract_fields
 
 
 class TestExtractFields:
