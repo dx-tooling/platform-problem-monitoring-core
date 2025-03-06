@@ -90,7 +90,7 @@ def generate_trend_chart(hourly_data_file: str, output_image_file: str) -> None:
         bars = ax.bar(timestamps, counts, width=0.02, color=sns.color_palette("deep")[0], alpha=0.7)
 
         # Customize the plot
-        ax.set_title("Problem Messages Trend", pad=20, fontsize=12, fontweight="bold")
+        ax.set_title(" ", pad=20, fontsize=12, fontweight="bold")
         ax.set_ylabel("Number of Problems", fontsize=10)
 
         # Only show horizontal grid lines

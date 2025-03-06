@@ -1194,7 +1194,7 @@ def generate_email_bodies(
                 html = html.replace(
                     "<!--TREND_CHART_PLACEHOLDER-->",
                     f'<img src="data:image/png;base64,{encoded_image}"'
-                    f' alt="Problem Messages Trend" style="max-width:100%; height:auto;">',
+                    f' alt="PROBLEM MESSAGES TREND" style="max-width:100%; height:auto;">',
                 )
                 logger.info("Trend chart embedded in HTML")
         except Exception as e:
