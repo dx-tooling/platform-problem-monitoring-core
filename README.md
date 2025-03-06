@@ -31,7 +31,7 @@ This tool is ideal if:
 
 ## Prerequisites
 
-- **Python 3.9+** installed on the host system
+- **Python 3.10+** installed on the host system
 - **Network access** to:
   - Your Elasticsearch server
   - An AWS S3 bucket (for state storage between runs)

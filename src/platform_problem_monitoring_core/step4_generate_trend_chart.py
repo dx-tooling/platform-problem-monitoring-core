@@ -58,14 +58,16 @@ def _format_x_axis_labels(ax: plt.Axes, timestamps: List[datetime]) -> None:
 
     # Add date labels directly to the main x-axis with more padding
     # Place them at the beginning, middle and end for better orientation
+    # Convert datetime objects to matplotlib date numbers
+    date_nums = mdates.date2num(timestamps)
     if len(timestamps) >= 3:
         middle_idx = len(timestamps) // 2
-        ax.set_xticks([timestamps[0], timestamps[middle_idx], timestamps[-1]])
+        ax.set_xticks([date_nums[0], date_nums[middle_idx], date_nums[-1]])
         ax.set_xticklabels(
             [t.strftime("%Y-%m-%d %H:%M") for t in [timestamps[0], timestamps[middle_idx], timestamps[-1]]], fontsize=8
         )
     else:
-        ax.set_xticks([timestamps[0], timestamps[-1]])
+        ax.set_xticks([date_nums[0], date_nums[-1]])
         ax.set_xticklabels([t.strftime("%Y-%m-%d %H:%M") for t in [timestamps[0], timestamps[-1]]], fontsize=8)
 
     # Remove all spines from the axis
@@ -105,8 +107,11 @@ def generate_trend_chart(hourly_data_file: str, output_image_file: str) -> None:
         # Add padding around the plot area
         plt.subplots_adjust(left=0.1, right=0.95, top=0.9, bottom=0.15)
 
+        # Convert datetime objects to matplotlib date numbers
+        date_nums = mdates.date2num(timestamps)
+
         # Plot the bars
-        bars = ax.bar(timestamps, counts, width=0.02, color=sns.color_palette("deep")[0], alpha=0.7)
+        bars = ax.bar(date_nums, counts, width=0.02, color=sns.color_palette("deep")[0], alpha=0.7)
 
         # Customize the plot
         ax.set_title(" ", pad=20, fontsize=12, fontweight="bold")
