@@ -11,7 +11,7 @@ from pathlib import Path
 from platform_problem_monitoring_core.utils import logger
 
 
-def wrap_long_lines(content: str, max_line_length: int = 998) -> str:
+def wrap_long_lines(content: str, max_line_length: int = 990) -> str:
     """
     Wrap long lines in content to ensure they don't exceed max_line_length.
 
@@ -19,12 +19,11 @@ def wrap_long_lines(content: str, max_line_length: int = 998) -> str:
 
     Args:
         content: The content to wrap
-        max_line_length: Maximum length for each line (default 998, as per RFC)
+        max_line_length: Maximum length for each line (default 990, as per RFC 5322)
 
     Returns:
         Content with lines wrapped to max_line_length
     """
-    # Use a more conservative limit (default is still 998 per RFC, but we default to 998)
     result = []
 
     for line in content.splitlines():
@@ -34,44 +33,33 @@ def wrap_long_lines(content: str, max_line_length: int = 998) -> str:
             continue
 
         # For HTML content, we need to be careful about where we insert line breaks
-        # to avoid breaking HTML tags
         current_position = 0
-        current_line = ""
+        line_length = len(line)
 
-        while current_position < len(line):
-            # If adding the next character would exceed the limit
-            if len(current_line) >= max_line_length - 1:
-                result.append(current_line)
-                current_line = ""
+        while current_position < line_length:
+            # Determine where to cut the line
+            end_pos = min(current_position + max_line_length, line_length)
 
-            # Handle HTML tags to avoid breaking them across lines
-            if line[current_position] == "<":
-                # Find the end of the tag
-                tag_end = line.find(">", current_position)
-                if tag_end == -1:  # No closing bracket found
-                    tag_end = current_position + 1
-                else:
-                    tag_end += 1  # Include the '>' character
+            # If we're in the middle of an HTML tag, try to find the end of it
+            if "<" in line[current_position:end_pos]:
+                # We are potentially cutting through an HTML tag
+                last_open_tag = line.rfind("<", current_position, end_pos)
+                last_close_tag = line.rfind(">", current_position, end_pos)
 
-                # If adding the whole tag would exceed the line length and the current line
-                # is not empty, start a new line
-                tag_content = line[current_position:tag_end]
-                if len(current_line) + len(tag_content) > max_line_length and current_line:
-                    result.append(current_line)
-                    current_line = tag_content
-                    current_position = tag_end
-                else:
-                    # Add the tag to the current line
-                    current_line += tag_content
-                    current_position = tag_end
-            else:
-                # Regular character
-                current_line += line[current_position]
-                current_position += 1
+                if last_open_tag > last_close_tag:
+                    # We're inside a tag, cut before the tag starts
+                    if last_open_tag > current_position:
+                        end_pos = last_open_tag
+                    else:
+                        # The tag itself is very long, find the next closing bracket
+                        next_close = line.find(">", current_position)
+                        if next_close != -1 and next_close < current_position + max_line_length * 2:
+                            # If closing tag is within reasonable distance, include the whole tag
+                            end_pos = next_close + 1
 
-        # Add any remaining content
-        if current_line:
-            result.append(current_line)
+            # Add the segment to result
+            result.append(line[current_position:end_pos])
+            current_position = end_pos
 
     return "\n".join(result)
 
@@ -120,10 +108,9 @@ def send_email_report(
             text_body = f.read()
 
         # Wrap long lines to avoid SMTP line length limits (RFC 5322 says 998 characters max)
-        # Use a more conservative 4000 characters to be safe with different SMTP servers
-        # Some SMTP servers have a limit of 8192 characters, so staying well below that
-        html_body = wrap_long_lines(html_body, max_line_length=4000)
-        text_body = wrap_long_lines(text_body, max_line_length=4000)
+        # Use a more conservative 900 characters to be safe with different SMTP servers
+        html_body = wrap_long_lines(html_body, max_line_length=900)
+        text_body = wrap_long_lines(text_body, max_line_length=900)
 
         # Create message
         msg = MIMEMultipart("alternative")

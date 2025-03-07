@@ -489,16 +489,17 @@ def _safe_html_encode(text: str) -> str:
     # Replace HTML entities
     text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
-    # Split very long words with zero-width spaces to allow breaking in HTML
+    # Add word breaks for very long words
     words = text.split()
     for i, word in enumerate(words):
-        # If word is longer than 80 chars, add zero-width spaces every 80 chars
-        if len(word) > 80:
-            # Insert zero-width space (&#8203;) every 80 chars
-            chars = list(word)
-            for j in range(80, len(chars), 80):
-                chars.insert(j, "&#8203;")
-            words[i] = "".join(chars)
+        # If a word is longer than 50 characters, add <wbr> tags every 50 chars
+        if len(word) > 50:
+            result = ""
+            for j in range(0, len(word), 50):
+                result += word[j : j + 50]
+                if j + 50 < len(word):
+                    result += "<wbr>"
+            words[i] = result
 
     return " ".join(words)
 
