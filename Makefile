@@ -1,6 +1,7 @@
 .PHONY: install format format-check lint lint-fix type-check security-check quality ci-quality venv clean help activate-venv
 .PHONY: format-check-files isort-check-files lint-files type-check-files security-check-files
 .PHONY: test test-verbose test-coverage test-file update-deps
+.PHONY: bump-version release
 
 PYTHON = python3
 PACKAGE = platform_problem_monitoring_core
@@ -33,6 +34,8 @@ help:
 	@echo "  make test-coverage  Run tests with coverage report"
 	@echo "  make test-file      Run tests for a specific file (usage: make test-file file=path/to/test_file.py)"
 	@echo "  make update-deps    Update all dependencies to their latest semver-compatible versions"
+	@echo "  make bump-version   Update the version number in pyproject.toml"
+	@echo "  make release        Create a new release tag (after running quality checks and tests)"
 	@echo "  make clean          Remove build artifacts and cache directories"
 	@echo "  make help           Show this help message"
 
@@ -130,3 +133,15 @@ clean:
 # This allows passing filenames as arguments to make targets
 %:
 	@:
+
+# Version Management
+bump-version:
+	@echo "Current version: $(shell grep -m 1 version pyproject.toml | cut -d '"' -f 2)"
+	@read -p "New version: " new_version; \
+	sed -i '' "s/version = \"[0-9]*\.[0-9]*\.[0-9]*\"/version = \"$$new_version\"/" pyproject.toml
+
+# Creating a new release
+release: ci-quality test-coverage
+	@version=$$(grep -m 1 version pyproject.toml | cut -d '"' -f 2); \
+	git tag -a "v$$version" -m "Release v$$version"; \
+	echo "Created tag v$$version. Push with: git push origin v$$version"
