@@ -267,4 +267,4 @@ The pre-commit hooks are configured to use the same Makefile targets, ensuring c
 
 ## License
 
-Proprietary - All rights reserved.
+This project is available under the MIT License — Copyright (c) 2025 Manuel Kießling.
