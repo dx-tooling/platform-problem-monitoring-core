@@ -6,13 +6,8 @@ This document outlines the release process for the Platform Problem Monitoring C
 
 Each release includes the following artifacts:
 
-1. **Python Package Distributions**
-   - **Source Distribution (.tar.gz)** - Contains the raw source code of the package
-   - **Wheel Distribution (.whl)** - A pre-built package that's ready to install
-
-2. **Additional Assets Archive (`additional_assets.zip`)**
-   - `conf/lucene_query.json.dist` - Query template for Elasticsearch
-   - `conf/platform_problem_monitoring_core.conf.dist` - Main configuration file template
+- **Source Distribution (.tar.gz)** - Contains the raw source code of the package
+- **Wheel Distribution (.whl)** - A pre-built package that's ready to install
 
 ## Release Workflow
 

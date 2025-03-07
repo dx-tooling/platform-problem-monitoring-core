@@ -34,14 +34,6 @@ jobs:
       - name: Build package
         run: python -m build
 
-      - name: Create additional assets archive
-        run: |
-          mkdir -p release_files/conf
-          cp conf/*.dist release_files/conf/
-          cd release_files
-          zip -r ../additional_assets.zip .
-          cd ..
-
       - name: Get version from tag
         id: get_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
@@ -56,4 +48,3 @@ jobs:
           files: |
             dist/*.whl
             dist/*.tar.gz
-            additional_assets.zip

@@ -14,8 +14,8 @@
 # Keep .idea/modules.xml
 
 venv/
-platform_problem_monitoring_core.conf
-conf/lucene_query.json
+main.conf
+etc/lucene_query.json
 
 # Python package build artifacts
 *.egg-info/

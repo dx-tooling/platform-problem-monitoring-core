@@ -88,7 +88,7 @@ The tech stack for this application is defined as follows:
 - It is a software application written in Python 3, and provided in source-code form
 - Setup and dependencies are managed via the pyproject.toml approach
 - A bash shell script is provided which allows the user to start the application in a straightforward manner, e.g.
-  ./run.sh <path-to-config-file>
+  ./ppmc <path-to-config-file>
 
 The architecture is defined as follows:
 
@@ -291,7 +291,7 @@ Main operations & side effects, and Outputs:
         - remove the local folder
     - Outputs: none (besides exit code and progress, success, and error messages)
 
-The aforementioned run.sh shell script is able to read a configuration file with the following structure:
+The aforementioned ppmc shell script is able to read a configuration file with the following structure:
 
     REMOTE_STATE_S3_BUCKET_NAME=""
     REMOTE_STATE_S3_FOLDER_NAME=""
@@ -309,12 +309,12 @@ The aforementioned run.sh shell script is able to read a configuration file with
     SMTP_SENDER_ADDRESS=""
     SMTP_RECEIVER_ADDRESS=""
 
-If this configuration is stored in a file called platform_problem_monitoring_core.conf, then the run.sh script can be
-called as `run.sh ./platform_problem_monitoring_core.conf` and will make use of these parameters when executing the
+If this configuration is stored in a file called main.conf, then the ppmc script can be
+called as `ppmc ./main.conf` and will make use of these parameters when executing the
 different step scripts.
 
 Other parameters that are relevant between step script executions, like for example the name of the JSON file where
-downloaded logstash documents are stored, are hardcoded within the run.sh shell script (but paths of intermediate result
+downloaded logstash documents are stored, are hardcoded within the ppmc shell script (but paths of intermediate result
 files are of course located within the temporary work folder created in step 1).
 
 The resulting Python and Bash code must be clean, well documented, with concise and comprehensible naming.

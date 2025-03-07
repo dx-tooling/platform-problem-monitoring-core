@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "platform_problem_monitoring_core"
-version = "0.1.4"
+version = "0.1.5"
 description = "A tool for monitoring platform problems using Elasticsearch logs"
 authors = [
     {name = "Platform Team"}
@@ -44,11 +44,12 @@ package-dir = {"" = "src"}
 
 # Add package data to include resources in the wheel
 [tool.setuptools.package-data]
-platform_problem_monitoring_core = ["resources/*.html", "bin/*"]
+platform_problem_monitoring_core = ["resources/*.html"]
 
 # Add data files to include configuration templates
 [tool.setuptools.data-files]
-"conf" = ["conf/*.dist"]
+"etc/platform_problem_monitoring_core" = ["etc/*.dist"]
+"bin" = ["bin/*"]
 
 [tool.black]
 line-length = 120

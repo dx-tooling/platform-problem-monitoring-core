@@ -59,7 +59,7 @@ This tool is ideal if:
 
 4. **Create a configuration file:**
    ```bash
-   cp src/platform_problem_monitoring_core.conf.dist platform_problem_monitoring_core.conf
+   cp etc/main.conf.dist /etc/main.conf
    ```
 
 5. **Edit the configuration:**
@@ -83,7 +83,7 @@ This tool is ideal if:
 
 6. **Set up the Elasticsearch query:**
    ```bash
-   cp src/lucene_query.json.dist lucene_query.json
+   cp etc/lucene_query.json.dist etc/lucene_query.json
    ```
 
    This default query looks for error messages while filtering out noise:
@@ -111,7 +111,7 @@ This tool is ideal if:
 
 7. **Run the tool:**
    ```bash
-   ./src/run.sh ./platform_problem_monitoring_core.conf
+   ./bin/ppmc ./main.conf
    ```
 
 ## How It Works
@@ -178,7 +178,7 @@ To run the tool periodically, set up a cron job:
 
 ```bash
 # Run every 6 hours
-0 */6 * * * cd /path/to/platform-problem-monitoring-core && ./src/run.sh ./platform_problem_monitoring_core.conf >> /var/log/platform-monitoring.log 2>&1
+0 */6 * * * cd /path/to/platform-problem-monitoring-core && ./src/ppmc ./main.conf >> /var/log/platform-monitoring.log 2>&1
 ```
 
 ## Advanced Configuration
