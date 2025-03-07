@@ -10,11 +10,10 @@ Each release includes the following artifacts:
    - **Source Distribution (.tar.gz)** - Contains the raw source code of the package
    - **Wheel Distribution (.whl)** - A pre-built package that's ready to install
 
-2. **Configuration Templates Archive (`config_templates.zip`)**
+2. **Additional Assets Archive (`additional_assets.zip`)**
    - `conf/lucene_query.json.dist` - Query template for Elasticsearch
    - `conf/platform_problem_monitoring_core.conf.dist` - Main configuration file template
    - `run.sh` - Main execution script
-   - `Makefile` - Development utilities
 
 ## Release Workflow
 
@@ -123,7 +122,7 @@ pip install https://github.com/dx-tooling/platform-problem-monitoring-core/relea
 
 ### 2. For development or customization
 
-1. Download both the wheel file and `config_templates.zip` from the releases page
+1. Download both the wheel file and `additional_assets.zip` from the releases page
 2. Extract the configuration templates
 3. Follow the setup instructions in the README
 

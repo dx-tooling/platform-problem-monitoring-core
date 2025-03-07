@@ -34,14 +34,13 @@ jobs:
       - name: Build package
         run: python -m build
 
-      - name: Create configuration archive
+      - name: Create additional assets archive
         run: |
           mkdir -p release_files/conf
           cp conf/*.dist release_files/conf/
           cp run.sh release_files/
-          cp Makefile release_files/
           cd release_files
-          zip -r ../config_templates.zip .
+          zip -r ../additional_assets.zip .
           cd ..
 
       - name: Get version from tag
@@ -58,4 +57,4 @@ jobs:
           files: |
             dist/*.whl
             dist/*.tar.gz
-            config_templates.zip
+            additional_assets.zip

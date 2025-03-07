@@ -3,6 +3,7 @@
 
 import argparse
 import base64
+import importlib.resources as pkg_resources
 import json
 import re
 import sys
@@ -259,29 +260,40 @@ def _process_exists_query(exists_query: Dict[str, Any]) -> str:
 # Define possible paths to the HTML template file
 def find_template_file() -> str:
     """
-    Find the HTML template file by checking multiple possible locations.
+    Find the HTML template file using package resources.
 
     Returns:
         Path to the HTML template file
     """
-    # List of possible relative paths to try
-    possible_paths = [
-        # Path if installed as a package (highest priority)
-        Path(__file__).parent
-        / "resources"
-        / "html_email_template.html"
-    ]
-
-    # Try each path
-    for path in possible_paths:
-        if path.exists():
-            logger.info(f"Found HTML template at: {path}")
+    try:
+        # Try to find the template using package resources (works for installed packages)
+        with pkg_resources.path("platform_problem_monitoring_core.resources", "html_email_template.html") as path:
+            logger.info(f"Found HTML template using package resources at: {path}")
             return str(path)
+    except Exception as e:
+        logger.warning(f"Could not find template using package resources: {e}")
 
-    # If we get here, we couldn't find the template
-    error_msg = f"Could not find HTML template file. Tried the following paths: {possible_paths}"
-    logger.error(error_msg)
-    raise FileNotFoundError(error_msg)
+        # Fallback paths for development/source installations
+        possible_paths = [
+            # Path if running from source
+            Path(__file__).parent / "resources" / "html_email_template.html",
+            # Path relative to the current directory
+            Path("src/platform_problem_monitoring_core/resources/html_email_template.html"),
+        ]
+
+        # Try each path
+        for path in possible_paths:
+            if path.exists():
+                logger.info(f"Found HTML template at fallback path: {path}")
+                return str(path)
+
+        # If we get here, we couldn't find the template
+        error_msg = (
+            "Could not find HTML template file. Make sure it's installed with the package "
+            "or available in one of these locations: " + ", ".join(str(p) for p in possible_paths)
+        )
+        logger.error(error_msg)
+        raise FileNotFoundError(error_msg) from e
 
 
 # Get the template file path
