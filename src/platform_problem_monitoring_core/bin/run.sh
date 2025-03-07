@@ -20,7 +20,6 @@ fi
 # Source the configuration file
 source "$CONFIG_FILE"
 
-
 # Step 0: Prepare Python environment
 echo "Step 0: Preparing Python environment..."
 
@@ -41,19 +40,33 @@ while [ -L "$SOURCE" ]; do
     [[ $SOURCE != /* ]] && SOURCE=$DIR/$SOURCE
 done
 
-SCRIPT_FOLDER=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
-if [ -z "$SCRIPT_FOLDER" ]; then
-    echo "Failed to determine script folder" >&2
-    exit 1
+# Get the script directory and the package root (2 levels up)
+SCRIPT_DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
+PACKAGE_ROOT=$( cd -P "$SCRIPT_DIR/../.." >/dev/null 2>&1 && pwd )
+
+echo "Script directory: $SCRIPT_DIR"
+echo "Package root directory: $PACKAGE_ROOT"
+
+# Set up Python environment
+# If running from installed package:
+if python -c "import platform_problem_monitoring_core" &>/dev/null; then
+    echo "Running from installed package"
+    PYTHON_CMD="python"
+else
+    # If running from source, create and use virtual environment
+    echo "Running from source, setting up virtual environment"
+    cd "$PACKAGE_ROOT"
+
+    if [ ! -d "venv" ]; then
+        echo "Creating virtual environment"
+        python3 -m venv venv
+    fi
+
+    source venv/bin/activate
+    pip install --upgrade pip
+    pip install -e . -q
+    PYTHON_CMD="python"
 fi
-
-cd "$SCRIPT_FOLDER"
-/usr/bin/env python3 -m venv venv
-source venv/bin/activate
-
-pip install --upgrade pip
-pip install -e . -q
-
 
 # Define file paths for intermediate results
 WORK_DIR=""
@@ -74,7 +87,7 @@ echo "Starting Platform Problem Monitoring process..."
 # Step 1: Prepare application environment
 echo "Step 1: Preparing application environment..."
 # Capture all output but only use the last line as the work directory
-PREPARE_OUTPUT=$(python -m platform_problem_monitoring_core.step1_prepare)
+PREPARE_OUTPUT=$($PYTHON_CMD -m platform_problem_monitoring_core.step1_prepare)
 if [ $? -ne 0 ]; then
     echo "Error: Failed to prepare environment"
     exit 1
@@ -100,7 +113,7 @@ TREND_CHART_FILE="$WORK_DIR/trend_chart.png"
 
 # Step 2: Download previous state
 echo "Step 2: Downloading previous state..."
-python -m platform_problem_monitoring_core.step2_download_previous_state \
+$PYTHON_CMD -m platform_problem_monitoring_core.step2_download_previous_state \
     --s3-bucket "$REMOTE_STATE_S3_BUCKET_NAME" \
     --s3-folder "$REMOTE_STATE_S3_FOLDER_NAME" \
     --date-time-file "$START_DATE_TIME_FILE" \
@@ -113,7 +126,7 @@ echo "Previous state downloaded successfully"
 
 # Step 3: Retrieve hourly problem numbers
 echo "Step 3: Retrieving hourly problem numbers..."
-python -m platform_problem_monitoring_core.step3_retrieve_hourly_problem_numbers \
+$PYTHON_CMD -m platform_problem_monitoring_core.step3_retrieve_hourly_problem_numbers \
     --elasticsearch-url "$ELASTICSEARCH_SERVER_BASE_URL" \
     --query-file "$ELASTICSEARCH_LUCENE_QUERY_FILE_PATH" \
     --hours-back "${TREND_HOURS_BACK:-24}" \
@@ -126,7 +139,7 @@ echo "Hourly problem numbers retrieved successfully"
 
 # Step 4: Generate trend chart
 echo "Step 4: Generating trend chart..."
-python -m platform_problem_monitoring_core.step4_generate_trend_chart \
+$PYTHON_CMD -m platform_problem_monitoring_core.step4_generate_trend_chart \
     --hourly-data-file "$HOURLY_DATA_FILE" \
     --output-file "$TREND_CHART_FILE"
 if [ $? -ne 0 ]; then
@@ -137,7 +150,7 @@ echo "Trend chart generated successfully"
 
 # Step 5: Download logstash documents
 echo "Step 5: Downloading logstash documents..."
-python -m platform_problem_monitoring_core.step5_download_logstash_documents \
+$PYTHON_CMD -m platform_problem_monitoring_core.step5_download_logstash_documents \
     --elasticsearch-url "$ELASTICSEARCH_SERVER_BASE_URL" \
     --query-file "$ELASTICSEARCH_LUCENE_QUERY_FILE_PATH" \
     --start-date-time-file "$START_DATE_TIME_FILE" \
@@ -151,7 +164,7 @@ echo "Logstash documents downloaded successfully"
 
 # Step 6: Extract fields from logstash documents
 echo "Step 6: Extracting fields from logstash documents..."
-python -m platform_problem_monitoring_core.step6_extract_fields \
+$PYTHON_CMD -m platform_problem_monitoring_core.step6_extract_fields \
     --logstash-file "$LOGSTASH_DOCUMENTS_FILE" \
     --output-file "$EXTRACTED_FIELDS_FILE"
 if [ $? -ne 0 ]; then
@@ -162,7 +175,7 @@ echo "Fields extracted successfully"
 
 # Step 7: Normalize messages
 echo "Step 7: Normalizing messages..."
-python -m platform_problem_monitoring_core.step7_normalize_messages \
+$PYTHON_CMD -m platform_problem_monitoring_core.step7_normalize_messages \
     --fields-file "$EXTRACTED_FIELDS_FILE" \
     --output-file "$NORM_RESULTS_FILE"
 if [ $? -ne 0 ]; then
@@ -173,7 +186,7 @@ echo "Messages normalized successfully"
 
 # Step 8: Compare normalizations
 echo "Step 8: Comparing normalization results..."
-python -m platform_problem_monitoring_core.step8_compare_normalizations \
+$PYTHON_CMD -m platform_problem_monitoring_core.step8_compare_normalizations \
     --current-file "$NORM_RESULTS_FILE" \
     --previous-file "$NORM_RESULTS_PREV_FILE" \
     --output-file "$COMPARISON_RESULTS_FILE"
@@ -185,7 +198,7 @@ echo "Normalization results compared successfully"
 
 # Step 9: Generate email bodies
 echo "Step 9: Generating email bodies..."
-python -m platform_problem_monitoring_core.step9_generate_email_bodies \
+$PYTHON_CMD -m platform_problem_monitoring_core.step9_generate_email_bodies \
     --comparison-file "$COMPARISON_RESULTS_FILE" \
     --norm-results-file "$NORM_RESULTS_FILE" \
     --html-output "$HTML_EMAIL_BODY_FILE" \
@@ -205,7 +218,7 @@ echo "Email bodies generated successfully"
 # Step 10: Send email report
 echo "Step 10: Sending email report..."
 EMAIL_SUBJECT="Platform Problem Monitoring Report $(date +"%Y-%m-%d")"
-python -m platform_problem_monitoring_core.step10_send_email_report \
+$PYTHON_CMD -m platform_problem_monitoring_core.step10_send_email_report \
     --html-file "$HTML_EMAIL_BODY_FILE" \
     --text-file "$TEXT_EMAIL_BODY_FILE" \
     --subject "$EMAIL_SUBJECT" \
@@ -223,7 +236,7 @@ echo "Email report sent successfully"
 
 # Step 11: Store new state
 echo "Step 11: Storing new state..."
-python -m platform_problem_monitoring_core.step11_store_new_state \
+$PYTHON_CMD -m platform_problem_monitoring_core.step11_store_new_state \
     --s3-bucket "$REMOTE_STATE_S3_BUCKET_NAME" \
     --s3-folder "$REMOTE_STATE_S3_FOLDER_NAME" \
     --date-time-file "$CURRENT_DATE_TIME_FILE" \

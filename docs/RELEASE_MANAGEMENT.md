@@ -13,7 +13,6 @@ Each release includes the following artifacts:
 2. **Additional Assets Archive (`additional_assets.zip`)**
    - `conf/lucene_query.json.dist` - Query template for Elasticsearch
    - `conf/platform_problem_monitoring_core.conf.dist` - Main configuration file template
-   - `run.sh` - Main execution script
 
 ## Release Workflow
 
@@ -27,19 +26,6 @@ The release process uses a GitHub Actions workflow (`.github/workflows/release.y
 4. Attaches all artifacts to the release
 
 The workflow is triggered whenever a tag with the format `v*.*.*` is pushed to the repository.
-
-### Required Files
-
-Make sure the following files are included in your repository:
-
-```
-.github/workflows/release.yml        # Release workflow definition
-conf/lucene_query.json.dist          # Elasticsearch query template
-conf/platform_problem_monitoring_core.conf.dist  # Configuration template
-src/platform_problem_monitoring_core/resources/html_email_template.html  # Email template
-run.sh                               # Main execution script
-Makefile                             # Development utilities
-```
 
 ## Step-by-Step Release Process
 
