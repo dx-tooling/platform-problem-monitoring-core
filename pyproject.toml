@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "platform_problem_monitoring_core"
-version = "0.1.0"
+version = "0.1.1"
 description = "A tool for monitoring platform problems using Elasticsearch logs"
 authors = [
     {name = "Platform Team"}
