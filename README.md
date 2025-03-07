@@ -42,7 +42,7 @@ This tool is ideal if:
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/dx-tooling/platform-problem-monitoring-core.git
    cd platform-problem-monitoring-core
    ```
 
@@ -111,7 +111,7 @@ This tool is ideal if:
 
 7. **Run the tool:**
    ```bash
-   ./bin/ppmc ./main.conf
+   ./bin/ppmc ./etc/main.conf
    ```
 
 ## How It Works
@@ -178,7 +178,7 @@ To run the tool periodically, set up a cron job:
 
 ```bash
 # Run every 6 hours
-0 */6 * * * cd /path/to/platform-problem-monitoring-core && ./src/ppmc ./main.conf >> /var/log/platform-monitoring.log 2>&1
+0 */6 * * * cd /path/to/platform-problem-monitoring-core && ./bin/ppmc ./etc/main.conf >> /var/log/platform-monitoring.log 2>&1
 ```
 
 ## Advanced Configuration
@@ -221,49 +221,6 @@ If you encounter problems or have questions, please:
 1. Check the detailed logs in your temporary work directory
 2. Open an issue in our repository with your configuration (with sensitive data removed)
 3. Include error messages and steps to reproduce the issue
-
-## Development
-
-### Development Setup
-
-1. **Clone the repository:**
-   ```bash
-   git clone <repository-url>
-   cd platform-problem-monitoring-core
-   ```
-
-2. **Install development dependencies:**
-   ```bash
-   make install
-   ```
-   This creates a virtual environment, installs the package and all development dependencies, and sets up pre-commit hooks.
-
-3. **Activate the virtual environment:**
-   ```bash
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-### Code Quality Tools
-
-This project uses a unified approach to code quality with all tools configured in `pyproject.toml` and executed via:
-
-1. **Pre-commit hooks** - Run automatically before each commit
-2. **Make commands** - Run manually or in CI
-
-Available make commands:
-
-```bash
-make format        # Format code with black and isort
-make format-check  # Check formatting without changing files
-make lint          # Run ruff linter
-make lint-fix      # Run ruff linter with auto-fix
-make type-check    # Run mypy type checking
-make security-check # Run bandit security checks
-make quality       # Run all checks with formatting
-make ci-quality    # Run all checks without formatting (used in CI)
-```
-
-The pre-commit hooks are configured to use the same Makefile targets, ensuring consistency between local development and CI environments.
 
 ## License
 
