@@ -41,31 +41,38 @@ while [ -L "$SOURCE" ]; do
     [[ $SOURCE != /* ]] && SOURCE=$DIR/$SOURCE
 done
 
-# Get the script directory and the package root (2 levels up)
+# Get the script directory
 SCRIPT_DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
-PACKAGE_ROOT=$( cd -P "$SCRIPT_DIR/../.." >/dev/null 2>&1 && pwd )
-
 echo "Script directory: $SCRIPT_DIR"
-echo "Package root directory: $PACKAGE_ROOT"
 
-# Set up Python environment
-# If running from installed package:
+# Check if the package is installed
 if python -c "import platform_problem_monitoring_core" &>/dev/null; then
     echo "Running from installed package"
     PYTHON_CMD="python"
 else
-    # If running from source, create and use virtual environment
-    echo "Running from source, setting up virtual environment"
-    cd "$PACKAGE_ROOT"
+    # If running from source, detect package root and create/use virtual environment
+    # When running from source, the script should be in bin/ which is at the root of the project
+    PACKAGE_ROOT=$( cd -P "$SCRIPT_DIR/.." >/dev/null 2>&1 && pwd )
 
-    if [ ! -d "venv" ]; then
-        echo "Creating virtual environment"
-        python3 -m venv venv
+    # Verify this looks like our project directory
+    if [ -f "$PACKAGE_ROOT/pyproject.toml" ]; then
+        echo "Running from source, package root directory: $PACKAGE_ROOT"
+        echo "Setting up virtual environment"
+        cd "$PACKAGE_ROOT"
+
+        if [ ! -d "venv" ]; then
+            echo "Creating virtual environment"
+            python3 -m venv venv
+        fi
+
+        source venv/bin/activate
+        pip install --upgrade pip
+        pip install -e . -q
+    else
+        echo "Error: Cannot determine package root directory"
+        echo "Neither running from installed package nor from recognizable source directory"
+        exit 1
     fi
-
-    source venv/bin/activate
-    pip install --upgrade pip
-    pip install -e . -q
     PYTHON_CMD="python"
 fi
 
