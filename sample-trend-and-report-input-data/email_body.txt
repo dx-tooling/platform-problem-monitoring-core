@@ -1,0 +1,100 @@
+
+PLATFORM PROBLEM MONITORING REPORT
+=================================
+Generated: 2025-03-09 15:59:20 UTC
+
+SUMMARY
+-------
+Current problem patterns: 0
+Previous problem patterns: 0
+New problem patterns: 3
+Disappeared problem patterns: 5
+
+NEW PROBLEM PATTERNS
+===================
+These patterns have appeared since the last report.
+
+1. [32] SSL certificate for <*> is expiring in <*> days
+   Sample documents:
+
+2. [21] Disk usage warning: <*> is at <*>% capacity
+   Sample documents:
+
+3. [18] Connection reset by peer while sending request to <*>
+   Sample documents:
+
+
+
+DISAPPEARED PROBLEM PATTERNS
+==========================
+These patterns were present in the previous report but are no longer occurring.
+
+1. [245] Error connecting to database at <*>: Connection timed out
+   Sample documents:
+
+2. [124] Exception in thread "main" java.lang.OutOfMemoryError: <*>
+   Sample documents:
+
+3. [89] Kubernetes pod <*> in namespace <*> failed health check
+   Sample documents:
+
+4. [54] Failed to process message from queue <*>: <*>
+   Sample documents:
+
+5. [42] Cache invalidation failed for key <*>
+   Sample documents:
+
+
+
+INCREASED PROBLEM PATTERNS
+========================
+These patterns have increased in occurrence count since the last report.
+
+1. [14] (+0, +0.0%) Failed to process job <*> - timeout after <*> seconds
+   Sample documents:
+
+
+
+DECREASED PROBLEM PATTERNS
+========================
+These patterns have decreased in occurrence count since the last report.
+
+1. [72] (-0, -0.0%) Failed to authenticate user <*> - invalid credentials
+   Sample documents:
+
+2. [58] (-0, -0.0%) API rate limit exceeded for user ID <*>
+   Sample documents:
+
+3. [12] (-0, -0.0%) HTTP request failed: <*> <*> returned status code <*>
+   Sample documents:
+
+
+
+TOP 25 CURRENT PROBLEM PATTERNS
+==============================
+The most frequent problem patterns in the current report.
+
+1. [72] Failed to authenticate user <*> - invalid credentials
+   Sample documents:
+
+2. [58] API rate limit exceeded for user ID <*>
+   Sample documents:
+
+3. [32] SSL certificate for <*> is expiring in <*> days
+   Sample documents:
+
+4. [21] Disk usage warning: <*> is at <*>% capacity
+   Sample documents:
+
+5. [18] Connection reset by peer while sending request to <*>
+   Sample documents:
+
+6. [14] Failed to process job <*> - timeout after <*> seconds
+   Sample documents:
+
+7. [12] AWS S3 access denied: <*>
+   Sample documents:
+
+
+
+This is an automated report from the Platform Problem Monitoring system.

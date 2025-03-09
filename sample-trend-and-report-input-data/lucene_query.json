@@ -1,0 +1,46 @@
+{
+    "query": {
+        "bool": {
+            "should": [
+                {
+                    "match": {
+                        "message": "error"
+                    }
+                },
+                {
+                    "match": {
+                        "message": "failure"
+                    }
+                },
+                {
+                    "match": {
+                        "message": "exception"
+                    }
+                },
+                {
+                    "match": {
+                        "message": "warning"
+                    }
+                },
+                {
+                    "match": {
+                        "message": "critical"
+                    }
+                }
+            ],
+            "must_not": [
+                {
+                    "match": {
+                        "message": "User Deprecated"
+                    }
+                },
+                {
+                    "match": {
+                        "message": "debug"
+                    }
+                }
+            ],
+            "minimum_should_match": 1
+        }
+    }
+}

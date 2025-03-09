@@ -1,0 +1,226 @@
+{
+    "new_patterns": [
+        {
+            "cluster_id": "6",
+            "count": 32,
+            "pattern": "SSL certificate for <*> is expiring in <*> days",
+            "first_seen": "2025-03-07T04:15:22Z",
+            "last_seen": "2025-03-07T23:15:22Z",
+            "sample_log_lines": [
+                "SSL certificate for api.example.com is expiring in 7 days",
+                "SSL certificate for dashboard.example.org is expiring in 5 days",
+                "SSL certificate for auth.example.net is expiring in 3 days"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.07/doc38",
+                "logs-2025.03.07/doc123",
+                "logs-2025.03.07/doc208"
+            ]
+        },
+        {
+            "cluster_id": "7",
+            "count": 21,
+            "pattern": "Disk usage warning: <*> is at <*>% capacity",
+            "first_seen": "2025-03-07T05:32:16Z",
+            "last_seen": "2025-03-07T22:47:53Z",
+            "sample_log_lines": [
+                "Disk usage warning: /var/log is at 85% capacity",
+                "Disk usage warning: /home is at 92% capacity",
+                "Disk usage warning: /tmp is at 88% capacity"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.07/doc56",
+                "logs-2025.03.07/doc127",
+                "logs-2025.03.07/doc198"
+            ]
+        },
+        {
+            "cluster_id": "8",
+            "count": 18,
+            "pattern": "Connection reset by peer while sending request to <*>",
+            "first_seen": "2025-03-07T01:42:19Z",
+            "last_seen": "2025-03-07T22:38:11Z",
+            "sample_log_lines": [
+                "Connection reset by peer while sending request to https://api.payment-provider.com/v2/transactions",
+                "Connection reset by peer while sending request to https://auth.partner-service.org/oauth/token",
+                "Connection reset by peer while sending request to https://cdn.assets.com/resource"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.07/doc43",
+                "logs-2025.03.07/doc137",
+                "logs-2025.03.07/doc219"
+            ]
+        }
+    ],
+    "disappeared_patterns": [
+        {
+            "cluster_id": "1",
+            "count": 245,
+            "pattern": "Error connecting to database at <*>: Connection timed out",
+            "first_seen": "2025-03-06T00:15:32Z",
+            "last_seen": "2025-03-06T23:45:17Z",
+            "sample_log_lines": [
+                "Error connecting to database at 10.0.1.42:3306: Connection timed out",
+                "Error connecting to database at db.example.com:3306: Connection timed out",
+                "Error connecting to database at 192.168.1.100:3306: Connection timed out"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.06/doc1",
+                "logs-2025.03.06/doc145",
+                "logs-2025.03.06/doc231"
+            ]
+        },
+        {
+            "cluster_id": "4",
+            "count": 124,
+            "pattern": "Exception in thread \"main\" java.lang.OutOfMemoryError: <*>",
+            "first_seen": "2025-03-06T03:25:48Z",
+            "last_seen": "2025-03-06T22:17:03Z",
+            "sample_log_lines": [
+                "Exception in thread \"main\" java.lang.OutOfMemoryError: Java heap space",
+                "Exception in thread \"main\" java.lang.OutOfMemoryError: GC overhead limit exceeded",
+                "Exception in thread \"main\" java.lang.OutOfMemoryError: unable to create new native thread"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.06/doc42",
+                "logs-2025.03.06/doc87",
+                "logs-2025.03.06/doc109"
+            ]
+        },
+        {
+            "cluster_id": "5",
+            "count": 89,
+            "pattern": "Kubernetes pod <*> in namespace <*> failed health check",
+            "first_seen": "2025-03-06T00:32:11Z",
+            "last_seen": "2025-03-06T23:47:29Z",
+            "sample_log_lines": [
+                "Kubernetes pod web-server-5d4d7 in namespace production failed health check",
+                "Kubernetes pod db-backup-3f2a1 in namespace data-services failed health check",
+                "Kubernetes pod cache-9b3c8 in namespace frontend failed health check"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.06/doc53",
+                "logs-2025.03.06/doc167",
+                "logs-2025.03.06/doc214"
+            ]
+        },
+        {
+            "cluster_id": "11",
+            "count": 54,
+            "pattern": "Failed to process message from queue <*>: <*>",
+            "first_seen": "2025-03-06T02:17:42Z",
+            "last_seen": "2025-03-06T22:35:09Z",
+            "sample_log_lines": [
+                "Failed to process message from queue orders: JSON parse error at line 1 column 24",
+                "Failed to process message from queue notifications: Message expired",
+                "Failed to process message from queue user-events: Unknown message format"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.06/doc67",
+                "logs-2025.03.06/doc132",
+                "logs-2025.03.06/doc223"
+            ]
+        },
+        {
+            "cluster_id": "12",
+            "count": 42,
+            "pattern": "Cache invalidation failed for key <*>",
+            "first_seen": "2025-03-06T04:28:16Z",
+            "last_seen": "2025-03-06T21:51:48Z",
+            "sample_log_lines": [
+                "Cache invalidation failed for key user:profile:12345",
+                "Cache invalidation failed for key product:catalog:recent",
+                "Cache invalidation failed for key system:config:endpoints"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.06/doc84",
+                "logs-2025.03.06/doc156",
+                "logs-2025.03.06/doc238"
+            ]
+        }
+    ],
+    "increased_patterns": [
+        {
+            "cluster_id": "9",
+            "current_count": 14,
+            "previous_count": 5,
+            "difference": 9,
+            "percentage_change": 180.0,
+            "pattern": "Failed to process job <*> - timeout after <*> seconds",
+            "first_seen": "2025-03-07T03:17:09Z",
+            "last_seen": "2025-03-07T21:05:33Z",
+            "sample_log_lines": [
+                "Failed to process job export-user-data-5782 - timeout after 60 seconds",
+                "Failed to process job generate-report-4213 - timeout after 120 seconds",
+                "Failed to process job sync-inventory-8974 - timeout after 180 seconds"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.07/doc72",
+                "logs-2025.03.07/doc158",
+                "logs-2025.03.07/doc241"
+            ]
+        }
+    ],
+    "decreased_patterns": [
+        {
+            "cluster_id": "2",
+            "current_count": 72,
+            "previous_count": 187,
+            "difference": -115,
+            "percentage_change": -61.5,
+            "pattern": "Failed to authenticate user <*> - invalid credentials",
+            "first_seen": "2025-03-07T00:03:12Z",
+            "last_seen": "2025-03-07T23:45:27Z",
+            "sample_log_lines": [
+                "Failed to authenticate user customer@example.org - invalid credentials",
+                "Failed to authenticate user guest-user - invalid credentials",
+                "Failed to authenticate user api-client-456 - invalid credentials"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.07/doc19",
+                "logs-2025.03.07/doc82",
+                "logs-2025.03.07/doc143"
+            ]
+        },
+        {
+            "cluster_id": "3",
+            "current_count": 58,
+            "previous_count": 163,
+            "difference": -105,
+            "percentage_change": -64.4,
+            "pattern": "API rate limit exceeded for user ID <*>",
+            "first_seen": "2025-03-07T00:12:43Z",
+            "last_seen": "2025-03-07T23:51:16Z",
+            "sample_log_lines": [
+                "API rate limit exceeded for user ID 6142",
+                "API rate limit exceeded for user ID 9037",
+                "API rate limit exceeded for user ID 2384"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.07/doc27",
+                "logs-2025.03.07/doc94",
+                "logs-2025.03.07/doc185"
+            ]
+        },
+        {
+            "cluster_id": "13",
+            "current_count": 12,
+            "previous_count": 29,
+            "difference": -17,
+            "percentage_change": -58.6,
+            "pattern": "HTTP request failed: <*> <*> returned status code <*>",
+            "first_seen": "2025-03-07T08:43:18Z",
+            "last_seen": "2025-03-07T20:17:32Z",
+            "sample_log_lines": [
+                "HTTP request failed: GET https://metrics.example.com/api/collect returned status code 502",
+                "HTTP request failed: POST https://auth.thirdparty.org/authorize returned status code 429",
+                "HTTP request failed: DELETE https://cloud-storage.example.net/objects/temp returned status code 403"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.07/doc87",
+                "logs-2025.03.07/doc164",
+                "logs-2025.03.07/doc232"
+            ]
+        }
+    ]
+}

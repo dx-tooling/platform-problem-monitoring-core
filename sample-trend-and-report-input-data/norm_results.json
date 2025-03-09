@@ -1,0 +1,123 @@
+{
+    "patterns": [
+        {
+            "cluster_id": "2",
+            "count": 72,
+            "pattern": "Failed to authenticate user <*> - invalid credentials",
+            "first_seen": "2025-03-07T00:03:12Z",
+            "last_seen": "2025-03-07T23:45:27Z",
+            "sample_log_lines": [
+                "Failed to authenticate user customer@example.org - invalid credentials",
+                "Failed to authenticate user guest-user - invalid credentials",
+                "Failed to authenticate user api-client-456 - invalid credentials"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.07/doc19",
+                "logs-2025.03.07/doc82",
+                "logs-2025.03.07/doc143"
+            ]
+        },
+        {
+            "cluster_id": "3",
+            "count": 58,
+            "pattern": "API rate limit exceeded for user ID <*>",
+            "first_seen": "2025-03-07T00:12:43Z",
+            "last_seen": "2025-03-07T23:51:16Z",
+            "sample_log_lines": [
+                "API rate limit exceeded for user ID 6142",
+                "API rate limit exceeded for user ID 9037",
+                "API rate limit exceeded for user ID 2384"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.07/doc27",
+                "logs-2025.03.07/doc94",
+                "logs-2025.03.07/doc185"
+            ]
+        },
+        {
+            "cluster_id": "6",
+            "count": 32,
+            "pattern": "SSL certificate for <*> is expiring in <*> days",
+            "first_seen": "2025-03-07T04:15:22Z",
+            "last_seen": "2025-03-07T23:15:22Z",
+            "sample_log_lines": [
+                "SSL certificate for api.example.com is expiring in 7 days",
+                "SSL certificate for dashboard.example.org is expiring in 5 days",
+                "SSL certificate for auth.example.net is expiring in 3 days"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.07/doc38",
+                "logs-2025.03.07/doc123",
+                "logs-2025.03.07/doc208"
+            ]
+        },
+        {
+            "cluster_id": "7",
+            "count": 21,
+            "pattern": "Disk usage warning: <*> is at <*>% capacity",
+            "first_seen": "2025-03-07T05:32:16Z",
+            "last_seen": "2025-03-07T22:47:53Z",
+            "sample_log_lines": [
+                "Disk usage warning: /var/log is at 85% capacity",
+                "Disk usage warning: /home is at 92% capacity",
+                "Disk usage warning: /tmp is at 88% capacity"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.07/doc56",
+                "logs-2025.03.07/doc127",
+                "logs-2025.03.07/doc198"
+            ]
+        },
+        {
+            "cluster_id": "8",
+            "count": 18,
+            "pattern": "Connection reset by peer while sending request to <*>",
+            "first_seen": "2025-03-07T01:42:19Z",
+            "last_seen": "2025-03-07T22:38:11Z",
+            "sample_log_lines": [
+                "Connection reset by peer while sending request to https://api.payment-provider.com/v2/transactions",
+                "Connection reset by peer while sending request to https://auth.partner-service.org/oauth/token",
+                "Connection reset by peer while sending request to https://cdn.assets.com/resource"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.07/doc43",
+                "logs-2025.03.07/doc137",
+                "logs-2025.03.07/doc219"
+            ]
+        },
+        {
+            "cluster_id": "9",
+            "count": 14,
+            "pattern": "Failed to process job <*> - timeout after <*> seconds",
+            "first_seen": "2025-03-07T03:17:09Z",
+            "last_seen": "2025-03-07T21:05:33Z",
+            "sample_log_lines": [
+                "Failed to process job export-user-data-5782 - timeout after 60 seconds",
+                "Failed to process job generate-report-4213 - timeout after 120 seconds",
+                "Failed to process job sync-inventory-8974 - timeout after 180 seconds"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.07/doc72",
+                "logs-2025.03.07/doc158",
+                "logs-2025.03.07/doc241"
+            ]
+        },
+        {
+            "cluster_id": "10",
+            "count": 12,
+            "pattern": "AWS S3 access denied: <*>",
+            "first_seen": "2025-03-07T08:05:27Z",
+            "last_seen": "2025-03-07T19:32:41Z",
+            "sample_log_lines": [
+                "AWS S3 access denied: User not authorized to perform s3:PutObject on resource arn:aws:s3:::backups/daily",
+                "AWS S3 access denied: The specified bucket does not exist",
+                "AWS S3 access denied: The AWS Access Key Id you provided does not exist in our records"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.07/doc98",
+                "logs-2025.03.07/doc172",
+                "logs-2025.03.07/doc254"
+            ]
+        }
+    ]
+}

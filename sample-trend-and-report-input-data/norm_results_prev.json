@@ -1,0 +1,140 @@
+{
+    "patterns": [
+        {
+            "cluster_id": "1",
+            "count": 245,
+            "pattern": "Error connecting to database at <*>: Connection timed out",
+            "first_seen": "2025-03-06T00:15:32Z",
+            "last_seen": "2025-03-06T23:45:17Z",
+            "sample_log_lines": [
+                "Error connecting to database at 10.0.1.42:3306: Connection timed out",
+                "Error connecting to database at db.example.com:3306: Connection timed out",
+                "Error connecting to database at 192.168.1.100:3306: Connection timed out"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.06/doc1",
+                "logs-2025.03.06/doc145",
+                "logs-2025.03.06/doc231"
+            ]
+        },
+        {
+            "cluster_id": "2",
+            "count": 187,
+            "pattern": "Failed to authenticate user <*> - invalid credentials",
+            "first_seen": "2025-03-06T01:12:07Z",
+            "last_seen": "2025-03-06T23:10:31Z",
+            "sample_log_lines": [
+                "Failed to authenticate user john.doe@example.com - invalid credentials",
+                "Failed to authenticate user admin - invalid credentials",
+                "Failed to authenticate user service-account-123 - invalid credentials"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.06/doc21",
+                "logs-2025.03.06/doc98",
+                "logs-2025.03.06/doc176"
+            ]
+        },
+        {
+            "cluster_id": "3",
+            "count": 163,
+            "pattern": "API rate limit exceeded for user ID <*>",
+            "first_seen": "2025-03-06T00:05:23Z",
+            "last_seen": "2025-03-06T23:58:41Z",
+            "sample_log_lines": [
+                "API rate limit exceeded for user ID 5723",
+                "API rate limit exceeded for user ID 8932",
+                "API rate limit exceeded for user ID 1047"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.06/doc15",
+                "logs-2025.03.06/doc112",
+                "logs-2025.03.06/doc201"
+            ]
+        },
+        {
+            "cluster_id": "4",
+            "count": 124,
+            "pattern": "Exception in thread \"main\" java.lang.OutOfMemoryError: <*>",
+            "first_seen": "2025-03-06T03:25:48Z",
+            "last_seen": "2025-03-06T22:17:03Z",
+            "sample_log_lines": [
+                "Exception in thread \"main\" java.lang.OutOfMemoryError: Java heap space",
+                "Exception in thread \"main\" java.lang.OutOfMemoryError: GC overhead limit exceeded",
+                "Exception in thread \"main\" java.lang.OutOfMemoryError: unable to create new native thread"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.06/doc42",
+                "logs-2025.03.06/doc87",
+                "logs-2025.03.06/doc109"
+            ]
+        },
+        {
+            "cluster_id": "5",
+            "count": 89,
+            "pattern": "Kubernetes pod <*> in namespace <*> failed health check",
+            "first_seen": "2025-03-06T00:32:11Z",
+            "last_seen": "2025-03-06T23:47:29Z",
+            "sample_log_lines": [
+                "Kubernetes pod web-server-5d4d7 in namespace production failed health check",
+                "Kubernetes pod db-backup-3f2a1 in namespace data-services failed health check",
+                "Kubernetes pod cache-9b3c8 in namespace frontend failed health check"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.06/doc53",
+                "logs-2025.03.06/doc167",
+                "logs-2025.03.06/doc214"
+            ]
+        },
+        {
+            "cluster_id": "11",
+            "count": 54,
+            "pattern": "Failed to process message from queue <*>: <*>",
+            "first_seen": "2025-03-06T02:17:42Z",
+            "last_seen": "2025-03-06T22:35:09Z",
+            "sample_log_lines": [
+                "Failed to process message from queue orders: JSON parse error at line 1 column 24",
+                "Failed to process message from queue notifications: Message expired",
+                "Failed to process message from queue user-events: Unknown message format"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.06/doc67",
+                "logs-2025.03.06/doc132",
+                "logs-2025.03.06/doc223"
+            ]
+        },
+        {
+            "cluster_id": "12",
+            "count": 42,
+            "pattern": "Cache invalidation failed for key <*>",
+            "first_seen": "2025-03-06T04:28:16Z",
+            "last_seen": "2025-03-06T21:51:48Z",
+            "sample_log_lines": [
+                "Cache invalidation failed for key user:profile:12345",
+                "Cache invalidation failed for key product:catalog:recent",
+                "Cache invalidation failed for key system:config:endpoints"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.06/doc84",
+                "logs-2025.03.06/doc156",
+                "logs-2025.03.06/doc238"
+            ]
+        },
+        {
+            "cluster_id": "13",
+            "count": 29,
+            "pattern": "HTTP request failed: <*> <*> returned status code <*>",
+            "first_seen": "2025-03-06T07:14:37Z",
+            "last_seen": "2025-03-06T23:08:21Z",
+            "sample_log_lines": [
+                "HTTP request failed: GET https://api.analytics.com/v1/reports returned status code 503",
+                "HTTP request failed: POST https://payments.example.org/process returned status code 429",
+                "HTTP request failed: PUT https://inventory.example.net/items/update returned status code 400"
+            ],
+            "sample_doc_references": [
+                "logs-2025.03.06/doc103",
+                "logs-2025.03.06/doc189",
+                "logs-2025.03.06/doc247"
+            ]
+        }
+    ]
+}

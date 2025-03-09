@@ -59,7 +59,8 @@ This tool is ideal if:
 
 4. **Create a configuration file:**
    ```bash
-   cp etc/main.conf.dist /etc/main.conf
+   mkdir -p /etc/ppmc
+   cp etc/main.conf.dist /etc/ppmc/main.conf
    ```
 
 5. **Edit the configuration:**
@@ -83,10 +84,10 @@ This tool is ideal if:
 
 6. **Set up the Elasticsearch query:**
    ```bash
-   cp etc/lucene_query.json.dist etc/lucene_query.json
+   cp etc/lucene_query.json.dist /etc/ppmc/lucene_query.json
    ```
 
-   This default query looks for error messages while filtering out noise:
+   This sample query looks for error messages while filtering out noise:
    ```json
    {
        "query": {
@@ -111,7 +112,7 @@ This tool is ideal if:
 
 7. **Run the tool:**
    ```bash
-   ./bin/ppmc ./etc/main.conf
+   ./bin/ppmc /etc/ppmc/main.conf
    ```
 
 ## How It Works
