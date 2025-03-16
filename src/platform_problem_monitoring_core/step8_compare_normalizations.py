@@ -4,7 +4,12 @@
 import argparse
 import json
 import sys
-from typing import List, NotRequired, TypedDict
+from typing import List, TypedDict
+
+try:
+    from typing import NotRequired
+except ImportError:
+    from typing_extensions import NotRequired
 
 from platform_problem_monitoring_core.utils import load_json, logger, save_json
 

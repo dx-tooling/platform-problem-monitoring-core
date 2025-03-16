@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "platform_problem_monitoring_core"
-version = "0.1.10"
+version = "0.1.11"
 description = "A tool for monitoring platform problems using Elasticsearch logs"
 authors = [
     {name = "Platform Team"}
@@ -20,6 +20,7 @@ dependencies = [
     "requests>=2.25.0",
     "matplotlib>=3.7.0",
     "seaborn>=0.12.0",
+    "typing-extensions>=4.0.0",
 ]
 
 [project.optional-dependencies]
