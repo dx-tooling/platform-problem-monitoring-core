@@ -1,5 +1,6 @@
 """Tests for the step9_generate_email_bodies module."""
 
+import re
 import tempfile
 from pathlib import Path
 from typing import Any, Dict
@@ -265,7 +266,10 @@ class TestStep9GenerateEmailBodies:
         assert "Sample 1" in result
         assert "Sample 2" in result
         assert "Sample 3" in result
-        assert "https://kibana.example.com" in result
+
+        # Use a more secure pattern matching approach
+        href_pattern = re.compile(r'href=["\'](https://kibana\.example\.com[^"\']*)["\']')
+        assert href_pattern.search(result) is not None, "URL not found in proper href attribute context"
 
     def test_generate_pattern_list_html(self, sample_pattern: Dict[str, Any]) -> None:
         """Test generate_pattern_list_html function."""
@@ -278,6 +282,11 @@ class TestStep9GenerateEmailBodies:
         assert sample_pattern["pattern"] in html
         assert str(sample_pattern["count"]) in html
         assert "Sample 1" in html
+
+        # More secure URL check in sample links
+        if kibana_url:
+            href_pattern = re.compile(r'href=["\'](https://kibana\.example\.com[^"\']*)["\']')
+            assert href_pattern.search(html) is not None, "URL not found in proper href attribute context"
 
         # Check dark mode HTML
         assert '<div class="pattern-item">' in dark_html
