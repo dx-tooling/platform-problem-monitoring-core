@@ -4,7 +4,7 @@
 import argparse
 import json
 import sys
-from typing import List, TypedDict
+from typing import List, NotRequired, TypedDict
 
 from platform_problem_monitoring_core.utils import load_json, logger, save_json
 
@@ -19,6 +19,11 @@ class PatternDict(TypedDict):
     last_seen: str
     sample_log_lines: List[str]
     sample_doc_references: List[str]
+    # Fields required by step9_generate_email_bodies
+    current_count: NotRequired[int]  # Current count (same as count for clarity)
+    previous_count: NotRequired[int]  # Count from previous run
+    absolute_change: NotRequired[int]  # Absolute difference between counts
+    percent_change: NotRequired[float]  # Percentage difference
 
 
 # Define a function to get the count safely with a proper return type
@@ -127,11 +132,20 @@ def _find_increased_patterns(current_dict: dict, previous_dict: dict) -> List[Pa
             previous_count = previous_patterns[pattern_text]["count"]
             current_count = current_pattern["count"]
 
+            # Only include patterns with actual increases
             if current_count > previous_count:
+                # Calculate absolute and percentage change
+                absolute_change = current_count - previous_count
+                percent_change = round((absolute_change / previous_count) * 100, 1) if previous_count > 0 else 100
+
                 # Ensure all required fields are present
                 increased_pattern: PatternDict = {
                     "cluster_id": current_pattern["cluster_id"],
                     "count": current_count,
+                    "current_count": current_count,
+                    "previous_count": previous_count,
+                    "absolute_change": absolute_change,
+                    "percent_change": percent_change,
                     "pattern": pattern_text,
                     "first_seen": current_pattern.get("first_seen", ""),
                     "last_seen": current_pattern.get("last_seen", ""),
@@ -140,8 +154,8 @@ def _find_increased_patterns(current_dict: dict, previous_dict: dict) -> List[Pa
                 }
                 increased_patterns.append(increased_pattern)
 
-    # Sort by count (descending)
-    increased_patterns.sort(key=get_count, reverse=True)
+    # Sort by percent change (descending), then by absolute change for ties, then by count
+    increased_patterns.sort(key=lambda p: (p["percent_change"], p["absolute_change"], p["count"]), reverse=True)
     return increased_patterns
 
 
@@ -168,11 +182,20 @@ def _find_decreased_patterns(current_dict: dict, previous_dict: dict) -> List[Pa
             previous_count = previous_patterns[pattern_text]["count"]
             current_count = current_pattern["count"]
 
+            # Only include patterns with actual decreases
             if current_count < previous_count:
+                # Calculate absolute and percentage change
+                absolute_change = previous_count - current_count
+                percent_change = round((absolute_change / previous_count) * 100, 1) if previous_count > 0 else 0
+
                 # Ensure all required fields are present
                 decreased_pattern: PatternDict = {
                     "cluster_id": current_pattern["cluster_id"],
                     "count": current_count,
+                    "current_count": current_count,
+                    "previous_count": previous_count,
+                    "absolute_change": absolute_change,
+                    "percent_change": percent_change,
                     "pattern": pattern_text,
                     "first_seen": current_pattern.get("first_seen", ""),
                     "last_seen": current_pattern.get("last_seen", ""),
@@ -181,8 +204,8 @@ def _find_decreased_patterns(current_dict: dict, previous_dict: dict) -> List[Pa
                 }
                 decreased_patterns.append(decreased_pattern)
 
-    # Sort by count (descending)
-    decreased_patterns.sort(key=get_count, reverse=True)
+    # Sort by percent change (descending), then by absolute change for ties, then by count
+    decreased_patterns.sort(key=lambda p: (p["percent_change"], p["absolute_change"], p["count"]), reverse=True)
     return decreased_patterns
 
 

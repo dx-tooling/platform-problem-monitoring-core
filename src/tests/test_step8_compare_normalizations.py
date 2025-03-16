@@ -314,3 +314,115 @@ class TestStep8CompareNormalizations:
                 Path(current_file.name).unlink(missing_ok=True)
                 Path(previous_file.name).unlink(missing_ok=True)
                 Path(output_file.name).unlink(missing_ok=True)
+
+    def test_increased_patterns_contains_required_fields(
+        self, sample_current_data: Dict[str, Any], sample_previous_data: Dict[str, Any]
+    ) -> None:
+        """Test that increased patterns contain all fields required by the email generation."""
+        increased_patterns = _find_increased_patterns(sample_current_data, sample_previous_data)
+
+        # There should be one increased pattern based on our test data
+        assert len(increased_patterns) == 1
+        pattern = increased_patterns[0]
+
+        # The increased pattern should have proper pattern text
+        assert pattern["pattern"] == "Error message 1"
+
+        # Verify it contains all the fields required by email generation
+        assert "count" in pattern, "Pattern is missing 'count' field"
+        assert pattern["count"] == 10, "Pattern has incorrect current count"
+
+        # These fields are expected by step9_generate_email_bodies.py but are missing
+        assert "current_count" in pattern, "Pattern is missing 'current_count' field"
+        assert pattern["current_count"] == 10, "Pattern has incorrect current count"
+        assert "previous_count" in pattern, "Pattern is missing 'previous_count' field"
+        assert pattern["previous_count"] == 5, "Pattern has incorrect previous count"
+        assert "absolute_change" in pattern, "Pattern is missing 'absolute_change' field"
+        assert pattern["absolute_change"] == 5, "Pattern has incorrect absolute change"
+        assert "percent_change" in pattern, "Pattern is missing 'percent_change' field"
+        assert pattern["percent_change"] == 100, "Pattern has incorrect percent change"
+
+    def test_decreased_patterns_contains_required_fields(
+        self, sample_current_data: Dict[str, Any], sample_previous_data: Dict[str, Any]
+    ) -> None:
+        """Test that decreased patterns contain all fields required by the email generation."""
+        decreased_patterns = _find_decreased_patterns(sample_current_data, sample_previous_data)
+
+        # There should be one decreased pattern based on our test data
+        assert len(decreased_patterns) == 1
+        pattern = decreased_patterns[0]
+
+        # The decreased pattern should have proper pattern text
+        assert pattern["pattern"] == "Error message 2"
+
+        # Verify it contains all the fields required by email generation
+        assert "count" in pattern, "Pattern is missing 'count' field"
+        assert pattern["count"] == 5, "Pattern has incorrect current count"
+
+        # These fields are expected by step9_generate_email_bodies.py but are missing
+        assert "current_count" in pattern, "Pattern is missing 'current_count' field"
+        assert pattern["current_count"] == 5, "Pattern has incorrect current count"
+        assert "previous_count" in pattern, "Pattern is missing 'previous_count' field"
+        assert pattern["previous_count"] == 10, "Pattern has incorrect previous count"
+        assert "absolute_change" in pattern, "Pattern is missing 'absolute_change' field"
+        assert pattern["absolute_change"] == 5, "Pattern has incorrect absolute change"
+        assert "percent_change" in pattern, "Pattern is missing 'percent_change' field"
+        assert pattern["percent_change"] == 50, "Pattern has incorrect percent change"
+
+    def test_no_patterns_with_zero_change(self) -> None:
+        """Test that patterns with zero change are not included in increased or decreased lists."""
+        # Create test data with patterns that have the same count
+        current_data = {
+            "patterns": [
+                {"cluster_id": 1, "count": 10, "pattern": "Same count pattern", "sample_doc_references": ["index:id1"]}
+            ]
+        }
+
+        previous_data = {
+            "patterns": [
+                {"cluster_id": 1, "count": 10, "pattern": "Same count pattern", "sample_doc_references": ["index:id1"]}
+            ]
+        }
+
+        # There should be no increased patterns
+        increased_patterns = _find_increased_patterns(current_data, previous_data)
+        assert len(increased_patterns) == 0, "Patterns with no increase should not be in increased_patterns"
+
+        # There should be no decreased patterns
+        decreased_patterns = _find_decreased_patterns(current_data, previous_data)
+        assert len(decreased_patterns) == 0, "Patterns with no decrease should not be in decreased_patterns"
+
+    def test_zero_counts_handled_correctly(self) -> None:
+        """Test that zero counts are handled correctly in comparison."""
+        # Create test data with patterns that have zero count
+        current_data = {
+            "patterns": [
+                {"cluster_id": 1, "count": 0, "pattern": "Zero count current", "sample_doc_references": ["index:id1"]},
+                {"cluster_id": 2, "count": 5, "pattern": "Zero count previous", "sample_doc_references": ["index:id2"]},
+            ]
+        }
+
+        previous_data = {
+            "patterns": [
+                {"cluster_id": 1, "count": 5, "pattern": "Zero count current", "sample_doc_references": ["index:id1"]},
+                {"cluster_id": 2, "count": 0, "pattern": "Zero count previous", "sample_doc_references": ["index:id2"]},
+            ]
+        }
+
+        # "Zero count current" should be in decreased patterns
+        decreased_patterns = _find_decreased_patterns(current_data, previous_data)
+        assert len(decreased_patterns) == 1
+        assert decreased_patterns[0]["pattern"] == "Zero count current"
+        assert "current_count" in decreased_patterns[0], "Pattern is missing 'current_count' field"
+        assert "previous_count" in decreased_patterns[0], "Pattern is missing 'previous_count' field"
+        assert "absolute_change" in decreased_patterns[0], "Pattern is missing 'absolute_change' field"
+        assert "percent_change" in decreased_patterns[0], "Pattern is missing 'percent_change' field"
+
+        # "Zero count previous" should be in increased patterns
+        increased_patterns = _find_increased_patterns(current_data, previous_data)
+        assert len(increased_patterns) == 1
+        assert increased_patterns[0]["pattern"] == "Zero count previous"
+        assert "current_count" in increased_patterns[0], "Pattern is missing 'current_count' field"
+        assert "previous_count" in increased_patterns[0], "Pattern is missing 'previous_count' field"
+        assert "absolute_change" in increased_patterns[0], "Pattern is missing 'absolute_change' field"
+        assert "percent_change" in increased_patterns[0], "Pattern is missing 'percent_change' field"
