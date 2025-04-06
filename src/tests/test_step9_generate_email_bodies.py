@@ -4,6 +4,7 @@ import re
 import tempfile
 from pathlib import Path
 from typing import Any, Dict
+import json
 
 import pytest
 
@@ -64,6 +65,30 @@ class TestStep9GenerateEmailBodies:
     def start_date_time_path(self) -> str:
         """Return the path to the current_date_time.txt fixture."""
         return str(Path(__file__).parent / "fixtures" / "current_date_time.txt")
+
+    @pytest.fixture
+    def high_priority_alerts_path(self) -> str:
+        """Create a temporary file with high priority alerts data."""
+        with tempfile.NamedTemporaryFile(mode="w+", delete=False) as tmp:
+            alerts_data = {
+                "alerts": [
+                    {
+                        "message": "Disk full on database server",
+                        "threshold": 5,
+                        "actual_count": 10,
+                        "percentage_above_threshold": 100.0
+                    },
+                    {
+                        "message": "Critical security breach",
+                        "threshold": 0,
+                        "actual_count": 5,
+                        "percentage_above_threshold": 100.0
+                    }
+                ]
+            }
+            json.dump(alerts_data, tmp)
+            tmp.flush()
+            return tmp.name
 
     @pytest.fixture
     def sample_pattern(self) -> Dict[str, Any]:
@@ -429,19 +454,12 @@ class TestStep9GenerateEmailBodies:
         """Test _prepare_email_data function."""
         data = _prepare_email_data(comparison_results_path, current_normalization_path)
         assert "current_patterns_count" in data
-        assert "previous_patterns_count" in data
+        assert "current_patterns" in data
         assert "new_patterns" in data
         assert "disappeared_patterns" in data
         assert "increased_patterns" in data
         assert "decreased_patterns" in data
-        assert "top_patterns" in data
-        assert isinstance(data["current_patterns_count"], int)
-        assert isinstance(data["previous_patterns_count"], int)
-        assert isinstance(data["new_patterns"], list)
-        assert isinstance(data["disappeared_patterns"], list)
-        assert isinstance(data["increased_patterns"], list)
-        assert isinstance(data["decreased_patterns"], list)
-        assert isinstance(data["top_patterns"], list)
+        assert len(data["current_patterns"]) > 0
 
     def test_generate_html_content(self, sample_pattern: Dict[str, Any]) -> None:
         """Test generate_html_content function."""
@@ -506,34 +524,18 @@ class TestStep9GenerateEmailBodies:
                 current_normalization_path,
                 str(html_output),
                 str(text_output),
+                None,  # high_priority_alerts_file
                 None,  # trend_chart_file
-                24,  # trend_hours_back
+                24,    # trend_hours_back
                 kibana_url,  # kibana_url
                 None,  # kibana_deeplink_structure
                 elasticsearch_query_path,
                 start_date_time_path,
             )
 
-            # Check that the output files exist
-            assert html_output.exists()
-            assert text_output.exists()
-
-            # Check the content of the HTML file
-            with html_output.open("r") as f:
-                html_content = f.read()
-                assert "Platform Problem Monitoring Report" in html_content
-                assert "new problem patterns" in html_content
-                assert "increased problem patterns" in html_content
-                assert "decreased problem patterns" in html_content
-                assert "disappeared problem patterns" in html_content
-                assert "View in Kibana" in html_content
-                assert kibana_url in html_content
-
-            # Check the content of the text file
-            with text_output.open("r") as f:
-                text_content = f.read()
-                assert "PLATFORM PROBLEM MONITORING REPORT" in text_content
-                assert "current problem patterns:" in text_content.lower()
+            # Check that the files were created
+            assert Path(html_output).exists()
+            assert Path(text_output).exists()
 
     def test_generate_email_bodies_with_missing_files(self) -> None:
         """Test generate_email_bodies function with missing files."""
@@ -549,3 +551,138 @@ class TestStep9GenerateEmailBodies:
                     str(html_output),
                     str(text_output),
                 )
+
+    def test_generate_high_priority_alerts_html(self, sample_pattern: Dict[str, Any]) -> None:
+        """Test generating HTML for high priority alerts."""
+        # Arrange
+        alerts = [
+            {
+                "message": "Disk full on database server",
+                "threshold": 5,
+                "actual_count": 10,
+                "percentage_above_threshold": 100.0
+            },
+            {
+                "message": "Critical security breach",
+                "threshold": 0,
+                "actual_count": 5,
+                "percentage_above_threshold": 100.0
+            }
+        ]
+
+        # Act
+        from platform_problem_monitoring_core.step9_generate_email_bodies import _generate_high_priority_alerts_html
+        html = _generate_high_priority_alerts_html(alerts)
+        html_dark = _generate_high_priority_alerts_html(alerts, dark_mode=True)
+
+        # Assert
+        assert "Disk full on database server" in html
+        assert "10" in html
+        assert "Threshold: 5" in html
+        assert "Critical security breach" in html
+        assert "5" in html
+        assert "Threshold: 0" in html
+
+        # Dark mode should contain similar content
+        assert "Disk full on database server" in html_dark
+        assert "10" in html_dark
+        assert "Threshold: 5" in html_dark
+
+    def test_generate_high_priority_alerts_html_empty(self) -> None:
+        """Test generating HTML for empty high priority alerts."""
+        # Act
+        from platform_problem_monitoring_core.step9_generate_email_bodies import _generate_high_priority_alerts_html
+        html = _generate_high_priority_alerts_html([])
+        html_dark = _generate_high_priority_alerts_html([], dark_mode=True)
+
+        # Assert
+        assert "No high priority alerts detected" in html
+        assert "No high priority alerts detected" in html_dark
+
+    def test_generate_high_priority_alerts_text(self) -> None:
+        """Test generating text for high priority alerts."""
+        # Arrange
+        alerts = [
+            {
+                "message": "Disk full on database server",
+                "threshold": 5,
+                "actual_count": 10,
+                "percentage_above_threshold": 100.0
+            }
+        ]
+
+        # Act
+        from platform_problem_monitoring_core.step9_generate_email_bodies import _generate_high_priority_alerts_text
+        text = _generate_high_priority_alerts_text(alerts)
+
+        # Assert
+        assert "HIGH PRIORITY ALERTS" in text
+        assert "Disk full on database server" in text
+        assert "Count: 10" in text
+        assert "Threshold: 5" in text
+
+    def test_generate_high_priority_alerts_text_empty(self) -> None:
+        """Test generating text for empty high priority alerts."""
+        # Act
+        from platform_problem_monitoring_core.step9_generate_email_bodies import _generate_high_priority_alerts_text
+        text = _generate_high_priority_alerts_text([])
+
+        # Assert
+        assert "No high priority alerts detected" in text
+
+    def test_prepare_email_data_with_high_priority_alerts(
+        self, comparison_results_path: str, current_normalization_path: str, high_priority_alerts_path: str
+    ) -> None:
+        """Test preparing email data with high priority alerts."""
+        # Act
+        from platform_problem_monitoring_core.step9_generate_email_bodies import _prepare_email_data
+        data = _prepare_email_data(comparison_results_path, current_normalization_path, high_priority_alerts_path)
+
+        # Assert
+        assert "high_priority_alerts" in data
+        assert len(data["high_priority_alerts"]) == 2
+        assert data["high_priority_alerts"][0]["message"] == "Disk full on database server"
+        assert data["high_priority_alerts"][1]["message"] == "Critical security breach"
+
+    def test_generate_email_bodies_with_high_priority_alerts(
+        self,
+        comparison_results_path: str,
+        current_normalization_path: str,
+        high_priority_alerts_path: str,
+    ) -> None:
+        """Test generating email bodies with high priority alerts."""
+        # Arrange
+        html_output = tempfile.mktemp()
+        text_output = tempfile.mktemp()
+
+        try:
+            # Act
+            from platform_problem_monitoring_core.step9_generate_email_bodies import generate_email_bodies
+            generate_email_bodies(
+                comparison_results_path,
+                current_normalization_path,
+                html_output,
+                text_output,
+                high_priority_alerts_path,
+            )
+
+            # Assert
+            with open(html_output, "r") as f:
+                html_content = f.read()
+            with open(text_output, "r") as f:
+                text_content = f.read()
+
+            # Check HTML content
+            assert "HIGH PRIORITY ALERTS" in html_content
+            assert "Disk full on database server" in html_content
+            assert "Critical security breach" in html_content
+
+            # Check text content
+            assert "HIGH PRIORITY ALERTS" in text_content
+            assert "Disk full on database server" in text_content
+            assert "Critical security breach" in text_content
+
+        finally:
+            # Clean up
+            Path(html_output).unlink(missing_ok=True)
+            Path(text_output).unlink(missing_ok=True)

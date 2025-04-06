@@ -1117,7 +1117,7 @@ def _generate_html_content(
     document_template = document_template.replace("{{CURRENT_PATTERNS_COUNT}}", str(data.get("current_patterns_count", 0)))
     document_template = document_template.replace(
         "{{PREVIOUS_PATTERNS_COUNT}}",
-        str(data.get("current_patterns_count", 0) - len(data.get("new_patterns", [])) + len(data.get("disappeared_patterns", []))))
+        str(data.get("current_patterns_count", 0) - len(data.get("new_patterns", [])) + len(data.get("disappeared_patterns", [])))
     document_template = document_template.replace("{{NEW_PATTERNS_COUNT}}", str(len(data.get("new_patterns", []))))
     document_template = document_template.replace("{{DISAPPEARED_PATTERNS_COUNT}}", str(len(data.get("disappeared_patterns", []))))
 

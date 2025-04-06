@@ -36,15 +36,16 @@ Whenever triggered, be it manually or through a task system like cron, the softw
 
 1. Query the number of "problem-related" (errors, exceptions, warnings, etc.) logstash documents per hour for the past
    few hours, and generate the trend chart from these numbers
-2. download all "problem-related" logstash documents from the Elasticsearch server (of an ELK stack setup) that have
+2. Check for high priority messages that exceed defined thresholds and prepare alerts for critical issues
+3. download all "problem-related" logstash documents from the Elasticsearch server (of an ELK stack setup) that have
    been created since the software application last ran,
-3. extract the message field from all documents, plus some additional fields,
-4. "normalize" these messages by replacing dynamic message parts like timestamps, uuids, numbers etc.,
-5. "summarize" these messages by treating identical "normalized" messages as one message "pattern" and counting the
+4. extract the message field from all documents, plus some additional fields,
+5. "normalize" these messages by replacing dynamic message parts like timestamps, uuids, numbers etc.,
+6. "summarize" these messages by treating identical "normalized" messages as one message "pattern" and counting the
    number of message occurences per pattern
-6. compare this summary with the one from the previous run, by asking questions like: which patterns are new?, which
+7. compare this summary with the one from the previous run, by asking questions like: which patterns are new?, which
    ones increased or decreased in numbers?, which ones disappeared?, and compile a summary comparison from this,
-7. generate, from the summary comparison data, the latest messages summary, and the trend chart, a report in form of a
+8. generate, from the summary comparison data, the latest messages summary, high priority alerts, and the trend chart, a report in form of a
    well-designed HTML email that visualizes the "problem status quo" of the platform that feeds into the ELK stack, with
    a special emphasis on showing how the problems evolved since the previous run of the software application.
 
@@ -188,6 +189,20 @@ Main operations & side effects, and Outputs:
           "problem" messages; the bars go from the oldest entry (left-most) to the "now" entry (right-most); the general
           look&feel of the chart must match the email report generated in step 9
     - Outputs: none (besides exit code and progress, success, and error messages)
+4a. Check for high priority alerts that exceed defined thresholds - file step4a_check_high_priority_alerts.py
+    - Inputs:
+        - the HTTP base URL of an Elasticsearch server
+        - the path to a JSON file that holds the Lucene query definition
+        - the path to a text file containing high priority message definitions
+        - the path to a JSON file that holds the hourly number of "problem" messages (for time range)
+        - the file path to use for storing the high priority alerts
+    - Main operations & side effects:
+        - Parse the high priority message definitions file
+        - For each defined message, query Elasticsearch to determine the number of occurrences in the time range
+        - Compare the count against the defined threshold for each message
+        - Generate a report of messages that exceed their thresholds
+        - Save the alerts to the output file
+    - Outputs: none (besides exit code and progress, success, and error messages)
 5. Download logstash documents - file step5_download_logstash_documents.py
     - Inputs:
         - the date and time from which to start downloading messages
@@ -246,11 +261,13 @@ Main operations & side effects, and Outputs:
         - the path to a normalization results file
         - the file path to use for storing the HTML version of the resulting email message body
         - the file path to use for storing the plaintext version of the resulting email message body
+        - the path to the high priority alerts file (optional)
+        - the path to the trend chart file (optional)
         - Optionally: a Kibana base URL (KIBANA_DISCOVER_BASE_URL) for the "View in Kibana" button
         - Optionally: a Kibana document deeplink URL structure (KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE) with {{index}}
           and {{id}} placeholders for individual document links
     - Main operations & side effects:
-        - creation of a well-designed email report that presents the normalized messages comparison results, followed by
+        - creation of a well-designed email report that presents high priority alerts, normalized messages comparison results, followed by
           the top 25 normalization results, in an easy-to-scan and easy-to-comprehend form
         - If a Kibana base URL is provided, a "View in Kibana" button is added to the report
         - If a Kibana document deeplink URL structure is provided, each normalized message presented in the report is
@@ -299,6 +316,8 @@ The aforementioned ppmc shell script is able to read a configuration file with t
     ELASTICSEARCH_SERVER_BASE_URL=""
     ELASTICSEARCH_LUCENE_QUERY_FILE_PATH=""
 
+    HIGH_PRIORITY_MESSAGES_FILE_PATH=""
+
     KIBANA_DISCOVER_BASE_URL=""
     KIBANA_DOCUMENT_DEEPLINK_URL_STRUCTURE=""
 
@@ -308,6 +327,8 @@ The aforementioned ppmc shell script is able to read a configuration file with t
     SMTP_SERVER_PASSWORD=""
     SMTP_SENDER_ADDRESS=""
     SMTP_RECEIVER_ADDRESS=""
+
+    TREND_HOURS_BACK="24"
 
 If this configuration is stored in a file called main.conf, then the ppmc script can be
 called as `ppmc ./main.conf` and will make use of these parameters when executing the

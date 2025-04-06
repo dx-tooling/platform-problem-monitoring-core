@@ -1,0 +1,33 @@
+# High Priority Messages Configuration
+#
+# Format: <threshold>,<message>
+#
+# Each line defines a high priority message and its threshold.
+# If the actual count of a message exceeds its threshold during the monitoring period,
+# it will be included in the high priority alerts section of the report.
+#
+# - threshold: The minimum number of occurrences that will trigger an alert (integer)
+# - message: The exact message text to search for
+#
+# Example:
+# 5,Disk full on database server
+# This will trigger an alert if "Disk full on database server" appears more than 5 times
+
+# Critical system errors
+1,Disk full on database server
+5,SSH break-in attempt detected
+10,Google Captcha Error
+1,Maximum execution time of
+
+# Database issues
+3,Database connection failed
+15,Query execution time exceeded
+
+# Security alerts
+0,Critical security breach
+2,Invalid login attempt detected
+
+# Application errors
+5,Payment processing failed
+10,API rate limit exceeded
+20,File upload error
