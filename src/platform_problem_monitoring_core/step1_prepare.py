@@ -14,25 +14,43 @@ def prepare_environment() -> str:
     """
     Prepare environment for a process run.
 
+    Creates a temporary work directory for storing intermediate files.
+
     Returns:
         Path to the temporary work folder
+
+    Raises:
+        PermissionError: If unable to create or write to the temporary directory
+        OSError: If any other OS-level error occurs
     """
     logger.info("Preparing environment for process run")
 
-    # Create temporary work directory
-    work_dir = tempfile.mkdtemp(prefix="platform_problem_monitoring_")
-    logger.info(f"Created temporary work directory: {work_dir}")
+    try:
+        # Create temporary work directory
+        work_dir = tempfile.mkdtemp(prefix="platform_problem_monitoring_")
+        logger.info(f"Created temporary work directory: {work_dir}")
 
-    # Ensure the directory exists and is writable
-    ensure_dir_exists(work_dir)
+        # Check if directory exists and is writable
+        work_path = Path(work_dir)
+        if not work_path.exists():
+            error_msg = f"Failed to create temporary directory: {work_dir}"
+            raise FileNotFoundError(error_msg)
 
-    work_path = Path(work_dir)
-    if not work_path.exists() or not os.access(work_dir, os.W_OK):
-        logger.error(f"No write access to temporary directory: {work_dir}")
-        sys.exit(1)
+        if not os.access(work_dir, os.W_OK):
+            error_msg = f"No write access to temporary directory: {work_dir}"
+            raise PermissionError(error_msg)
 
-    logger.info("Environment preparation complete")
-    return work_dir
+        # Create any additional subdirectories if needed
+        # This isn't strictly necessary but helps demonstrate the directory is writable
+        test_subdir = work_path / "test"
+        ensure_dir_exists(str(test_subdir))
+        test_subdir.rmdir()  # Clean up the test directory
+
+        logger.info("Environment preparation complete")
+        return work_dir
+    except (OSError, PermissionError) as e:
+        logger.error(f"Failed to prepare environment: {str(e)}")
+        raise
 
 
 def main() -> None:

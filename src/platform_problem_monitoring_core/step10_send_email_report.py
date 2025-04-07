@@ -3,6 +3,7 @@
 
 import argparse
 import smtplib
+import ssl
 import sys
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -74,6 +75,7 @@ def send_email_report(
     smtp_pass: str,
     sender: str,
     receiver: str,
+    use_tls: bool = True,
 ) -> None:
     """
     Send email report.
@@ -88,6 +90,12 @@ def send_email_report(
         smtp_pass: SMTP password
         sender: Sender email address
         receiver: Receiver email address
+        use_tls: Whether to use TLS encryption (default: True)
+
+    Raises:
+        FileNotFoundError: If either email body file doesn't exist
+        smtplib.SMTPException: If there's an error sending the email
+        OSError: If there's an error reading the email body files
     """
     logger.info("Sending email report")
     logger.info(f"HTML file: {html_file}")
@@ -98,13 +106,28 @@ def send_email_report(
     logger.info(f"SMTP user: {smtp_user}")
     logger.info(f"Sender: {sender}")
     logger.info(f"Receiver: {receiver}")
+    logger.info(f"Use TLS: {use_tls}")
+
+    # Check if files exist
+    html_path = Path(html_file)
+    text_path = Path(text_file)
+
+    if not html_path.exists():
+        error_msg = f"HTML email body file not found: {html_file}"
+        logger.error(error_msg)
+        raise FileNotFoundError(error_msg)
+
+    if not text_path.exists():
+        error_msg = f"Text email body file not found: {text_file}"
+        logger.error(error_msg)
+        raise FileNotFoundError(error_msg)
 
     try:
         # Read the email bodies
-        with Path(html_file).open("r") as f:
+        with html_path.open("r") as f:
             html_body = f.read()
 
-        with Path(text_file).open("r") as f:
+        with text_path.open("r") as f:
             text_body = f.read()
 
         # Wrap long lines to avoid SMTP line length limits (RFC 5322 says 998 characters max)
@@ -125,21 +148,37 @@ def send_email_report(
         logger.info(f"Connecting to SMTP server {smtp_host}:{smtp_port}")
 
         # Send the email
-        server = smtplib.SMTP(smtp_host, smtp_port)
-        server.starttls()
-        server.login(smtp_user, smtp_pass)
-        server.sendmail(sender, receiver, msg.as_string())
-        server.quit()
+        server = None
+        try:
+            server = smtplib.SMTP(smtp_host, smtp_port, timeout=30)
 
-        logger.info("Email report sent successfully")
-    except FileNotFoundError as e:
-        logger.error(f"Email body file not found: {str(e)}")
-        raise
-    except smtplib.SMTPException as e:
-        logger.error(f"SMTP error: {str(e)}")
-        raise
-    except Exception as e:
-        logger.error(f"Unexpected error sending email: {str(e)}")
+            # Optional: Enable debug output
+            # server.set_debuglevel(1)
+
+            # Use TLS if requested
+            if use_tls:
+                context = ssl.create_default_context()
+                server.starttls(context=context)
+
+            server.login(smtp_user, smtp_pass)
+            server.sendmail(sender, receiver, msg.as_string())
+            logger.info("Email report sent successfully")
+        except smtplib.SMTPException as e:
+            error_msg = f"SMTP error: {str(e)}"
+            logger.error(error_msg)
+            raise
+        finally:
+            if server is not None:
+                server.quit()
+                logger.debug("SMTP connection closed")
+
+    except (OSError, smtplib.SMTPException) as e:
+        if isinstance(e, FileNotFoundError):
+            logger.error(f"Email body file not found: {e}")
+        elif isinstance(e, smtplib.SMTPException):
+            logger.error(f"SMTP error: {e}")
+        else:
+            logger.error(f"Error sending email: {e}")
         raise
 
 
@@ -155,6 +194,7 @@ def main() -> None:
     parser.add_argument("--smtp-pass", required=True, help="SMTP password")
     parser.add_argument("--sender", required=True, help="Sender email address")
     parser.add_argument("--receiver", required=True, help="Receiver email address")
+    parser.add_argument("--no-tls", action="store_true", help="Disable TLS encryption")
 
     args = parser.parse_args()
 
@@ -169,6 +209,7 @@ def main() -> None:
             args.smtp_pass,
             args.sender,
             args.receiver,
+            not args.no_tls,
         )
         sys.exit(0)
     except Exception as e:

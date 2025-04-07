@@ -4,6 +4,7 @@
 import argparse
 import sys
 from datetime import datetime
+from pathlib import Path
 from typing import List, Tuple
 
 import matplotlib
@@ -25,15 +26,40 @@ def _parse_hourly_data(hourly_data_file: str) -> Tuple[List[datetime], List[int]
 
     Returns:
         Tuple of (timestamps, counts)
+
+    Raises:
+        FileNotFoundError: If the hourly data file doesn't exist
+        json.JSONDecodeError: If the file contains invalid JSON
+        KeyError: If required fields are missing in the JSON data
     """
     data = load_json(hourly_data_file)
-    timestamps = []
-    counts = []
+    timestamps: List[datetime] = []
+    counts: List[int] = []
 
-    for entry in data:
-        # Parse the end time as that represents the hour's data point
-        timestamps.append(datetime.fromisoformat(entry["end_time"].replace("Z", "+00:00")))
-        counts.append(entry["count"])
+    if not data:
+        logger.warning("Hourly data file is empty or contains no valid entries")
+        return timestamps, counts
+
+    try:
+        for entry in data:
+            # Parse the end time as that represents the hour's data point
+            # Handle both "Z" (UTC) suffix and +00:00 format
+            end_time = entry.get("end_time", "")
+            if not end_time:
+                logger.warning(f"Skipping entry with missing end_time: {entry}")
+                continue
+
+            # Standardize date format
+            end_time = end_time.replace("Z", "+00:00")
+            timestamps.append(datetime.fromisoformat(end_time))
+
+            # Get count, defaulting to 0 if missing
+            count = entry.get("count", 0)
+            counts.append(count)
+    except (ValueError, TypeError) as e:
+        logger.error(f"Error parsing hourly data: {e}")
+        error_msg = f"Invalid date format in hourly data: {e}"
+        raise ValueError(error_msg) from e
 
     return timestamps, counts
 
@@ -46,6 +72,10 @@ def _format_x_axis_labels(ax: plt.Axes, timestamps: List[datetime]) -> None:
         ax: Matplotlib axes object
         timestamps: List of datetime objects
     """
+    if not timestamps:
+        logger.warning("No timestamps provided for axis formatting")
+        return
+
     # Set major ticks at hour intervals
     ax.xaxis.set_major_locator(mdates.HourLocator(interval=2))
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
@@ -85,14 +115,26 @@ def generate_trend_chart(hourly_data_file: str, output_image_file: str) -> None:
     Args:
         hourly_data_file: Path to the hourly data JSON file
         output_image_file: Path to store the generated chart image
+
+    Raises:
+        FileNotFoundError: If the hourly data file doesn't exist
+        ValueError: If the data cannot be parsed correctly
+        OSError: If the output image cannot be written
     """
     logger.info("Generating trend chart")
     logger.info(f"Hourly data file: {hourly_data_file}")
     logger.info(f"Output image file: {output_image_file}")
 
-    try:
-        # Parse the hourly data
-        timestamps, counts = _parse_hourly_data(hourly_data_file)
+    # Parse the hourly data
+    timestamps, counts = _parse_hourly_data(hourly_data_file)
+
+    if not timestamps:
+        logger.warning("No data points found in hourly data file")
+        # Create a simple empty chart instead of failing
+        fig, ax = plt.subplots(figsize=(11, 5))
+        ax.text(0.5, 0.5, "No data available for the selected time period", ha="center", va="center", fontsize=12)
+        ax.set_axis_off()
+    else:
         logger.info(f"Parsed {len(timestamps)} data points")
 
         # Set up the style
@@ -140,24 +182,25 @@ def generate_trend_chart(hourly_data_file: str, output_image_file: str) -> None:
                 fontsize=9,
             )
 
-        # Use tight_layout with padding parameter for more breathing space
-        plt.tight_layout(pad=1.5)
+    # Ensure output directory exists
+    output_path = Path(output_image_file)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
 
+    # Use tight_layout with padding parameter for more breathing space
+    plt.tight_layout(pad=1.5)
+
+    try:
         # Save the chart with a white background
         plt.savefig(
             output_image_file, dpi=300, bbox_inches="tight", facecolor="white", pad_inches=0.25
         )  # Add extra padding around the entire figure
         logger.info(f"Chart saved to {output_image_file}")
-
+    except OSError as e:
+        logger.error(f"Failed to save chart to {output_image_file}: {e}")
+        raise
+    finally:
         # Close the figure to free memory
         plt.close()
-
-    except FileNotFoundError:
-        logger.error(f"Hourly data file not found: {hourly_data_file}")
-        raise
-    except Exception as e:
-        logger.error(f"Error generating trend chart: {str(e)}")
-        raise
 
 
 def main() -> None:
